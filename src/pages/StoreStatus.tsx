@@ -81,9 +81,9 @@ export default function StoreStatus() {
                             <div className="h-px flex-1 bg-gradient-to-r from-transparent to-zinc-800" />
                             <div className="flex flex-col items-center text-center px-4">
                                 <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-[0.3em]">
-                                    Endpoint Registry
+                                    Status
                                 </h3>
-                                <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest mt-2 max-w-[250px] md:max-w-none">Protocol-level availability across all operational domains</p>
+                                <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest mt-2 max-w-[250px] md:max-w-none">Products Status Updates..</p>
                             </div>
                             <div className="h-px flex-1 bg-gradient-to-l from-transparent to-zinc-800" />
                         </div>
@@ -140,9 +140,9 @@ export default function StoreStatus() {
                             <div className="h-px flex-1 bg-gradient-to-r from-transparent to-zinc-800" />
                             <div className="flex flex-col items-center text-center px-4">
                                 <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-[0.3em]">
-                                    Maintenance Log
+                                    Maintenance
                                 </h3>
-                                <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest mt-2 max-w-[250px] md:max-w-none">Recorded protocol changes and synchronization history</p>
+                                <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest mt-2 max-w-[250px] md:max-w-none">Maintenance log updates.</p>
                             </div>
                             <div className="h-px flex-1 bg-gradient-to-l from-transparent to-zinc-800" />
                         </div>

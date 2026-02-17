@@ -66,6 +66,7 @@ interface Product {
         price: number;
         description?: string;
         is_best_value?: boolean;
+        duration_days?: number;
     }[];
 }
 
@@ -259,10 +260,10 @@ export default function StoreProducts() {
                                             {productsByCategory[category].map((product, i) => (
                                                 <motion.div
                                                     key={product.id}
-                                                    initial={{ opacity: 0, scale: 0.95 }}
-                                                    whileInView={{ opacity: 1, scale: 1 }}
+                                                    initial={{ opacity: 0, y: 30 }}
+                                                    whileInView={{ opacity: 1, y: 0 }}
                                                     viewport={{ once: true }}
-                                                    transition={{ delay: i * 0.05 }}
+                                                    transition={{ delay: i * 0.05, type: "spring", stiffness: 50 }}
                                                     className={cn(
                                                         "group h-full",
                                                         (!product.status || product.status === 'Working' || product.status === 'Undetected')
@@ -275,153 +276,158 @@ export default function StoreProducts() {
                                                         }
                                                     }}
                                                 >
-                                                    {/* Card Container */}
-                                                    <div className={cn(
-                                                        "bg-[#0c0c0c] border border-zinc-900/50 rounded-3xl overflow-hidden transition-all duration-400 h-full flex flex-col",
-                                                        (!product.status || product.status === 'Working' || product.status === 'Undetected')
-                                                            ? "group-hover:border-zinc-700/80 group-hover:shadow-2xl group-hover:shadow-black/80"
-                                                            : "opacity-80"
-                                                    )}>
+                                                    {/* Card Wrapper with Gradient Border Glow */}
+                                                    <div className="relative h-full p-[1px] rounded-2xl bg-gradient-to-b from-white/10 to-transparent group-hover:from-emerald-500/50 transition-all duration-700">
 
-                                                        {/* Image Section */}
-                                                        <div className="relative aspect-video overflow-hidden bg-zinc-900 group-image flex-shrink-0">
-                                                            {playingProduct === product.id && product.yt_video_url ? (
-                                                                <iframe
-                                                                    width="100%"
-                                                                    height="100%"
-                                                                    src={`https://www.youtube.com/embed/${(() => {
-                                                                        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-                                                                        const match = product.yt_video_url.match(regExp);
-                                                                        return (match && match[2].length === 11) ? match[2] : null;
-                                                                    })()}?autoplay=1&modestbranding=1&rel=0`}
-                                                                    title={product.name}
-                                                                    frameBorder="0"
-                                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                                    allowFullScreen
-                                                                    className="absolute inset-0 w-full h-full"
-                                                                />
-                                                            ) : (
-                                                                <>
-                                                                    {product.image_url ? (
-                                                                        <img
-                                                                            src={product.image_url}
-                                                                            alt={product.name}
-                                                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                                                        />
-                                                                    ) : (
-                                                                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-zinc-900 to-black">
-                                                                            <Zap className="w-12 h-12 text-zinc-700" />
-                                                                        </div>
-                                                                    )}
+                                                        {/* Desktop Inner Glow */}
+                                                        <div className="absolute -inset-2 bg-emerald-500/5 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
-                                                                    {/* Play Button Overlay */}
-                                                                    {product.yt_video_url && (
-                                                                        <div
-                                                                            onClick={(e) => {
-                                                                                e.stopPropagation();
-                                                                                setPlayingProduct(product.id);
-                                                                            }}
-                                                                            className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 backdrop-blur-sm"
-                                                                        >
-                                                                            <motion.div
-                                                                                className="w-16 h-16 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-2xl shadow-emerald-500/30"
-                                                                                whileHover={{ scale: 1.1 }}
-                                                                            >
-                                                                                <Play className="w-7 h-7 fill-current ml-0.5" />
-                                                                            </motion.div>
-                                                                        </div>
-                                                                    )}
+                                                        {/* Main Content Container */}
+                                                        <div className={cn(
+                                                            "bg-[#070707] rounded-2xl overflow-hidden transition-all duration-700 h-full flex flex-col relative z-20",
+                                                            (!product.status || product.status === 'Working' || product.status === 'Undetected')
+                                                                ? "group-hover:bg-[#0a0a0a]"
+                                                                : "opacity-60"
+                                                        )}>
+                                                            {/* Image Section */}
+                                                            <div className="relative aspect-[16/10] overflow-hidden bg-zinc-950 flex-shrink-0">
+                                                                {playingProduct === product.id && product.yt_video_url ? (
+                                                                    <iframe
+                                                                        width="100%"
+                                                                        height="100%"
+                                                                        src={`https://www.youtube.com/embed/${(() => {
+                                                                            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                                                                            const match = product.yt_video_url.match(regExp);
+                                                                            return (match && match[2].length === 11) ? match[2] : null;
+                                                                        })()}?autoplay=1&modestbranding=1&rel=0`}
+                                                                        title={product.name}
+                                                                        frameBorder="0"
+                                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                        allowFullScreen
+                                                                        className="absolute inset-0 w-full h-full"
+                                                                    />
+                                                                ) : (
+                                                                    <>
+                                                                        {/* Advanced Overlays */}
+                                                                        <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-black/20 z-10" />
+                                                                        <div className="absolute inset-0 opacity-0 group-hover:opacity-30 mix-blend-overlay z-10 transition-opacity duration-700 pointer-events-none bg-[radial-gradient(circle_at_center,_#10b981_1px,_transparent_1px)] bg-[size:24px_24px]" />
 
-                                                                    {/* Platform Badge */}
-                                                                    <div className="absolute top-4 left-4 z-20">
-                                                                        <div className="px-3 py-1.5 rounded-lg bg-black/70 backdrop-blur-md border border-white/10 text-white/85 font-semibold text-[11px] uppercase tracking-wider flex items-center gap-2 shadow-lg">
-                                                                            {getPlatformIcon(product.platform)}
-                                                                            {product.platform}
-                                                                        </div>
-                                                                    </div>
-
-                                                                    {/* Status Badge */}
-                                                                    {product.status && (
-                                                                        <div className="absolute top-4 right-4 z-20">
-                                                                            <div className={cn(
-                                                                                "px-3 py-1.5 rounded-lg backdrop-blur-md border text-[11px] font-semibold uppercase tracking-wider flex items-center gap-2 shadow-lg",
-                                                                                (product.status === 'Working' || product.status === 'Undetected') ? "bg-emerald-500/25 border-emerald-500/40 text-emerald-300" :
-                                                                                    product.status === 'Updating' ? "bg-blue-500/25 border-blue-500/40 text-blue-300" :
-                                                                                        product.status === 'Maintenance' ? "bg-yellow-500/25 border-yellow-500/40 text-yellow-300" :
-                                                                                            product.status === 'Testing' ? "bg-purple-500/25 border-purple-500/40 text-purple-300" :
-                                                                                                "bg-red-500/25 border-red-500/40 text-red-300"
-                                                                            )}>
-                                                                                <div className={cn(
-                                                                                    "w-2 h-2 rounded-full animate-pulse",
-                                                                                    (product.status === 'Working' || product.status === 'Undetected') ? "bg-emerald-400" :
-                                                                                        product.status === 'Updating' ? "bg-blue-400" :
-                                                                                            product.status === 'Maintenance' ? "bg-yellow-400" :
-                                                                                                product.status === 'Testing' ? "bg-purple-400" :
-                                                                                                    "bg-red-400"
-                                                                                )} />
-                                                                                {product.status === 'Working' ? 'Undetected' : product.status}
+                                                                        {product.image_url ? (
+                                                                            <img
+                                                                                src={product.image_url}
+                                                                                alt={product.name}
+                                                                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                                                            />
+                                                                        ) : (
+                                                                            <div className="w-full h-full flex items-center justify-center bg-zinc-900/40">
+                                                                                <Zap className="w-12 h-12 text-emerald-500/10 group-hover:text-emerald-500/30 transition-colors" />
                                                                             </div>
-                                                                        </div>
-                                                                    )}
-                                                                </>
-                                                            )}
-                                                        </div>
+                                                                        )}
 
-                                                        {/* Content Section */}
-                                                        <div className="p-4 md:p-5 flex flex-col flex-grow">
-                                                            <h3 className="text-white font-bold text-sm md:text-base uppercase tracking-tight mb-3 group-hover:text-emerald-400 transition-colors duration-300 line-clamp-2">
-                                                                {product.name}
-                                                            </h3>
+                                                                        {/* Tactical Play Button */}
+                                                                        {product.yt_video_url && (
+                                                                            <div
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    setPlayingProduct(product.id);
+                                                                                }}
+                                                                                className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 backdrop-blur-[3px]"
+                                                                            >
+                                                                                <motion.div
+                                                                                    className="w-16 h-16 rounded-full bg-emerald-500 flex items-center justify-center text-black shadow-[0_0_30px_rgba(16,185,129,0.5)]"
+                                                                                    whileHover={{ scale: 1.15 }}
+                                                                                >
+                                                                                    <Play className="w-7 h-7 fill-current ml-1" />
+                                                                                </motion.div>
+                                                                            </div>
+                                                                        )}
 
-                                                            {/* Spacer */}
-                                                            <div className="flex-grow" />
+                                                                        {/* Status Indicator (LED Style) */}
+                                                                        {product.status && (
+                                                                            <div className="absolute top-6 right-6 z-20">
+                                                                                <div className={cn(
+                                                                                    "px-3 py-1.5 rounded-full backdrop-blur-md border text-[8px] font-black uppercase tracking-[0.2em] flex items-center gap-2 shadow-2xl",
+                                                                                    (product.status === 'Working' || product.status === 'Undetected') ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" :
+                                                                                        product.status === 'Updating' ? "bg-blue-500/10 border-blue-500/30 text-blue-400" :
+                                                                                            product.status === 'Maintenance' ? "bg-yellow-500/10 border-yellow-500/30 text-yellow-400" :
+                                                                                                "bg-red-500/10 border-red-500/30 text-red-300"
+                                                                                )}>
+                                                                                    <span className="flex h-1.5 w-1.5 relative">
+                                                                                        <span className={cn(
+                                                                                            "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
+                                                                                            (product.status === 'Working' || product.status === 'Undetected') ? "bg-emerald-500" :
+                                                                                                product.status === 'Updating' ? "bg-blue-500" :
+                                                                                                    "bg-zinc-500"
+                                                                                        )} />
+                                                                                        <span className={cn(
+                                                                                            "relative inline-flex rounded-full h-1.5 w-1.5",
+                                                                                            (product.status === 'Working' || product.status === 'Undetected') ? "bg-emerald-500 shadow-[0_0_8px_#10b981]" :
+                                                                                                product.status === 'Updating' ? "bg-blue-500" :
+                                                                                                    "bg-zinc-500"
+                                                                                        )} />
+                                                                                    </span>
+                                                                                    {product.status === 'Working' ? 'Undetected' : product.status}
+                                                                                </div>
+                                                                            </div>
+                                                                        )}
+                                                                    </>
+                                                                )}
+                                                            </div>
 
-                                                            {/* Price and Buy Button Container */}
-                                                            <div className="flex items-center justify-between gap-2 pt-4 border-t border-zinc-800/50">
-                                                                {/* Price Display */}
-                                                                <div className={cn(
-                                                                    "text-lg md:text-xl font-black tracking-tighter",
-                                                                    (!product.status || product.status === 'Working' || product.status === 'Undetected') ? "text-white" : "text-zinc-500"
-                                                                )}>
-                                                                    {getDisplayProductPrice(product)}
+                                                            {/* Info Section */}
+                                                            <div className="p-8 flex flex-col flex-grow bg-[#070707] group-hover:bg-[#0a0a0a] transition-colors duration-700">
+                                                                <div className="flex items-center gap-3 mb-4">
+                                                                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600">
+                                                                        {product.category || "General"}
+                                                                    </span>
+                                                                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-900 border border-white/5" />
+                                                                    <div className="flex items-center gap-2 text-zinc-500 uppercase text-[10px] font-black tracking-widest">
+                                                                        {getPlatformIcon(product.platform)}
+                                                                        {product.platform}
+                                                                    </div>
                                                                 </div>
 
-                                                                {/* Buy Button */}
-                                                                <motion.button
-                                                                    onClick={(e) => {
-                                                                        if (!product.status || product.status === 'Working' || product.status === 'Undetected') {
-                                                                            handleBuyClick(e, product);
-                                                                        }
-                                                                    }}
-                                                                    disabled={product.status && product.status !== 'Working' && product.status !== 'Undetected'}
-                                                                    whileHover={(!product.status || product.status === 'Working' || product.status === 'Undetected') ? { scale: 1.05 } : {}}
-                                                                    whileTap={(!product.status || product.status === 'Working' || product.status === 'Undetected') ? { scale: 0.95 } : {}}
-                                                                    className={cn(
-                                                                        "flex items-center gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-lg font-bold uppercase text-[10px] md:text-xs tracking-widest transition-all duration-300 whitespace-nowrap",
-                                                                        addedId === product.id
-                                                                            ? "bg-emerald-500 text-[#0a0a0a] shadow-[0_0_20px_rgba(16,185,129,0.4)]"
-                                                                            : (!product.status || product.status === 'Working' || product.status === 'Undetected')
-                                                                                ? "bg-white text-black hover:bg-zinc-100 shadow-lg hover:shadow-xl"
-                                                                                : "bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-700/50"
-                                                                    )}
-                                                                >
-                                                                    {addedId === product.id ? (
-                                                                        <>
-                                                                            <Check className="w-3 h-3 md:w-4 md:h-4" />
-                                                                            Added
-                                                                        </>
-                                                                    ) : (!product.status || product.status === 'Working' || product.status === 'Undetected') ? (
-                                                                        <>
-                                                                            <ShoppingCart className="w-3 h-3 md:w-4 md:h-4 fill-current" />
-                                                                            Buy
-                                                                        </>
-                                                                    ) : (
-                                                                        <>
-                                                                            <Shield className="w-3 h-3 md:w-4 md:h-4" />
-                                                                            {product.status}
-                                                                        </>
-                                                                    )}
-                                                                </motion.button>
+                                                                <h3 className="text-white font-black text-xl leading-tight uppercase tracking-tighter mb-6 group-hover:text-emerald-500 transition-colors duration-500 line-clamp-2">
+                                                                    {product.name}
+                                                                </h3>
+
+                                                                <div className="flex-grow" />
+
+                                                                {/* Pricing & CTA */}
+                                                                <div className="pt-6 border-t border-white/[0.04] flex items-center justify-between mt-auto">
+                                                                    <div className="flex flex-col">
+                                                                        <span className="text-[9px] font-black text-zinc-700 uppercase tracking-widest mb-1">Starting At</span>
+                                                                        <span className={cn(
+                                                                            "text-3xl font-black tracking-tight leading-none",
+                                                                            (!product.status || product.status === 'Working' || product.status === 'Undetected') ? "text-white" : "text-zinc-700"
+                                                                        )}>
+                                                                            {getDisplayProductPrice(product)}
+                                                                        </span>
+                                                                    </div>
+
+                                                                    <motion.button
+                                                                        whileHover={{ scale: 1.05, y: -2 }}
+                                                                        whileTap={{ scale: 0.98 }}
+                                                                        className={cn(
+                                                                            "h-12 px-7 rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] transition-all flex items-center gap-3 shadow-2xl",
+                                                                            addedId === product.id
+                                                                                ? "bg-emerald-500 text-black shadow-[0_0_30px_rgba(16,185,129,0.4)]"
+                                                                                : "bg-white text-black hover:bg-emerald-500 hover:text-black group-hover:shadow-[0_0_40px_rgba(16,185,129,0.3)]"
+                                                                        )}
+                                                                    >
+                                                                        {addedId === product.id ? (
+                                                                            <>
+                                                                                <Check className="w-4 h-4" />
+                                                                                Active
+                                                                            </>
+                                                                        ) : (
+                                                                            <>
+                                                                                Buy Access
+                                                                                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                                                            </>
+                                                                        )}
+                                                                    </motion.button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -448,198 +454,158 @@ export default function StoreProducts() {
             <Dialog open={isPlanDialogOpen} onOpenChange={setIsPlanDialogOpen}>
                 <DialogContent
                     onOpenAutoFocus={(e) => e.preventDefault()}
-                    className="max-w-[95vw] md:max-w-4xl bg-[#050505] border border-white/10 p-0 overflow-hidden rounded-3xl shadow-2xl shadow-black/90 focus:outline-none"
+                    className="max-w-[95vw] md:max-w-4xl bg-[#070707] border-white/[0.05] p-0 overflow-hidden rounded-2xl shadow-2xl shadow-black/99 focus:outline-none"
                 >
-                    <div className="flex flex-col md:flex-row h-full max-h-[85vh] md:h-auto overflow-hidden relative">
-
-                        {/* Interactive Background Elements */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[80px] rounded-full pointer-events-none" />
-                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-900/10 blur-[80px] rounded-full pointer-events-none" />
-
-                        {/* Left Column: Image & visuals (Adjusted width and positioning) */}
-                        <div className="w-full md:w-[50%] bg-zinc-950 relative flex flex-col items-center justify-center overflow-hidden border-r border-white/5">
-                            <div className="absolute inset-0 z-0">
-                                <img
-                                    src={selectedProductForPlan?.image_url}
-                                    alt=""
-                                    className="w-full h-full object-cover blur-3xl opacity-50 scale-125"
-                                />
-                                <div className="absolute inset-0 bg-black/30" />
+                    <div className="flex flex-col md:flex-row h-full max-h-[90vh] md:h-auto overflow-hidden">
+                        {/* Left Column: Briefing */}
+                        <div className="w-full md:w-[48%] bg-[#050505] border-r border-white/5 relative flex flex-col p-8">
+                            <div className="flex-grow flex items-center justify-center py-10">
+                                <div className="w-full aspect-video rounded-xl overflow-hidden bg-black shadow-2xl border border-white/5">
+                                    {selectedProductForPlan?.image_url ? (
+                                        <img
+                                            src={selectedProductForPlan?.image_url}
+                                            alt={selectedProductForPlan?.name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center">
+                                            <Zap className="w-16 h-16 text-zinc-900" />
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
-                            <div className="flex-1 w-full relative z-10 flex flex-col justify-end p-0 md:p-0">
-                                <div className="relative group w-full h-full md:h-[60vh] overflow-hidden">
-                                    <img
-                                        src={selectedProductForPlan?.image_url}
-                                        alt={selectedProductForPlan?.name}
-                                        className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-60" />
-                                </div>
-
-                                {/* Desktop Features Overlay */}
-                                <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 hidden md:flex flex-col gap-3 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
-                                    <div className="flex items-center gap-2">
-                                        <div className="px-2 py-1 rounded bg-black/40 border border-emerald-500/20 backdrop-blur-md flex items-center gap-2 shadow-lg ring-1 ring-white/5">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Undetected</span>
-                                        </div>
+                            <div className="mt-auto space-y-4">
+                                {selectedProductForPlan?.status && (
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                        <span className="text-emerald-500 text-[9px] font-black uppercase tracking-widest">
+                                            {selectedProductForPlan.status === 'Working' ? 'Undetected' : selectedProductForPlan.status}
+                                        </span>
                                     </div>
-                                    <p className="text-zinc-300 text-xs leading-relaxed line-clamp-3 font-medium text-shadow-sm opacity-90 max-w-md">
-                                        {selectedProductForPlan?.description || "High-performance software designed for competitive advantage."}
-                                    </p>
-                                </div>
-
-                                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent z-20 pointer-events-none md:hidden" />
+                                )}
+                                <p className="text-[11px] text-zinc-400 font-bold leading-relaxed uppercase tracking-wide">
+                                    {selectedProductForPlan?.description || "High-performance software designed for competitive advantage."}
+                                </p>
                             </div>
                         </div>
 
-                        {/* Right Column: Interaction (Main content) */}
-                        <div className="w-full md:w-[55%] flex flex-col bg-[#050505] relative z-20">
-                            {/* Header */}
-                            <div className="p-6 md:p-8 pb-0 flex flex-col gap-1">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Badge variant="outline" className="bg-emerald-500/5 text-emerald-500 border-emerald-500/20 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 h-5">
-                                            {selectedProductForPlan?.category || "Software"}
-                                        </Badge>
-                                        <span className="text-zinc-600 text-[10px] font-bold uppercase tracking-widest">•</span>
-                                        <span className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">v2.4.0</span>
-                                    </div>
+                        {/* Right Column: Selection */}
+                        <div className="w-full md:w-[52%] p-10 flex flex-col relative bg-[#070707]">
+                            <div className="flex items-center gap-4 mb-6">
+                                <Badge className="bg-emerald-500/10 text-emerald-500 border-none font-black text-[9px] uppercase tracking-[0.2em] px-3 py-1">
+                                    {selectedProductForPlan?.category || "Access"}
+                                </Badge>
+                                <span className="text-zinc-600 font-black text-[9px] tracking-widest">VERSION 1.0.0</span>
+                            </div>
+
+                            <h2 className="text-4xl font-black text-white uppercase tracking-tighter mb-4 leading-none">
+                                {selectedProductForPlan?.name}
+                            </h2>
+
+                            <div className="flex items-center gap-6 mb-10 overflow-x-auto no-scrollbar pb-2">
+                                <div className="flex items-center gap-2 text-zinc-500 flex-shrink-0">
+                                    <Monitor className="w-4 h-4" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Windows</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-zinc-500 flex-shrink-0">
+                                    <ShieldCheck className="w-4 h-4 text-emerald-500/50" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Secure</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-zinc-500 flex-shrink-0">
+                                    <Zap className="w-4 h-4 text-emerald-500/50" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Instant</span>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3 mb-6">
+                                <span className="text-[9px] font-black text-zinc-500 uppercase tracking-[0.3em] whitespace-nowrap">Select Plan</span>
+                                <div className="h-px bg-white/[0.05] flex-grow" />
+                            </div>
+
+                            <div className="space-y-3 flex-grow overflow-y-auto pr-2 custom-scrollbar">
+                                {selectedProductForPlan?.plans?.map((plan) => (
                                     <button
-                                        onClick={() => setIsPlanDialogOpen(false)}
-                                        className="hidden md:flex w-8 h-8 rounded-full bg-zinc-900/50 border border-white/5 text-zinc-400 hover:text-white items-center justify-center hover:bg-zinc-800 transition-all"
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </button>
-                                </div>
-
-                                <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight mt-3">
-                                    {selectedProductForPlan?.name}
-                                </h2>
-
-                                <div className="flex items-center gap-4 text-xs font-medium text-zinc-400 mt-1">
-                                    <span className="flex items-center gap-1.5">
-                                        {(selectedProductForPlan?.platform || "").toLowerCase().includes('ios') ? (
-                                            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" /></svg>
-                                        ) : (selectedProductForPlan?.platform || "").toLowerCase().includes('android') || (selectedProductForPlan?.platform || "").toLowerCase().includes('mobile') ? (
-                                            <Smartphone className="w-3.5 h-3.5" />
-                                        ) : (
-                                            <Monitor className="w-3.5 h-3.5" />
+                                        key={plan.id}
+                                        onClick={() => setSelectedPlanId(plan.id)}
+                                        className={cn(
+                                            "w-full group relative flex items-center justify-between p-5 rounded-2xl border transition-all duration-300",
+                                            selectedPlanId === plan.id
+                                                ? "bg-emerald-500/10 border-emerald-500/50"
+                                                : "bg-white/[0.02] border-white/[0.03] hover:border-white/10"
                                         )}
-                                        {selectedProductForPlan?.platform || "Windows"}
-                                    </span>
-                                    <span className="flex items-center gap-1.5">
-                                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                                        Secure
-                                    </span>
-                                    <span className="flex items-center gap-1.5">
-                                        <Zap className="w-3.5 h-3.5 text-yellow-500" />
-                                        Instant
-                                    </span>
-                                </div>
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className={cn(
+                                                "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all",
+                                                selectedPlanId === plan.id ? "border-emerald-500" : "border-zinc-800"
+                                            )}>
+                                                {selectedPlanId === plan.id && <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />}
+                                            </div>
+                                            <span className={cn(
+                                                "text-sm font-black uppercase tracking-widest",
+                                                selectedPlanId === plan.id ? "text-white" : "text-zinc-500"
+                                            )}>
+                                                {plan.name}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex items-center gap-4">
+                                            {plan.is_best_value && (
+                                                <span className="px-2 py-1 bg-emerald-500/10 text-emerald-500 rounded-md text-[7px] font-black uppercase tracking-widest">Best Value</span>
+                                            )}
+                                            <span className={cn(
+                                                "text-xl font-black tracking-tighter",
+                                                selectedPlanId === plan.id ? "text-white" : "text-zinc-500"
+                                            )}>
+                                                ₹{plan.price}
+                                            </span>
+                                        </div>
+                                    </button>
+                                ))}
                             </div>
 
-                            {/* Scrollable Content Area */}
-                            <div className="p-6 md:p-8 py-6 overflow-y-auto custom-scrollbar flex-grow">
-                                <div className="space-y-3">
-                                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2 mb-3">
-                                        Select Plan
-                                        <div className="h-px bg-zinc-800 flex-grow" />
-                                    </span>
-
-                                    {selectedProductForPlan?.plans?.map((plan) => (
-                                        <button
-                                            key={plan.id}
-                                            onClick={() => setSelectedPlanId(plan.id)}
-                                            className={cn(
-                                                "w-full flex items-center justify-between p-3 px-4 rounded-xl border transition-all duration-200 group relative overflow-hidden",
-                                                selectedPlanId === plan.id
-                                                    ? "bg-emerald-500/10 border-emerald-500/50"
-                                                    : "bg-zinc-900/30 border-white/5 hover:bg-zinc-900/50 hover:border-white/10"
-                                            )}
-                                        >
-                                            <div className="flex items-center gap-3 relative z-10">
-                                                <div className={cn(
-                                                    "w-4 h-4 rounded-full border flex items-center justify-center transition-all",
-                                                    selectedPlanId === plan.id
-                                                        ? "border-emerald-500 bg-emerald-500"
-                                                        : "border-zinc-600 bg-transparent"
-                                                )}>
-                                                    {selectedPlanId === plan.id && <div className="w-1.5 h-1.5 rounded-full bg-black" />}
-                                                </div>
-                                                <span className={cn(
-                                                    "text-xs font-bold uppercase tracking-wider",
-                                                    selectedPlanId === plan.id ? "text-white" : "text-zinc-400"
-                                                )}>
-                                                    {plan.name}
-                                                </span>
-                                            </div>
-
-                                            <div className="flex items-center gap-3 relative z-10">
-                                                {plan.is_best_value && (
-                                                    <span className="text-[9px] font-bold bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/20 uppercase tracking-wider">
-                                                        Best Value
-                                                    </span>
-                                                )}
-                                                <span className={cn(
-                                                    "font-black text-sm tracking-tight",
-                                                    selectedPlanId === plan.id ? "text-white" : "text-zinc-300"
-                                                )}>
-                                                    ₹{plan.price}
-                                                </span>
-                                            </div>
-
-                                            {selectedPlanId === plan.id && (
-                                                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent pointer-events-none" />
-                                            )}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Footer Actions */}
-                            <div className="p-6 md:p-8 pt-4 bg-[#050505] border-t border-white/5 mt-auto">
-                                <div className="flex gap-3">
-                                    <Button
-                                        onClick={() => {
-                                            const plan = selectedProductForPlan?.plans?.find(p => p.id === selectedPlanId);
-                                            if (selectedProductForPlan && plan) {
-                                                handleAddToCart(selectedProductForPlan, plan);
-                                                navigate('/cart');
-                                            } else {
-                                                toast({
-                                                    title: "Selection Required",
-                                                    description: "Please choose a plan.",
-                                                    variant: "destructive"
-                                                });
-                                            }
-                                        }}
-                                        className="flex-1 h-11 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs rounded-lg uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[0_0_25px_rgba(16,185,129,0.4)]"
-                                    >
-                                        Buy Now
-                                    </Button>
-
-                                    <Button
-                                        variant="outline"
-                                        onClick={() => {
-                                            const plan = selectedProductForPlan?.plans?.find(p => p.id === selectedPlanId);
-                                            if (selectedProductForPlan && plan) {
-                                                handleAddToCart(selectedProductForPlan, plan);
-                                                toast({ title: "Added", description: "Item added to cart." });
-                                            } else {
-                                                toast({
-                                                    title: "Selection Required",
-                                                    description: "Please choose a plan.",
-                                                    variant: "destructive"
-                                                });
-                                            }
-                                        }}
-                                        className="h-11 px-4 bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 font-bold rounded-lg transition-all"
-                                    >
-                                        <ShoppingCart className="w-4 h-4" />
-                                    </Button>
-                                </div>
+                            <div className="mt-8 pt-8 border-t border-white/[0.05] flex gap-3">
+                                <motion.button
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    disabled={!selectedPlanId}
+                                    onClick={() => {
+                                        const plan = selectedProductForPlan?.plans?.find(p => p.id === selectedPlanId);
+                                        if (selectedProductForPlan && plan) {
+                                            handleAddToCart(selectedProductForPlan, plan);
+                                            navigate('/cart');
+                                        }
+                                    }}
+                                    className={cn(
+                                        "flex-grow h-14 rounded-2xl font-black uppercase text-[11px] tracking-[0.3em] flex items-center justify-center gap-3 transition-all",
+                                        selectedPlanId
+                                            ? "bg-emerald-500 text-black shadow-lg shadow-emerald-500/20"
+                                            : "bg-zinc-900 text-zinc-700 cursor-not-allowed"
+                                    )}
+                                >
+                                    Buy Now
+                                </motion.button>
+                                <motion.button
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    disabled={!selectedPlanId}
+                                    onClick={() => {
+                                        const plan = selectedProductForPlan?.plans?.find(p => p.id === selectedPlanId);
+                                        if (selectedProductForPlan && plan) {
+                                            handleAddToCart(selectedProductForPlan, plan);
+                                            toast({ title: "Cart Updated", description: "Asset secured in cart." });
+                                        }
+                                    }}
+                                    className={cn(
+                                        "w-14 h-14 rounded-2xl flex items-center justify-center border transition-all",
+                                        selectedPlanId
+                                            ? "bg-white/5 border-white/10 text-zinc-400 hover:text-white hover:bg-white/10"
+                                            : "bg-zinc-900 border-transparent text-zinc-800 pointer-events-none"
+                                    )}
+                                >
+                                    <ShoppingCart className="w-5 h-5" />
+                                </motion.button>
                             </div>
                         </div>
                     </div>
@@ -647,83 +613,85 @@ export default function StoreProducts() {
             </Dialog>
             {/* Mobile Category Slide-up Menu */}
             <AnimatePresence>
-                {isCategoryMenuOpen && (
-                    <>
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setIsCategoryMenuOpen(false)}
-                            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100]"
-                        />
-                        <motion.div
-                            initial={{ y: "100%" }}
-                            animate={{ y: 0 }}
-                            exit={{ y: "100%" }}
-                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="fixed bottom-0 left-0 right-0 z-[101] p-4 lg:hidden"
-                        >
-                            <div className="bg-[#0c0c0c] border border-white/[0.08] rounded-t-[2.5rem] p-6 shadow-2xl relative overflow-hidden">
-                                <div className="flex items-center justify-between mb-8">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-                                            <Tag className="h-5 w-5 text-emerald-500" />
+                {
+                    isCategoryMenuOpen && (
+                        <>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setIsCategoryMenuOpen(false)}
+                                className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100]"
+                            />
+                            <motion.div
+                                initial={{ y: "100%" }}
+                                animate={{ y: 0 }}
+                                exit={{ y: "100%" }}
+                                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                                className="fixed bottom-0 left-0 right-0 z-[101] p-4 lg:hidden"
+                            >
+                                <div className="bg-[#0c0c0c] border border-white/[0.08] rounded-t-2xl p-6 shadow-2xl relative overflow-hidden">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                                                <Tag className="h-5 w-5 text-emerald-500" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-sm font-black text-white uppercase tracking-widest">Explore Categories</h3>
+                                                <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mt-0.5">Filter results</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h3 className="text-sm font-black text-white uppercase tracking-widest">Explore Categories</h3>
-                                            <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mt-0.5">Filter results</p>
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={() => setIsCategoryMenuOpen(false)}
-                                        className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-500 hover:text-white border border-white/5"
-                                    >
-                                        <X className="h-5 w-5" />
-                                    </button>
-                                </div>
-
-                                <div className="grid grid-cols-1 gap-2 max-h-[50vh] overflow-y-auto no-scrollbar pb-10">
-                                    <button
-                                        onClick={() => {
-                                            setActiveCategory(null);
-                                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                                            setIsCategoryMenuOpen(false);
-                                        }}
-                                        className={cn(
-                                            "w-full flex items-center justify-between px-6 py-4 rounded-2xl transition-all group border",
-                                            !activeCategory
-                                                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-                                                : "bg-white/[0.02] border-white/[0.03] text-zinc-500 hover:text-white"
-                                        )}
-                                    >
-                                        <span className="text-xs font-black uppercase tracking-[0.2em]">All Products</span>
-                                        {!activeCategory && <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />}
-                                    </button>
-
-                                    {categories.map((cat) => (
                                         <button
-                                            key={cat}
+                                            onClick={() => setIsCategoryMenuOpen(false)}
+                                            className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-500 hover:text-white border border-white/5"
+                                        >
+                                            <X className="h-5 w-5" />
+                                        </button>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 gap-2 max-h-[50vh] overflow-y-auto no-scrollbar pb-10">
+                                        <button
                                             onClick={() => {
-                                                scrollToCategory(cat);
+                                                setActiveCategory(null);
+                                                window.scrollTo({ top: 0, behavior: 'smooth' });
                                                 setIsCategoryMenuOpen(false);
                                             }}
                                             className={cn(
                                                 "w-full flex items-center justify-between px-6 py-4 rounded-2xl transition-all group border",
-                                                activeCategory === cat
+                                                !activeCategory
                                                     ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
                                                     : "bg-white/[0.02] border-white/[0.03] text-zinc-500 hover:text-white"
                                             )}
                                         >
-                                            <span className="text-xs font-black uppercase tracking-[0.2em]">{cat}</span>
-                                            {activeCategory === cat && <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />}
+                                            <span className="text-xs font-black uppercase tracking-[0.2em]">All Products</span>
+                                            {!activeCategory && <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />}
                                         </button>
-                                    ))}
+
+                                        {categories.map((cat) => (
+                                            <button
+                                                key={cat}
+                                                onClick={() => {
+                                                    scrollToCategory(cat);
+                                                    setIsCategoryMenuOpen(false);
+                                                }}
+                                                className={cn(
+                                                    "w-full flex items-center justify-between px-6 py-4 rounded-2xl transition-all group border",
+                                                    activeCategory === cat
+                                                        ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
+                                                        : "bg-white/[0.02] border-white/[0.03] text-zinc-500 hover:text-white"
+                                                )}
+                                            >
+                                                <span className="text-xs font-black uppercase tracking-[0.2em]">{cat}</span>
+                                                {activeCategory === cat && <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        </motion.div>
-                    </>
-                )}
-            </AnimatePresence>
+                            </motion.div>
+                        </>
+                    )
+                }
+            </AnimatePresence >
         </StoreLayout >
     );
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { ChevronDown, LayoutDashboard, Key, Users, AppWindow, Gift, FileText, Variable, UserCog, MessageSquare, LogOut, User, Activity, TrendingUp, ShoppingCart, Package, Zap, ChevronRight, MessageCircle, Send, X } from "lucide-react";
+import { ChevronDown, LayoutDashboard, Key, Users, AppWindow, Gift, FileText, Variable, UserCog, MessageSquare, LogOut, User, Activity, TrendingUp, ShoppingCart, Package, Zap, ChevronRight, MessageCircle, Send, X, ShieldCheck, Webhook, Home, Settings2, Shield } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { getAuth, clearAuth } from "@/lib/api";
@@ -22,7 +22,7 @@ interface NavCategory {
 const adminNavCategories: NavCategory[] = [
   {
     label: "Dashboard",
-    icon: LayoutDashboard,
+    icon: Home,
     items: [
       {
         title: "Overview",
@@ -34,7 +34,7 @@ const adminNavCategories: NavCategory[] = [
   },
   {
     label: "Management",
-    icon: Key,
+    icon: Shield,
     items: [
       {
         title: "Licenses",
@@ -64,7 +64,7 @@ const adminNavCategories: NavCategory[] = [
   },
   {
     label: "Webhooks",
-    icon: Gift,
+    icon: Webhook,
     items: [
       {
         title: "Logs",
@@ -88,7 +88,7 @@ const adminNavCategories: NavCategory[] = [
   },
   {
     label: "Resellers",
-    icon: LayoutDashboard,
+    icon: UserCog,
     items: [
       {
         title: "Resellers",
@@ -100,7 +100,7 @@ const adminNavCategories: NavCategory[] = [
   },
   {
     label: "Store",
-    icon: LayoutDashboard,
+    icon: ShoppingCart,
     items: [
       {
         title: "Manage Products",
@@ -125,12 +125,18 @@ const adminNavCategories: NavCategory[] = [
         description: "Manage team members",
         icon: Users,
         path: "/manage-team",
+      },
+      {
+        title: "Reviews",
+        description: "Manage client reviews",
+        icon: MessageCircle,
+        path: "/manage-reviews",
       }
     ],
   },
   {
     label: "Clients",
-    icon: LayoutDashboard,
+    icon: ShieldCheck,
     items: [
       {
         title: "Clients",
@@ -385,13 +391,11 @@ export const TopNavigation = () => {
                     "h-10 w-10 rounded-full border-2 border-zinc-800 transition-all duration-500 p-0.5 overflow-hidden",
                     userMenuOpen ? "border-emerald-500 scale-105" : "group-hover:border-emerald-500/50"
                   )}>
-                    {currentUser?.avatar || currentUser?.avatar_url ? (
-                      <img src={currentUser.avatar || currentUser.avatar_url} alt="Avatar" className="w-full h-full rounded-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full rounded-full bg-zinc-900 flex items-center justify-center">
-                        <User className="w-4 h-4 text-zinc-600" />
-                      </div>
-                    )}
+                    <img
+                      src={currentUser?.avatar || currentUser?.avatar_url || "https://cdn.discordapp.com/embed/avatars/0.png"}
+                      alt="Avatar"
+                      className="w-full h-full rounded-full object-cover"
+                    />
                   </div>
                 </div>
 
@@ -401,10 +405,10 @@ export const TopNavigation = () => {
                       initial={{ opacity: 0, scale: 0.95, y: 10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                      className="absolute top-full right-0 mt-4 w-64 bg-[#0c0c0c] border border-zinc-900 rounded-[1.5rem] p-3 shadow-2xl backdrop-blur-xl z-50 overflow-hidden"
+                      className="absolute top-full right-0 mt-4 w-64 bg-[#0c0c0c] border border-zinc-900 rounded-xl p-3 shadow-2xl backdrop-blur-xl z-50 overflow-hidden"
                     >
                       {/* User Header */}
-                      <div className="flex items-center gap-3 p-2 mb-2 bg-white/[0.02] border border-white/[0.05] rounded-xl relative overflow-hidden group/header">
+                      <div className="flex items-center gap-3 p-2 mb-2 bg-white/[0.02] border border-white/[0.05] rounded-lg relative overflow-hidden group/header">
                         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover/header:opacity-100 transition-opacity" />
                         <div className="relative h-10 w-10 rounded-lg bg-zinc-950 border border-white/10 p-0.5 overflow-hidden shrink-0">
                           {currentUser?.avatar || currentUser?.avatar_url ? (
@@ -428,7 +432,7 @@ export const TopNavigation = () => {
                       <div className="space-y-1">
                         {[
                           { label: "Profile", icon: User, path: "/profile", color: "emerald" },
-                          { label: "Get Support", icon: Zap, url: "https://discord.gg/YUD2hXZj2V", color: "emerald" },
+                          ...(currentUserType !== "admin" ? [{ label: "Get Support", icon: Zap, url: "https://discord.gg/bCBn7hFe4B", color: "emerald" }] : []),
                         ].map((item) => (
                           <button
                             key={item.label}
@@ -469,9 +473,9 @@ export const TopNavigation = () => {
       </nav>
 
       {/* Premium Mobile Bottom Navigation */}
-      <div className="fixed bottom-4 left-4 right-4 z-50 md:hidden">
-        <nav className="bg-[#0c0c0c]/80 backdrop-blur-2xl border border-white/[0.08] rounded-[2rem] shadow-[0_20px_40px_rgba(0,0,0,0.4)] px-2 py-2">
-          <div className="flex items-center justify-around h-14">
+      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-gradient-to-t from-black via-black/90 to-transparent pb-6 pt-10 px-4 pointer-events-none">
+        <nav className="max-w-md mx-auto bg-[#070707]/90 backdrop-blur-3xl border border-white/[0.08] rounded-2xl shadow-[0_25px_60px_rgba(0,0,0,0.9)] overflow-hidden pointer-events-auto ring-1 ring-white/5">
+          <div className="flex items-center justify-around h-18 px-1 overflow-x-auto no-scrollbar scroll-smooth">
             {navCategories.map((category) => {
               const CategoryIcon = category.icon;
               const isActive = currentCategory?.label === category.label || (mobileActiveCategory === category.label && mobileModalOpen);
@@ -490,19 +494,31 @@ export const TopNavigation = () => {
                     }
                   }}
                   className={cn(
-                    "relative flex flex-col items-center justify-center gap-1 transition-all duration-300 px-2 py-1.5 rounded-2xl min-w-[64px]",
-                    isActive ? "text-emerald-400" : "text-zinc-500 hover:text-emerald-500/50"
+                    "relative flex flex-col items-center justify-center transition-all duration-300 px-4 py-2 my-1 rounded-xl min-w-[70px] flex-shrink-0 group active:scale-90",
+                    isActive ? "text-emerald-400" : "text-zinc-500"
                   )}
                 >
                   {isActive && (
                     <motion.div
                       layoutId="mobile-nav-pill"
-                      className="absolute inset-0 bg-emerald-500/10 rounded-2xl border border-emerald-500/20"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      className="absolute inset-0 bg-emerald-500/10 rounded-xl border border-emerald-400/20 z-0"
+                      transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
                     />
                   )}
-                  <CategoryIcon className={cn("h-4.5 w-4.5 mb-0.5 relative z-10", isActive && "text-emerald-400")} />
-                  <span className="text-[9px] font-black uppercase tracking-tighter relative z-10">{category.label}</span>
+                  <div className="relative z-10 flex flex-col items-center gap-1">
+                    <div className={cn(
+                      "transition-all duration-300 transform",
+                      isActive ? "scale-110" : "group-active:scale-95"
+                    )}>
+                      <CategoryIcon className={cn("h-5 w-5", isActive ? "text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]" : "group-hover:text-zinc-300")} />
+                    </div>
+                    <span className={cn(
+                      "text-[8px] font-black uppercase tracking-[0.15em] text-center whitespace-nowrap transition-colors",
+                      isActive ? "text-emerald-100" : "text-zinc-600"
+                    )}>
+                      {category.label}
+                    </span>
+                  </div>
                 </button>
               );
             })}
@@ -525,9 +541,9 @@ export const TopNavigation = () => {
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 100, opacity: 0 }}
-              className="fixed bottom-[96px] left-4 right-4 z-[70] md:hidden overflow-hidden"
+              className="fixed bottom-[110px] left-4 right-4 z-[70] md:hidden overflow-hidden"
             >
-              <div className="rounded-[2rem] border border-white/[0.08] bg-[#0c0c0c]/95 backdrop-blur-2xl shadow-2xl p-5 border-b-emerald-500/20">
+              <div className="rounded-xl border border-white/[0.08] bg-[#0c0c0c]/95 backdrop-blur-2xl shadow-2xl p-5 border-b-emerald-500/20">
                 <div className="flex items-center justify-between mb-5 pb-4 border-b border-white/[0.05]">
                   <div className="flex items-center gap-3">
                     <div className="h-7 w-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
@@ -565,7 +581,7 @@ export const TopNavigation = () => {
                             to={item.path || "#"}
                             onClick={() => setMobileModalOpen(false)}
                             className={cn(
-                              "flex items-center gap-4 px-4 py-3.5 rounded-[1.25rem] transition-all duration-300 group overflow-hidden relative border",
+                              "flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group overflow-hidden relative border",
                               isItemActive
                                 ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
                                 : "bg-white/[0.02] border-white/[0.03] hover:bg-white/[0.06] hover:border-white/[0.1] text-zinc-400"
@@ -605,7 +621,7 @@ export const TopNavigation = () => {
       <style>{`
         @media (max-width: 768px) {
           body {
-            padding-bottom: 6rem;
+            padding-bottom: 8rem;
           }
         }
       `}</style>

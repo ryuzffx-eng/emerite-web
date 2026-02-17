@@ -8,6 +8,7 @@ import {
     ShoppingCart,
     CreditCard,
     Check,
+    Terminal,
     Star,
     Users,
     Monitor,
@@ -139,156 +140,180 @@ export default function StoreProductDetail() {
 
     return (
         <StoreLayout>
-            <div className="pt-32 pb-20 px-4 sm:px-6">
+            <div className="pt-32 pb-20 px-4 sm:px-6 bg-[#070707]">
                 <div className="max-w-7xl mx-auto">
                     <button
                         onClick={() => navigate('/products')}
-                        className="flex items-center gap-2 text-[10px] font-black text-zinc-600 hover:text-emerald-500 uppercase tracking-widest mb-8 md:mb-12 transition-colors group"
+                        className="flex items-center gap-2 text-[10px] font-black text-zinc-600 hover:text-emerald-500 uppercase tracking-widest mb-10 transition-colors group"
                     >
                         <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                        Back to Products
+                        Back to Repository
                     </button>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                        {/* Left Column: Visuals & Description */}
-                        <div className="lg:col-span-7 space-y-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                        {/* Left Column: Secure Visuals */}
+                        <div className="lg:col-span-7 space-y-10">
                             <motion.div
-                                initial={{ opacity: 0, y: 20 }}
+                                initial={{ opacity: 0, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="relative aspect-video rounded-2xl overflow-hidden bg-zinc-900/40 border border-zinc-900 group"
+                                className="relative aspect-video rounded-2xl overflow-hidden bg-[#0a0a0a] border border-white/[0.05] shadow-2xl group"
                             >
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-black/20 z-10" />
+                                <div className="absolute inset-0 opacity-20 group-hover:opacity-30 mix-blend-overlay z-10 transition-opacity duration-700 pointer-events-none bg-[radial-gradient(circle_at_center,_#10b981_1px,_transparent_1px)] bg-[size:24px_24px]" />
+
                                 {product.image_url ? (
-                                    <img src={product.image_url} alt={product.name} className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
+                                    <img
+                                        src={product.image_url}
+                                        alt={product.name}
+                                        className="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-[2000ms]"
+                                    />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center">
-                                        <Zap className="w-20 h-20 text-zinc-800" />
+                                        <Zap className="w-20 h-20 text-emerald-500/10" />
                                     </div>
                                 )}
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#020202] via-transparent to-transparent" />
 
-                                <div className="absolute top-6 right-6">
-                                    <Badge className="bg-emerald-500/10 backdrop-blur-md text-emerald-500 border border-emerald-500/20 px-4 py-1.5 font-black text-[10px] tracking-widest uppercase rounded-lg">
-                                        AVAILABLE
-                                    </Badge>
+                                <div className="absolute top-10 right-10 z-20">
+                                    <div className="flex items-center gap-2 bg-[#070707]/80 backdrop-blur-xl px-4 py-2 rounded-2xl border border-white/5">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                                        <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em]">Operational</span>
+                                    </div>
                                 </div>
                             </motion.div>
 
-                            <div className="p-8 bg-zinc-900/20 border border-zinc-900 rounded-2xl relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500/30" />
-                                <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
-                                    <Shield className="w-3.5 h-3.5 text-emerald-500/50" />
-                                    Technical Briefing
-                                </h3>
-                                <div className="text-sm text-zinc-400 font-medium leading-relaxed uppercase tracking-wider">
+                            <div className="p-10 bg-[#090909] border border-white/[0.03] rounded-2xl relative overflow-hidden group">
+                                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-emerald-500/50 via-emerald-500/10 to-transparent" />
+                                <div className="flex items-center gap-4 mb-8">
+                                    <div className="w-10 h-10 rounded-xl bg-emerald-500/5 border border-emerald-500/10 flex items-center justify-center">
+                                        <Shield className="w-5 h-5 text-emerald-500/50" />
+                                    </div>
+                                    <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">Technical Briefing</h3>
+                                </div>
+                                <div className="text-sm text-zinc-400 font-medium leading-relaxed uppercase tracking-[0.05em] relative z-10">
                                     {product.details || product.description || "No further technical data available for this registry entry."}
+                                </div>
+                                <div className="absolute bottom-0 right-0 p-8 opacity-10 pointer-events-none">
+                                    <Terminal className="w-32 h-32 text-emerald-500" />
                                 </div>
                             </div>
                         </div>
 
-                        {/* Right Column: Configuration & Purchase */}
+                        {/* Right Column: Node Management */}
                         <div className="lg:col-span-5">
                             <motion.div
-                                initial={{ opacity: 0, x: 20 }}
+                                initial={{ opacity: 0, x: 30 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className="sticky top-32 space-y-8 text-left"
+                                className="sticky top-32 space-y-12"
                             >
-                                <div>
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <Badge className="bg-zinc-950 border border-zinc-900 text-zinc-500 font-black px-3 py-1 rounded-lg text-[9px] tracking-widest uppercase">
+                                <div className="space-y-6">
+                                    <div className="flex items-center gap-3">
+                                        <Badge className="bg-emerald-500/10 text-emerald-500 border-none font-black px-3 py-1 rounded-lg text-[9px] tracking-[0.2em] uppercase">
                                             {product.category}
                                         </Badge>
-                                        <div className="w-1 h-1 rounded-full bg-zinc-800" />
-                                        <span className="text-zinc-600 font-black text-[9px] uppercase tracking-widest">REG_ID: {product.id}</span>
+                                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-800" />
+                                        <span className="text-zinc-600 font-black text-[9px] uppercase tracking-widest font-mono">REG_ID: {product.id}</span>
                                     </div>
-                                    <h1 className="text-3xl sm:text-5xl md:text-7xl font-black text-white uppercase tracking-tighter leading-none mb-4">
+
+                                    <h1 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter leading-none mb-4">
                                         {product.name}
                                     </h1>
-                                    <p className="text-xs sm:text-sm text-zinc-500 font-bold uppercase tracking-widest mb-8">
+
+                                    <p className="text-sm text-zinc-500 font-bold uppercase tracking-widest leading-relaxed">
                                         {product.description}
                                     </p>
 
-                                    <div className="flex flex-wrap gap-2 md:gap-4 items-center">
-                                        <div className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-zinc-950 border border-zinc-900 rounded-xl">
+                                    <div className="flex flex-wrap gap-3 items-center">
+                                        <div className="flex items-center gap-3 px-5 py-3 bg-[#0a0a0a] border border-white/[0.03] rounded-2xl">
                                             {platformIcon()}
-                                            <span className="text-[9px] md:text-[10px] font-black text-white uppercase tracking-widest">{product.platform}</span>
+                                            <span className="text-[10px] font-black text-white uppercase tracking-widest">{product.platform}</span>
                                         </div>
-                                        <div className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-zinc-950 border border-zinc-900 rounded-xl">
-                                            <div className="flex items-center text-yellow-500">
-                                                <Star className="w-2.5 h-2.5 md:w-3 md:h-3 fill-current" />
-                                                <Star className="w-2.5 h-2.5 md:w-3 md:h-3 fill-current" />
-                                                <Star className="w-2.5 h-2.5 md:w-3 md:h-3 fill-current" />
-                                                <Star className="w-2.5 h-2.5 md:w-3 md:h-3 fill-current" />
-                                                <Star className="w-2.5 h-2.5 md:w-3 md:h-3 fill-current" />
+                                        <div className="flex items-center gap-3 px-5 py-3 bg-[#0a0a0a] border border-white/[0.03] rounded-2xl">
+                                            <div className="flex items-center gap-1">
+                                                {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-2.5 h-2.5 fill-emerald-500 text-emerald-500" />)}
                                             </div>
-                                            <span className="text-[9px] md:text-[10px] font-black text-white uppercase tracking-widest">4.9 (44K+)</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-zinc-950 border border-zinc-900 rounded-xl">
-                                            <Users className="w-2.5 h-2.5 md:w-3 md:h-3 text-emerald-500" />
-                                            <span className="text-[9px] md:text-[10px] font-black text-white uppercase tracking-widest">48 SOLD</span>
+                                            <span className="text-[10px] font-black text-white uppercase tracking-widest">Secure Entry</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="space-y-4">
-                                    <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-widest ml-1">Configuration Profile</h3>
+                                <div className="space-y-6">
+                                    <div className="flex items-center justify-between px-1">
+                                        <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em]">Access Configuration</h3>
+                                        <span className="text-[9px] font-black text-emerald-500/50 uppercase tracking-widest">Active Nodes</span>
+                                    </div>
+
                                     <div className="grid grid-cols-1 gap-3">
                                         {plans.length > 0 ? plans.map((plan) => (
                                             <button
                                                 key={plan.id}
                                                 onClick={() => setSelectedPlan(plan)}
                                                 className={cn(
-                                                    "group relative flex items-center justify-between p-6 rounded-xl border transition-all duration-300",
+                                                    "group relative flex items-center justify-between p-6 rounded-2xl border transition-all duration-500",
                                                     selectedPlan?.id === plan.id
-                                                        ? "bg-zinc-900/50 border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.05)]"
-                                                        : "bg-zinc-950 border-zinc-900 hover:border-zinc-800"
+                                                        ? "bg-emerald-500/10 border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.05)]"
+                                                        : "bg-[#090909] border-white/[0.03] hover:border-zinc-800"
                                                 )}
                                             >
-                                                <div className="flex flex-col items-start gap-1">
+                                                <div className="flex flex-col items-start gap-1 relative z-10">
                                                     <span className={cn(
-                                                        "text-sm font-black uppercase tracking-widest",
-                                                        selectedPlan?.id === plan.id ? "text-white" : "text-zinc-500 transition-colors group-hover:text-zinc-300"
+                                                        "text-sm font-black uppercase tracking-widest transition-colors",
+                                                        selectedPlan?.id === plan.id ? "text-white" : "text-zinc-500 group-hover:text-zinc-300"
                                                     )}>
                                                         {plan.name}
                                                     </span>
                                                     {plan.id === plans[1]?.id && (
-                                                        <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest">BEST VALUE NODE</span>
+                                                        <span className="text-[8px] font-black text-emerald-500 uppercase tracking-[0.2em]">Efficiency Optimized</span>
                                                     )}
                                                 </div>
-                                                <div className="flex items-end gap-1.5">
-                                                    <span className="text-[10px] font-black text-zinc-600 uppercase mb-1">₹</span>
+                                                <div className="flex items-baseline gap-2 relative z-10">
+                                                    <span className="text-[10px] font-black text-zinc-700 uppercase mb-1">₹</span>
                                                     <span className={cn(
-                                                        "text-xl font-black tracking-tighter",
-                                                        selectedPlan?.id === plan.id ? "text-white" : "text-zinc-400 transition-colors group-hover:text-zinc-200"
+                                                        "text-2xl font-black tracking-tighter transition-colors",
+                                                        selectedPlan?.id === plan.id ? "text-white" : "text-zinc-400 group-hover:text-zinc-200"
                                                     )}>
                                                         {getDisplayPrice(plan.price)}
                                                     </span>
                                                 </div>
+                                                {selectedPlan?.id === plan.id && (
+                                                    <motion.div
+                                                        layoutId="activePlan"
+                                                        className="absolute inset-0 bg-gradient-to-r from-emerald-500/[0.03] to-transparent pointer-events-none rounded-2xl"
+                                                    />
+                                                )}
                                             </button>
                                         )) : (
-                                            <div className="p-6 rounded-xl bg-zinc-950 border border-zinc-900 text-center">
-                                                <p className="text-[9px] font-black text-zinc-700 uppercase tracking-widest">No plans initialized for this asset</p>
+                                            <div className="p-10 rounded-2xl bg-[#090909] border border-dashed border-white/[0.05] text-center">
+                                                <p className="text-[10px] font-black text-zinc-700 uppercase tracking-[0.3em]">No Configuration Found</p>
                                             </div>
                                         )}
                                     </div>
                                 </div>
 
-                                <div className="space-y-4 pt-4">
-                                    <Button
+                                <div className="space-y-6">
+                                    <motion.button
+                                        whileHover={{ scale: 1.02, y: -4 }}
+                                        whileTap={{ scale: 0.98 }}
                                         onClick={handleAddToCart}
                                         disabled={!selectedPlan}
-                                        className="w-full h-14 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black uppercase text-xs tracking-[0.2em] rounded-xl shadow-xl shadow-emerald-500/10 active:scale-[0.98] transition-all group"
+                                        className={cn(
+                                            "w-full h-16 rounded-2xl font-black uppercase text-[11px] tracking-[0.4em] flex items-center justify-center gap-4 transition-all duration-500",
+                                            selectedPlan
+                                                ? "bg-white text-black shadow-lg shadow-white/5 hover:bg-emerald-500"
+                                                : "bg-[#090909] text-zinc-800 cursor-not-allowed"
+                                        )}
                                     >
-                                        <ShoppingCart className="w-4 h-4 mr-3" />
-                                        Initialize Purchase Sequence
-                                    </Button>
-                                    <div className="flex items-center justify-center gap-6">
-                                        <div className="flex items-center gap-2 text-[9px] font-black text-zinc-700 uppercase tracking-widest">
-                                            <Shield className="w-3 h-3 text-emerald-500/30" />
-                                            Secure Channel
+                                        <ShoppingCart className="w-5 h-5 fill-current" />
+                                        Initialize Access
+                                    </motion.button>
+
+                                    <div className="flex items-center justify-between px-6 py-4 bg-[#0a0a0a] border border-white/[0.02] rounded-2xl">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/40" />
+                                            <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Secure Link Established</span>
                                         </div>
-                                        <div className="flex items-center gap-2 text-[9px] font-black text-zinc-700 uppercase tracking-widest">
-                                            <Zap className="w-3 h-3 text-emerald-500/30" />
-                                            Instant Sync
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Instant Sync</span>
+                                            <Zap className="w-3 h-3 text-emerald-500/40" />
                                         </div>
                                     </div>
                                 </div>

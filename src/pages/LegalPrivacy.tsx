@@ -1,63 +1,106 @@
 import { StoreLayout } from "@/components/store/StoreLayout";
 import { motion } from "framer-motion";
+import { Eye, ShieldCheck, Server, Globe } from "lucide-react";
+
+const container = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.3,
+        },
+    },
+};
+
+const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: {
+        opacity: 1,
+        y: 0,
+        transition: { type: "spring", stiffness: 50 }
+    },
+} as const;
 
 export default function LegalPrivacy() {
     return (
-        <StoreLayout>
-            <div className="pt-32 pb-20 px-4 sm:px-6">
-                <div className="max-w-4xl mx-auto">
+        <StoreLayout hideFooter={true}>
+            {/* Background Decor */}
+            <div className="fixed inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-emerald-500/5 blur-[120px] rounded-full opacity-30" />
+            </div>
+
+            <div className="relative min-h-screen pt-32 pb-12 px-4 sm:px-6">
+                <div className="max-w-6xl mx-auto w-full">
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="space-y-8"
+                        variants={container}
+                        initial="hidden"
+                        animate="show"
+                        className="space-y-12"
                     >
-                        <div className="flex flex-col items-center justify-center text-center mb-12">
-                            <div className="flex items-center gap-6 py-4 w-full">
-                                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-zinc-800" />
-                                <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-[0.2em]">
+                        {/* Header Style from Reviews Page */}
+                        <motion.div variants={item} className="w-full max-w-4xl mx-auto px-4">
+                            <div className="flex items-center justify-center gap-6 sm:gap-12 opacity-80">
+                                <div className="h-px bg-gradient-to-r from-transparent via-zinc-700 to-zinc-500 flex-1 max-w-[100px] sm:max-w-xs" />
+                                <h2 className="text-xl sm:text-2xl font-black text-white tracking-[0.3em] uppercase whitespace-nowrap text-shadow-glow">
                                     Privacy <span className="text-emerald-500">Policy</span>
-                                </h3>
-                                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-zinc-800" />
+                                </h2>
+                                <div className="h-px bg-gradient-to-l from-transparent via-zinc-700 to-zinc-500 flex-1 max-w-[100px] sm:max-w-xs" />
                             </div>
-                            <p className="text-zinc-400 font-bold uppercase tracking-widest text-xs mt-2">
+                            <p className="text-zinc-500 text-xs text-center mt-4 font-mono tracking-widest uppercase opacity-70">
                                 Last Updated: February 2026
                             </p>
-                        </div>
+                        </motion.div>
 
-                        <div className="prose prose-invert prose-emerald max-w-none">
-                            <div className="bg-zinc-900/30 border border-zinc-800 rounded-2xl p-8 backdrop-blur-md">
-                                <h3 className="text-xl font-bold text-white mb-4">1. Information Collection</h3>
-                                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                                    We collect information from you when you register on our site, place an order, subscribe to our newsletter or fill out a form. When ordering or registering on our site, as appropriate, you may be asked to enter your: name, e-mail address or mailing address.
+                        {/* Content Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <motion.div variants={item} className="bg-[#0a0a0a] border border-white/[0.05] rounded-2xl p-6 hover:border-emerald-500/20 hover:bg-[#0f0f0f] transition-all duration-300 flex flex-col gap-4 group">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-emerald-500/20 transition-colors">
+                                        <Eye className="w-5 h-5 text-emerald-500" />
+                                    </div>
+                                    <h3 className="text-white font-bold uppercase tracking-wider text-sm">Data Collection</h3>
+                                </div>
+                                <p className="text-zinc-400 text-sm leading-relaxed border-l-2 border-zinc-800 pl-4">
+                                    We collect basic info (email, username, payment details) to process orders. We never store sensitive credit card data.
                                 </p>
+                            </motion.div>
 
-                                <h3 className="text-xl font-bold text-white mb-4">2. Use of Information</h3>
-                                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                                    Any of the information we collect from you may be used in one of the following ways:
+                            <motion.div variants={item} className="bg-[#0a0a0a] border border-white/[0.05] rounded-2xl p-6 hover:border-emerald-500/20 hover:bg-[#0f0f0f] transition-all duration-300 flex flex-col gap-4 group">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-emerald-500/20 transition-colors">
+                                        <Server className="w-5 h-5 text-emerald-500" />
+                                    </div>
+                                    <h3 className="text-white font-bold uppercase tracking-wider text-sm">Data Usage</h3>
+                                </div>
+                                <p className="text-zinc-400 text-sm leading-relaxed border-l-2 border-zinc-800 pl-4">
+                                    Information is used solely for order processing, product delivery, customer support, and essential service updates.
                                 </p>
-                                <ul className="list-disc list-inside text-zinc-400 text-sm space-y-2 mb-6 ml-4">
-                                    <li>To personalize your experience (your information helps us to better respond to your individual needs)</li>
-                                    <li>To improve our website (we continually strive to improve our website offerings based on the information and feedback we receive from you)</li>
-                                    <li>To improve customer service (your information helps us to more effectively respond to your customer service requests and support needs)</li>
-                                    <li>To process transactions</li>
-                                    <li>To send periodic emails</li>
-                                </ul>
+                            </motion.div>
 
-                                <h3 className="text-xl font-bold text-white mb-4">3. Information Protection</h3>
-                                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                                    We implement a variety of security measures to maintain the safety of your personal information when you place an order or enter, submit, or access your personal information.
+                            <motion.div variants={item} className="bg-[#0a0a0a] border border-white/[0.05] rounded-2xl p-6 hover:border-emerald-500/20 hover:bg-[#0f0f0f] transition-all duration-300 flex flex-col gap-4 group">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-emerald-500/20 transition-colors">
+                                        <ShieldCheck className="w-5 h-5 text-emerald-500" />
+                                    </div>
+                                    <h3 className="text-white font-bold uppercase tracking-wider text-sm">Security</h3>
+                                </div>
+                                <p className="text-zinc-400 text-sm leading-relaxed border-l-2 border-zinc-800 pl-4">
+                                    We use industry-standard encryption and regular security audits to protect your data from unauthorized access.
                                 </p>
+                            </motion.div>
 
-                                <h3 className="text-xl font-bold text-white mb-4">4. Cookies</h3>
-                                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                                    We use cookies to help us remember and process the items in your shopping cart, understand and save your preferences for future visits and compile aggregate data about site traffic and site interaction so that we can offer better site experiences and tools in the future.
+                            <motion.div variants={item} className="bg-[#0a0a0a] border border-white/[0.05] rounded-2xl p-6 hover:border-emerald-500/20 hover:bg-[#0f0f0f] transition-all duration-300 flex flex-col gap-4 group">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-emerald-500/20 transition-colors">
+                                        <Globe className="w-5 h-5 text-emerald-500" />
+                                    </div>
+                                    <h3 className="text-white font-bold uppercase tracking-wider text-sm">Third Parties</h3>
+                                </div>
+                                <p className="text-zinc-400 text-sm leading-relaxed border-l-2 border-zinc-800 pl-4">
+                                    We do not sell your personal data. Data is only shared with trusted processors essential for operation (e.g., Stripe/PayPal).
                                 </p>
-
-                                <h3 className="text-xl font-bold text-white mb-4">5. Third Party Disclosure</h3>
-                                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                                    We do not sell, trade, or otherwise transfer to outside parties your personally identifiable information. This does not include trusted third parties who assist us in operating our website, conducting our business, or servicing you, so long as those parties agree to keep this information confidential.
-                                </p>
-                            </div>
+                            </motion.div>
                         </div>
                     </motion.div>
                 </div>

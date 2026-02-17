@@ -7,6 +7,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { CartProvider } from "@/context/CartContext";
 import { MarketProvider } from "@/context/MarketContext";
 import Index from "./pages/Index";
+import { LoadingScreen } from "@/components/LoadingScreen";
 import Login from "./pages/Login";
 import StoreProducts from "./pages/StoreProducts";
 import StoreAbout from "./pages/StoreAbout";
@@ -34,6 +35,7 @@ import Status from "@/pages/Status";
 import CheatControl from "@/pages/CheatControl";
 import ManageProducts from "@/pages/ManageProducts";
 import ManageTeam from "@/pages/ManageTeam";
+import ManageReviews from "./pages/ManageReviews";
 import Revenue from "@/pages/Revenue";
 import Orders from "@/pages/Orders";
 import Cart from "./pages/Cart";
@@ -57,6 +59,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <LoadingScreen />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/products" element={<StoreProducts />} />
@@ -220,6 +223,14 @@ const App = () => (
                 element={
                   <ProtectedRoute requiredType="admin">
                     <ManageTeam />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/manage-reviews"
+                element={
+                  <ProtectedRoute requiredType="admin">
+                    <ManageReviews />
                   </ProtectedRoute>
                 }
               />

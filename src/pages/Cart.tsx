@@ -597,7 +597,7 @@ const Cart = () => {
                     <div className="p-6 pt-2 bg-zinc-900/30 border-t border-zinc-800/50">
                         <div className="grid grid-cols-1 gap-3">
                             <Button
-                                onClick={() => window.open("https://discord.gg/YUD2hXZj2V", "_blank")}
+                                onClick={() => window.open("https://discord.gg/bCBn7hFe4B", "_blank")}
                                 className="w-full bg-[#5865F2] hover:bg-[#4752c4] text-white font-bold h-11 rounded-xl uppercase tracking-wider text-[10px] flex items-center justify-center gap-2"
                             >
                                 <MessageSquare className="w-4 h-4" />

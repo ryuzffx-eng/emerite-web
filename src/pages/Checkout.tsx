@@ -676,7 +676,7 @@ const Checkout = () => {
                                 whileTap={{ scale: 0.98 }}
                             >
                                 <Button
-                                    onClick={() => window.open("https://discord.gg/YUD2hXZj2V", "_blank")}
+                                    onClick={() => window.open("https://discord.gg/bCBn7hFe4B", "_blank")}
                                     className="w-full bg-[#5865F2] hover:bg-[#4752c4] text-white font-bold h-11 rounded-xl uppercase tracking-wider text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/20"
                                 >
                                     <Shield className="w-4 h-4" />

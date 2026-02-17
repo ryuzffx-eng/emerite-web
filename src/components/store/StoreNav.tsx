@@ -112,7 +112,7 @@ export const StoreNav = () => {
                     layout
                     initial={false}
                     animate={{
-                        borderRadius: isScrolled ? 0 : 24,
+                        borderRadius: isScrolled ? 0 : 12,
                         padding: isScrolled ? "12px 24px" : "14px 12px",
                         backgroundColor: isScrolled
                             ? "rgba(5, 5, 5, 0.97)"
@@ -129,7 +129,7 @@ export const StoreNav = () => {
                     {/* Animated gradient border on hover (desktop only) */}
                     {!isScrolled && (
                         <div
-                            className="absolute inset-0 pointer-events-none opacity-0 group-hover/nav:opacity-100 transition-opacity duration-500 rounded-3xl"
+                            className="absolute inset-0 pointer-events-none opacity-0 group/nav:opacity-100 transition-opacity duration-500 rounded-xl"
                             style={{
                                 background: `radial-gradient(500px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(16, 185, 129, 0.1), transparent)`,
                             }}
@@ -138,7 +138,7 @@ export const StoreNav = () => {
 
                     {/* Top accent line */}
                     {!isScrolled && (
-                        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent opacity-50 rounded-t-3xl" />
+                        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent opacity-50 rounded-t-xl" />
                     )}
 
                     <div className="w-full flex items-center justify-between gap-4 relative z-10">
@@ -159,7 +159,7 @@ export const StoreNav = () => {
                                 />
                             </motion.div>
                             <span className="text-white font-black text-lg tracking-tight hidden xl:block">
-                                EMERITE<span className="text-emerald-400">.</span>
+                                EMERITE
                             </span>
                         </Link>
 
@@ -248,7 +248,7 @@ export const StoreNav = () => {
                                 <DropdownMenuContent
                                     align="end"
                                     sideOffset={14}
-                                    className="w-96 bg-[#0c0c0c] border border-white/[0.08] rounded-2xl p-5 shadow-2xl backdrop-blur-3xl z-50 overflow-hidden"
+                                    className="w-96 bg-[#0c0c0c] border border-white/[0.08] rounded-xl p-5 shadow-2xl backdrop-blur-3xl z-50 overflow-hidden"
                                 >
                                     {/* Header */}
                                     <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/[0.05]">
@@ -280,7 +280,7 @@ export const StoreNav = () => {
                                             <div className="py-12 flex flex-col items-center justify-center text-center">
                                                 <div className="relative mb-4">
                                                     <div className="absolute inset-0 bg-zinc-500/10 blur-2xl rounded-full" />
-                                                    <div className="w-16 h-16 rounded-2xl bg-white/[0.02] border border-white/[0.05] flex items-center justify-center relative">
+                                                    <div className="w-16 h-16 rounded-xl bg-white/[0.02] border border-white/[0.05] flex items-center justify-center relative">
                                                         <ShoppingBag className="w-8 h-8 text-zinc-800" />
                                                     </div>
                                                 </div>
@@ -295,7 +295,7 @@ export const StoreNav = () => {
                                                     layout
                                                     initial={{ opacity: 0, x: -10 }}
                                                     animate={{ opacity: 1, x: 0 }}
-                                                    className="group/cart-item p-3.5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.05] transition-all border border-white/[0.03] hover:border-emerald-500/20 flex items-center gap-4 relative overflow-hidden"
+                                                    className="group/cart-item p-3.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.05] transition-all border border-white/[0.03] hover:border-emerald-500/20 flex items-center gap-4 relative overflow-hidden"
                                                 >
                                                     <div className="w-14 h-14 rounded-xl bg-black border border-white/[0.05] flex items-center justify-center overflow-hidden shrink-0 group-hover/cart-item:border-emerald-500/30 transition-colors">
                                                         {item.image ? (
@@ -398,7 +398,7 @@ export const StoreNav = () => {
                                     <DropdownMenuContent
                                         align="end"
                                         sideOffset={14}
-                                        className="w-64 bg-[#0c0c0c] border border-white/[0.08] rounded-2xl p-3 shadow-2xl backdrop-blur-3xl z-50 overflow-hidden"
+                                        className="w-64 bg-[#0c0c0c] border border-white/[0.08] rounded-xl p-3 shadow-2xl backdrop-blur-3xl z-50 overflow-hidden"
                                     >
                                         <div className="flex items-center gap-3 p-2 mb-2 bg-white/[0.02] border border-white/[0.05] rounded-xl relative overflow-hidden group/header">
                                             <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover/header:opacity-100 transition-opacity" />
@@ -425,7 +425,7 @@ export const StoreNav = () => {
                                             {[
                                                 { label: "Dashboard", icon: LayoutDashboard, path: userType === "client" ? "/client/dashboard" : userType === "reseller" ? "/reseller/dashboard" : "/dashboard" },
                                                 { label: "Profile", icon: User, path: "/profile" },
-                                                { label: "Get Support", icon: Zap, url: "https://discord.gg/YUD2hXZj2V" },
+                                                { label: "Get Support", icon: Zap, url: "https://discord.gg/bCBn7hFe4B" },
                                             ].map((item) => (
                                                 <button
                                                     key={item.label}
@@ -486,37 +486,45 @@ export const StoreNav = () => {
 
             <MarketDialog open={isMarketOpen} onOpenChange={setIsMarketOpen} />
 
-            {/* Premium Mobile Bottom Navigation for Store */}
-            <div className="fixed bottom-4 left-4 right-4 z-50 lg:hidden">
-                <nav className="bg-[#0c0c0c]/80 backdrop-blur-2xl border border-white/[0.08] rounded-[2rem] shadow-[0_20px_40px_rgba(0,0,0,0.4)] px-2 py-2">
-                    <div className="flex items-center justify-around h-14">
-                        {navItems.map((item) => {
-                            const isActive = location.pathname === item.path;
-                            return (
-                                <Link
-                                    key={item.label}
-                                    to={item.path}
-                                    className={cn(
-                                        "relative flex flex-col items-center justify-center gap-1 transition-all duration-300 px-2 py-1.5 rounded-2xl min-w-[64px]",
-                                        isActive ? "text-emerald-400" : "text-zinc-500 hover:text-emerald-500/50"
-                                    )}
-                                >
-                                    {isActive && (
-                                        <motion.div
-                                            layoutId="store-mobile-nav-pill"
-                                            className="absolute inset-0 bg-emerald-500/10 rounded-2xl border border-emerald-500/20"
-                                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                        />
-                                    )}
-                                    <div className={cn("relative z-10 transition-transform duration-300", isActive && "scale-110")}>
-                                        {item.icon}
-                                    </div>
-                                    <span className="text-[9px] font-black uppercase tracking-tighter relative z-10">{item.label}</span>
-                                </Link>
-                            );
-                        })}
+            {/* Minimalist Mobile Navigation Bar */}
+            <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden border-t border-emerald-500/20 bg-[#050505]/90 backdrop-blur-2xl shadow-[0_-10px_30px_rgba(0,0_0,0.5)]">
+                <nav className="flex items-center h-16 max-w-lg mx-auto px-2">
+                    {navItems.map((item) => {
+                        const isActive = location.pathname === item.path;
+                        return (
+                            <Link
+                                key={item.label}
+                                to={item.path}
+                                className={cn(
+                                    "relative flex-1 flex flex-col items-center justify-center h-full transition-all duration-300",
+                                    isActive ? "text-emerald-400" : "text-zinc-500 active:bg-white/[0.03]"
+                                )}
+                            >
+                                {/* Active Indicator Glow */}
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="nav-active-accent"
+                                        className="absolute top-0 left-0 right-0 h-[2px] bg-emerald-500 shadow-[0_0_15px_#10b981]"
+                                        transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                    />
+                                )}
 
-                    </div>
+                                <div className={cn(
+                                    "relative z-10 p-1 rounded-lg transition-transform duration-300",
+                                    isActive && "scale-110"
+                                )}>
+                                    {item.icon}
+                                </div>
+
+                                <span className={cn(
+                                    "text-[10px] font-bold uppercase tracking-[0.1em] mt-1 transition-colors duration-300",
+                                    isActive ? "text-emerald-400" : "text-zinc-600"
+                                )}>
+                                    {item.label}
+                                </span>
+                            </Link>
+                        );
+                    })}
                 </nav>
             </div>
 

@@ -1,62 +1,106 @@
 import { StoreLayout } from "@/components/store/StoreLayout";
 import { motion } from "framer-motion";
+import { DollarSign, AlertTriangle, CheckCircle, HelpCircle } from "lucide-react";
+
+const container = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.3,
+        },
+    },
+};
+
+const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: {
+        opacity: 1,
+        y: 0,
+        transition: { type: "spring", stiffness: 50 }
+    },
+} as const;
 
 export default function LegalRefund() {
     return (
-        <StoreLayout>
-            <div className="pt-32 pb-20 px-4 sm:px-6">
-                <div className="max-w-4xl mx-auto">
+        <StoreLayout hideFooter={true}>
+            {/* Background Decor */}
+            <div className="fixed inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-emerald-500/5 blur-[120px] rounded-full opacity-30" />
+            </div>
+
+            <div className="relative min-h-screen pt-32 pb-12 px-4 sm:px-6">
+                <div className="max-w-6xl mx-auto w-full">
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="space-y-8"
+                        variants={container}
+                        initial="hidden"
+                        animate="show"
+                        className="space-y-12"
                     >
-                        <div className="flex flex-col items-center justify-center text-center mb-12">
-                            <div className="flex items-center gap-6 py-4 w-full">
-                                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-zinc-800" />
-                                <h3 className="text-2xl md:text-3xl font-black text-white uppercase tracking-[0.2em]">
-                                    Refunds & <span className="text-emerald-500">Cancellations</span>
-                                </h3>
-                                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-zinc-800" />
+                        {/* Header Style from Reviews Page */}
+                        <motion.div variants={item} className="w-full max-w-4xl mx-auto px-4">
+                            <div className="flex items-center justify-center gap-6 sm:gap-12 opacity-80">
+                                <div className="h-px bg-gradient-to-r from-transparent via-zinc-700 to-zinc-500 flex-1 max-w-[100px] sm:max-w-xs" />
+                                <h2 className="text-xl sm:text-2xl font-black text-white tracking-[0.3em] uppercase whitespace-nowrap text-shadow-glow">
+                                    Refund <span className="text-emerald-500">Policy</span>
+                                </h2>
+                                <div className="h-px bg-gradient-to-l from-transparent via-zinc-700 to-zinc-500 flex-1 max-w-[100px] sm:max-w-xs" />
                             </div>
-                            <p className="text-zinc-400 font-bold uppercase tracking-widest text-xs mt-2">
+                            <p className="text-zinc-500 text-xs text-center mt-4 font-mono tracking-widest uppercase opacity-70">
                                 Last Updated: February 2026
                             </p>
-                        </div>
+                        </motion.div>
 
-                        <div className="prose prose-invert prose-emerald max-w-none">
-                            <div className="bg-zinc-900/30 border border-zinc-800 rounded-2xl p-8 backdrop-blur-md">
-                                <h3 className="text-xl font-bold text-white mb-4">1. Digital Goods Policy</h3>
-                                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                                    Due to the nature of digital products, all sales are considered final once the product key or license has been delivered to you. We cannot offer refunds, exchanges, or cancellations for digital goods that have been accessed or used.
+                        {/* Content Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <motion.div variants={item} className="bg-[#0a0a0a] border border-white/[0.05] rounded-2xl p-6 hover:border-emerald-500/20 hover:bg-[#0f0f0f] transition-all duration-300 flex flex-col gap-4 group">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-emerald-500/20 transition-colors">
+                                        <DollarSign className="w-5 h-5 text-emerald-500" />
+                                    </div>
+                                    <h3 className="text-white font-bold uppercase tracking-wider text-sm">Digital Nature</h3>
+                                </div>
+                                <p className="text-zinc-400 text-sm leading-relaxed border-l-2 border-zinc-800 pl-4">
+                                    Sales are final once a key is delivered. Digital products cannot be returned. Please check system requirements before buying.
                                 </p>
-                                <p className="text-zinc-400 text-sm leading-relaxed mb-6 font-bold text-red-400">
-                                    Please ensure that you read the product description and system requirements carefully before making a purchase.
-                                </p>
+                            </motion.div>
 
-                                <h3 className="text-xl font-bold text-white mb-4">2. Exceptions</h3>
-                                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                                    We may consider a refund request under the following exceptional circumstances:
+                            <motion.div variants={item} className="bg-[#0a0a0a] border border-white/[0.05] rounded-2xl p-6 hover:border-emerald-500/20 hover:bg-[#0f0f0f] transition-all duration-300 flex flex-col gap-4 group">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-emerald-500/20 transition-colors">
+                                        <CheckCircle className="w-5 h-5 text-emerald-500" />
+                                    </div>
+                                    <h3 className="text-white font-bold uppercase tracking-wider text-sm">Exceptions</h3>
+                                </div>
+                                <p className="text-zinc-400 text-sm leading-relaxed border-l-2 border-zinc-800 pl-4">
+                                    Refunds may be issued if a key is invalid/unused (verified by support) or for critical technical faults within 48h.
                                 </p>
-                                <ul className="list-disc list-inside text-zinc-400 text-sm space-y-2 mb-6 ml-4">
-                                    <li>The product key/license provided is invalid or does not work, and our support team is unable to resolve the issue within 48 hours.</li>
-                                    <li>You have not accessed or used the product key/license, and the request is made within 24 hours of purchase.</li>
-                                    <li>Standard technical issues that prevent the software from running on compatible systems (proof required).</li>
-                                </ul>
+                            </motion.div>
 
-                                <h3 className="text-xl font-bold text-white mb-4">3. Refund Process</h3>
-                                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                                    To request a refund, please contact our support team via the <a href="/contact" className="text-emerald-500 hover:text-emerald-400 underline">Contact Us</a> page or email us directly. Please include your order ID and a detailed description of the issue.
+                            <motion.div variants={item} className="bg-[#0a0a0a] border border-white/[0.05] rounded-2xl p-6 hover:border-emerald-500/20 hover:bg-[#0f0f0f] transition-all duration-300 flex flex-col gap-4 group">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-emerald-500/20 transition-colors">
+                                        <HelpCircle className="w-5 h-5 text-emerald-500" />
+                                    </div>
+                                    <h3 className="text-white font-bold uppercase tracking-wider text-sm">Requests</h3>
+                                </div>
+                                <p className="text-zinc-400 text-sm leading-relaxed border-l-2 border-zinc-800 pl-4">
+                                    Contact support with your Order ID and issue details to request a refund. Technical issues require proof (screenshots/logs).
                                 </p>
-                                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                                    Approved refunds will be processed back to the original payment method within 5-7 business days.
-                                </p>
+                            </motion.div>
 
-                                <h3 className="text-xl font-bold text-white mb-4">4. Chargebacks</h3>
-                                <p className="text-zinc-400 text-sm leading-relaxed font-bold text-red-500">
-                                    Unauthorized chargebacks or payment disputes will result in an immediate and permanent ban from our platform and revocation of all licenses associated with your account.
+                            <motion.div variants={item} className="bg-[#0a0a0a] border border-white/[0.05] rounded-2xl p-6 hover:border-emerald-500/20 hover:bg-[#0f0f0f] transition-all duration-300 flex flex-col gap-4 group">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-2 bg-red-500/10 rounded-lg group-hover:bg-red-500/20 transition-colors">
+                                        <AlertTriangle className="w-5 h-5 text-red-500" />
+                                    </div>
+                                    <h3 className="text-white font-bold uppercase tracking-wider text-sm">Disputes</h3>
+                                </div>
+                                <p className="text-zinc-400 text-sm leading-relaxed border-l-2 border-red-500/20 pl-4">
+                                    Unauthorized chargebacks result in an immediate permanent ban and license revocation. Contact us first to resolve issues.
                                 </p>
-                            </div>
+                            </motion.div>
                         </div>
                     </motion.div>
                 </div>

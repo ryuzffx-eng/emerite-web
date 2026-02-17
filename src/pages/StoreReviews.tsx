@@ -1,30 +1,36 @@
 import { motion, useAnimation, AnimatePresence } from "framer-motion";
-import { Star, MessageSquare, ShieldCheck, Quote, X, ShieldAlert } from "lucide-react";
+import { Star, MessageSquare, ShieldCheck, Quote, X, ShieldAlert, Loader2 } from "lucide-react";
 import { StoreLayout } from "@/components/store/StoreLayout";
 import { useEffect, useRef, useState } from "react";
-import { getAuth } from "@/lib/api";
+import { getAuth, getStoreReviews, postStoreReview } from "@/lib/api";
 import { useNavigate } from "react-router-dom";
 
-const reviews = [
-    { name: "BinaryX", role: "Elite Member", content: "The level of engineering here is unmatched. Stability is 10/10.", stars: 5 },
-    { name: "ZeroDay", role: "Reseller Partner", content: "Switching my entire customer base to Emerite was the best decision I've made this year.", stars: 5 },
-    { name: "KernelMaster", role: "Advanced User", content: "Cleanest injection methods in the industry. Zero compromise on security.", stars: 5 },
-    { name: "NexusPrime", role: "Premium User", content: "Support is incredibly fast. They actually know their technical shit.", stars: 4 },
-    { name: "VoltEngine", role: "Elite Member", content: "Fastest delivery system I've ever used. Instant activation is real.", stars: 5 },
-    { name: "ShadowScript", role: "Beta Tester", content: "The UI design is elite, but the performance under the hood is what keeps me here.", stars: 5 },
-    { name: "CrypticO", role: "Security Analyst", content: "I've analyzed the packets; their encryption is actually what they claim it is.", stars: 5 },
-    { name: "Vortex", role: "Pro Player", content: "Undetected for 6 months straight. My rank has never been safer.", stars: 5 },
-];
-
 export default function StoreReviews() {
+    const [reviews, setReviews] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
     const navigate = useNavigate();
 
+    const fetchReviews = async () => {
+        try {
+            const data = await getStoreReviews();
+            setReviews(data);
+        } catch (error) {
+            console.error("Failed to fetch reviews:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchReviews();
+    }, []);
+
     return (
-        <StoreLayout>
+        <StoreLayout hideFooter>
             <div className="min-h-screen pt-32 pb-20 overflow-hidden flex flex-col">
 
                 {/* Requested Header Style */}
@@ -39,65 +45,87 @@ export default function StoreReviews() {
                 </div>
 
                 {/* Scrolling Marquee Area */}
-                <div className="w-full relative py-10">
+                <div className="w-full relative py-10 min-h-[400px] flex items-center justify-center">
                     {/* Gradient Masks for smooth fade out at edges */}
                     <div className="absolute left-0 top-0 bottom-0 w-20 sm:w-40 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
                     <div className="absolute right-0 top-0 bottom-0 w-20 sm:w-40 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
 
-                    {/* Marquee Track - Moving Left to Right (->) as requested */}
-                    <div className="flex overflow-hidden group/track">
-                        <style>{`
-                            @keyframes marqueeRight {
-                                0% { transform: translateX(-50%); }
-                                100% { transform: translateX(0%); }
-                            }
-                            .animate-marquee-right {
-                                animation: marqueeRight 120s linear infinite;
-                            }
-                            .group\\/track:hover .animate-marquee-right {
-                                animation-play-state: paused;
-                            }
-                        `}</style>
-                        <div className="flex gap-6 sm:gap-8 w-max animate-marquee-right">
-                            {[...reviews, ...reviews, ...reviews, ...reviews, ...reviews, ...reviews, ...reviews, ...reviews].map((review, i) => (
-                                <div
-                                    key={i}
-                                    className="flex-shrink-0 w-[300px] sm:w-[350px] p-8 bg-[#0a0a0a] border border-white/[0.05] rounded-2xl group hover:border-emerald-500/30 hover:bg-[#0f0f0f] transition-all duration-300 relative flex flex-col justify-between"
-                                >
-                                    {/* Quote Icon */}
-                                    <Quote className="absolute top-6 right-6 w-8 h-8 text-zinc-800 group-hover:text-emerald-500/20 transition-colors duration-500" />
-
-                                    <div>
-                                        {/* Stars */}
-                                        <div className="flex gap-1 mb-6">
-                                            {[...Array(5)].map((_, idx) => (
-                                                <Star key={idx} className={`w-3 h-3 ${idx < review.stars ? 'text-emerald-500 fill-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.3)]' : 'text-zinc-900'}`} />
-                                            ))}
-                                        </div>
-
-                                        {/* Content */}
-                                        <p className="text-zinc-400 text-sm font-medium leading-relaxed italic border-l-2 border-zinc-800 pl-4 mb-6">
-                                            "{review.content}"
-                                        </p>
-                                    </div>
-
-                                    {/* User Info */}
-                                    <div className="flex items-center gap-3 mt-auto">
-                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-zinc-800 to-black border border-white/10 flex items-center justify-center shadow-inner">
-                                            <span className="text-xs font-black text-white">{review.name.charAt(0)}</span>
-                                        </div>
-                                        <div>
-                                            <div className="text-white text-xs font-bold uppercase tracking-wider">{review.name}</div>
-                                            <div className="text-[10px] text-emerald-500/80 font-mono uppercase tracking-widest">{review.role}</div>
-                                        </div>
-                                    </div>
-
-                                    {/* Glow Effect */}
-                                    <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" />
-                                </div>
-                            ))}
+                    {loading ? (
+                        <div className="flex flex-col items-center gap-4 text-zinc-500">
+                            <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Accessing Feedback...</span>
                         </div>
-                    </div>
+                    ) : reviews.length === 0 ? (
+                        <div className="flex flex-col items-center gap-6 text-center max-w-md px-4">
+                            <div className="w-16 h-16 bg-zinc-900/50 rounded-full flex items-center justify-center border border-zinc-800">
+                                <MessageSquare className="w-8 h-8 text-zinc-700" />
+                            </div>
+                            <div>
+                                <h3 className="text-white font-bold uppercase tracking-wider mb-2">No Reviews Yet</h3>
+                                <p className="text-zinc-500 text-sm">Our community is growing. Be the first to share your experience with Emerite Store.</p>
+                            </div>
+                        </div>
+                    ) : (
+                        /* Marquee Track - Moving Left to Right (->) as requested */
+                        <div className="flex overflow-hidden group/track">
+                            <style>{`
+                                @keyframes marqueeRight {
+                                    0% { transform: translateX(-50%); }
+                                    100% { transform: translateX(0%); }
+                                }
+                                .animate-marquee-right {
+                                    animation: marqueeRight ${Math.max(30, reviews.length * 10)}s linear infinite;
+                                }
+                                .group\\/track:hover .animate-marquee-right {
+                                    animation-play-state: paused;
+                                }
+                            `}</style>
+                            <div className="flex gap-6 sm:gap-8 w-max animate-marquee-right">
+                                {/* Duplicate for marquee effect */}
+                                {[...reviews, ...reviews, ...reviews, ...reviews].map((review, i) => (
+                                    <div
+                                        key={i}
+                                        className="flex-shrink-0 w-[300px] sm:w-[350px] p-8 bg-[#0a0a0a] border border-white/[0.05] rounded-2xl group hover:border-emerald-500/30 hover:bg-[#0f0f0f] transition-all duration-300 relative flex flex-col justify-between"
+                                    >
+                                        {/* Quote Icon */}
+                                        <Quote className="absolute top-6 right-6 w-8 h-8 text-zinc-800 group-hover:text-emerald-500/20 transition-colors duration-500" />
+
+                                        <div>
+                                            {/* Stars */}
+                                            <div className="flex gap-1 mb-6">
+                                                {[...Array(5)].map((_, idx) => (
+                                                    <Star key={idx} className={`w-3 h-3 ${idx < review.stars ? 'text-emerald-500 fill-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.3)]' : 'text-zinc-900'}`} />
+                                                ))}
+                                            </div>
+
+                                            {/* Content */}
+                                            <p className="text-zinc-400 text-sm font-medium leading-relaxed italic border-l-2 border-zinc-800 pl-4 mb-6 line-clamp-4">
+                                                "{review.content}"
+                                            </p>
+                                        </div>
+
+                                        {/* User Info */}
+                                        <div className="flex items-center gap-3 mt-auto">
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-zinc-800 to-black border border-white/10 flex items-center justify-center shadow-inner overflow-hidden">
+                                                {review.avatar_url ? (
+                                                    <img src={review.avatar_url} alt={review.username} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <span className="text-xs font-black text-white">{review.username.charAt(0)}</span>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <div className="text-white text-xs font-bold uppercase tracking-wider">{review.username}</div>
+                                                <div className="text-[10px] text-emerald-500/80 font-mono uppercase tracking-widest">{review.role}</div>
+                                            </div>
+                                        </div>
+
+                                        {/* Glow Effect */}
+                                        <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Post Review Section */}
@@ -150,24 +178,23 @@ export default function StoreReviews() {
                                 <h3 className="text-xl font-black text-white uppercase tracking-wider mb-2">Write a Review</h3>
                                 <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mb-8">Share your experience with us.</p>
 
-                                <form onSubmit={(e) => {
+                                <form onSubmit={async (e) => {
                                     e.preventDefault();
                                     const formData = new FormData(e.currentTarget);
-                                    const newReview = {
-                                        name: (getAuth().user?.username || getAuth().user?.email?.split('@')[0] || "Operator").toString(),
-                                        role: getAuth().userType === 'admin' ? "System Admin" : "Verified Client",
-                                        content: formData.get('content') as string,
-                                        stars: rating
-                                    };
-                                    // In a real app, this would be an API call
-                                    // For now, we update the local list (and it will reset on refresh, which is expected for frontend-only tasks unless we persist)
-                                    // However, since 'reviews' is defined outside, we can't easily update it without STATE. 
-                                    // I will convert generic 'reviews' const to state in the next step or I should have done it at component level. 
-                                    // For this step I'll just close modal and alert success to simulate.
-                                    alert("Review submitted successfully.");
-                                    setShowModal(false);
-                                    setRating(0); // Reset rating
-                                    setHoverRating(0); // Reset hover rating
+                                    const content = formData.get('content') as string;
+
+                                    try {
+                                        await postStoreReview({
+                                            content,
+                                            stars: rating
+                                        });
+                                        setShowModal(false);
+                                        setRating(0);
+                                        setHoverRating(0);
+                                        fetchReviews(); // Refresh list
+                                    } catch (error: any) {
+                                        alert(error.message || "Failed to post review");
+                                    }
                                 }}>
 
                                     {/* Rating */}

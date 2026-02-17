@@ -287,6 +287,10 @@ export const clientResetPassword = (email: string, code: string, new_password: s
 export const getAdminStats = () => apiRequest("/admin/stats");
 
 export const getAdminProfile = () => apiRequest("/admin/profile");
+export const updateAdminProfile = (data: { username?: string; email?: string; avatar_url?: string }) =>
+  apiRequest("/admin/profile", { method: "PATCH", body: JSON.stringify(data) });
+export const updateAdminPassword = (data: { current_password: string; new_password: string }) =>
+  apiRequest("/admin/password", { method: "PATCH", body: JSON.stringify(data) });
 
 // ============ Licenses ============
 export const getLicenses = (appId?: number) =>
@@ -458,6 +462,8 @@ export const deductResellerBalance = (resellerId: string | number, amount: numbe
   });
 
 // ============ Store Management ============
+export const getStoreStatsPublic = () => apiRequest("/admin/store/stats/public");
+
 export const getStoreProducts = () => apiRequest("/admin/store/");
 
 export const getStoreProduct = (id: number | string) => apiRequest(`/admin/store/${id}`);
@@ -534,6 +540,18 @@ export const getStoreOrders = () => apiRequest("/admin/store/orders/all");
 
 export const clearStoreUpdates = () =>
   apiRequest("/admin/store/updates/clear", { method: "DELETE" });
+
+// ============ Reviews ============
+export const getStoreReviews = () => apiRequest("/admin/store/reviews/");
+
+export const postStoreReview = (data: { content: string; stars: number }) =>
+  apiRequest("/admin/store/reviews/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+
+export const deleteStoreReview = (reviewId: number) =>
+  apiRequest(`/admin/store/reviews/${reviewId}`, { method: "DELETE" });
 
 export const assignApplicationToReseller = (resellerId: string | number, appId: number) =>
   apiRequest(`/admin/resellers/${resellerId}/apps/${appId}`, {
