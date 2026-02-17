@@ -811,10 +811,7 @@ export const assignSubscriptionToReseller = (resellerId: string | number, data: 
 export const getResellerSubscriptions = (resellerId: string | number) =>
   apiRequest(`/admin/resellers/${resellerId}/subscriptions`);
 
-export const initiatePhonePePayment = (amount: number) =>
-  apiRequest("/payments/phonepe/pay?amount=" + amount, {
-    method: "POST",
-  });
+
 
 export const initiateRazorpayOrder = (data: { amount: number; items: any[] }) =>
   apiRequest("/payments/razorpay/create-order", {
