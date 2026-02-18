@@ -454,11 +454,11 @@ export default function StoreProducts() {
             <Dialog open={isPlanDialogOpen} onOpenChange={setIsPlanDialogOpen}>
                 <DialogContent
                     onOpenAutoFocus={(e) => e.preventDefault()}
-                    className="max-w-[95vw] md:max-w-4xl bg-[#070707] border-white/[0.05] p-0 overflow-hidden rounded-2xl shadow-2xl shadow-black/99 focus:outline-none"
+                    className="max-w-[95vw] md:max-w-4xl bg-[#070707] border-white/[0.05] p-0 rounded-2xl shadow-2xl shadow-black/99 focus:outline-none overflow-hidden"
                 >
-                    <div className="flex flex-col md:flex-row h-full max-h-[90vh] md:h-auto overflow-hidden">
+                    <div className="flex flex-col md:flex-row h-full max-h-[90vh] md:h-auto overflow-y-auto md:overflow-hidden no-scrollbar">
                         {/* Left Column: Briefing */}
-                        <div className="w-full md:w-[48%] bg-[#050505] border-r border-white/5 relative flex flex-col p-8">
+                        <div className="w-full md:w-[48%] bg-[#050505] border-b md:border-b-0 md:border-r border-white/5 relative flex flex-col p-6 md:p-8">
                             <div className="flex-grow flex items-center justify-center py-10">
                                 <div className="w-full aspect-video rounded-xl overflow-hidden bg-black shadow-2xl border border-white/5">
                                     {selectedProductForPlan?.image_url ? (
@@ -503,7 +503,7 @@ export default function StoreProducts() {
                                 {selectedProductForPlan?.name}
                             </h2>
 
-                            <div className="flex items-center gap-6 mb-10 overflow-x-auto no-scrollbar pb-2">
+                            <div className="flex items-center gap-4 mb-4 md:mb-6 overflow-x-auto no-scrollbar pb-2">
                                 <div className="flex items-center gap-2 text-zinc-500 flex-shrink-0">
                                     <Monitor className="w-4 h-4" />
                                     <span className="text-[10px] font-black uppercase tracking-widest">Windows</span>
@@ -523,7 +523,7 @@ export default function StoreProducts() {
                                 <div className="h-px bg-white/[0.05] flex-grow" />
                             </div>
 
-                            <div className="space-y-3 flex-grow overflow-y-auto pr-2 custom-scrollbar">
+                            <div className="space-y-3 flex-grow overflow-y-visible md:overflow-y-auto pr-2 custom-scrollbar">
                                 {selectedProductForPlan?.plans?.map((plan) => (
                                     <button
                                         key={plan.id}
