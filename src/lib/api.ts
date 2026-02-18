@@ -461,6 +461,17 @@ export const deductResellerBalance = (resellerId: string | number, amount: numbe
     body: JSON.stringify({ amount: amount }),
   });
 
+export const getResellerTransactions = (resellerId: string | number) =>
+  apiRequest(`/admin/resellers/${resellerId}/transactions`);
+
+export const getPendingTopups = () => apiRequest("/admin/resellers/pending-topups");
+
+export const approveTopup = (transactionId: number) =>
+  apiRequest(`/admin/resellers/topups/${transactionId}/approve`, { method: "POST" });
+
+export const rejectTopup = (transactionId: number) =>
+  apiRequest(`/admin/resellers/topups/${transactionId}/reject`, { method: "POST" });
+
 // ============ Store Management ============
 export const getStoreStatsPublic = () => apiRequest("/admin/store/stats/public");
 

@@ -29,6 +29,7 @@ import Applications from "./pages/Applications";
 import Logs from "./pages/Logs";
 import Variables from "./pages/Variables";
 import Resellers from "./pages/Resellers";
+import ResellerTopups from "./pages/ResellerTopups";
 import Tickets from "./pages/Tickets";
 import Subscriptions from "./pages/Subscriptions";
 import Status from "@/pages/Status";
@@ -191,6 +192,14 @@ const App = () => (
                 element={
                   <ProtectedRoute requiredType="admin">
                     <Resellers />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/resellers/topups"
+                element={
+                  <ProtectedRoute requiredType="admin">
+                    <ResellerTopups />
                   </ProtectedRoute>
                 }
               />

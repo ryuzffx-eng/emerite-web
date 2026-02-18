@@ -289,16 +289,6 @@ export default function Logs() {
               </div>
             </div>
           </div>
-
-          <Button
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            variant="outline"
-            className="w-full md:w-auto h-10 border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 text-zinc-300 gap-2 px-4 rounded-xl font-bold text-xs uppercase"
-          >
-            <RefreshCw className={cn("h-3.5 w-3.5", isRefreshing && "animate-spin")} />
-            Manual Sync
-          </Button>
         </div>
 
         {/* Action Bar & Controls */}

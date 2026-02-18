@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { ChevronDown, LayoutDashboard, Key, Users, AppWindow, Gift, FileText, Variable, UserCog, MessageSquare, LogOut, User, Activity, TrendingUp, ShoppingCart, Package, Zap, ChevronRight, MessageCircle, Send, X, ShieldCheck, Webhook, Home, Settings2, Shield } from "lucide-react";
+import { ChevronDown, LayoutDashboard, Key, Users, AppWindow, Gift, FileText, Variable, UserCog, MessageSquare, LogOut, User, Activity, TrendingUp, ShoppingCart, Package, Zap, ChevronRight, MessageCircle, Send, X, ShieldCheck, Webhook, Home, Settings2, Shield, Coins } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { getAuth, clearAuth } from "@/lib/api";
@@ -92,9 +92,15 @@ const adminNavCategories: NavCategory[] = [
     items: [
       {
         title: "Resellers",
-        description: "Reseller management",
+        description: "Manage accounts",
         icon: UserCog,
         path: "/resellers",
+      },
+      {
+        title: "Top-up Queue",
+        description: "Approve requests",
+        icon: Coins,
+        path: "/resellers/topups",
       },
     ],
   },

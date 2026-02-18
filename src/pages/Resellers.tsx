@@ -23,6 +23,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent
+} from "@/components/ui/tabs";
+import {
   Drawer,
   DrawerContent,
   DrawerHeader,
@@ -48,6 +54,7 @@ import {
   deleteResellerSubscription,
   pauseResellerSubscription,
   resumeResellerSubscription,
+  getResellerTransactions,
 } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -75,6 +82,14 @@ import {
   ArrowRight,
   Filter,
   Search,
+  Eye,
+  LogIn,
+  Mail,
+  Copy,
+  Clock,
+  Globe,
+  TrendingUp,
+  DollarSign,
 } from "lucide-react";
 import { cn, formatIST } from "@/lib/utils";
 
@@ -193,7 +208,7 @@ function ResellerSubscriptionsSection({
 
   const handleTogglePause = async (sub: any) => {
     if (!reseller || !sub.id) return;
-    const isPaused = sub.name.endsWith(" (paused)");
+    const isPaused = sub?.name?.endsWith(" (paused)");
     try {
       if (isPaused) {
         await resumeResellerSubscription(reseller.id, sub.id);
@@ -320,13 +335,13 @@ function ResellerSubscriptionsSection({
 
                 <div className={cn(
                   "h-10 w-10 sm:h-12 sm:w-12 rounded-xl flex items-center justify-center border transition-all group-hover:scale-105 flex-shrink-0",
-                  sub.name.endsWith(" (paused)")
+                  sub?.name?.endsWith(" (paused)")
                     ? "bg-yellow-500/10 border-yellow-500/20"
                     : "bg-emerald-500/10 border-emerald-500/20"
                 )}>
                   <Shield className={cn(
                     "h-5 w-5 sm:h-6 sm:w-6",
-                    sub.name.endsWith(" (paused)") ? "text-yellow-500" : "text-emerald-500"
+                    sub?.name?.endsWith(" (paused)") ? "text-yellow-500" : "text-emerald-500"
                   )} />
                 </div>
 
@@ -351,13 +366,13 @@ function ResellerSubscriptionsSection({
                     size="icon"
                     className={cn(
                       "h-9 w-9 rounded-xl transition-all border border-transparent",
-                      sub.name.endsWith(" (paused)")
+                      sub?.name?.endsWith(" (paused)")
                         ? "hover:bg-emerald-500/10 text-emerald-500 hover:border-emerald-500/50"
                         : "hover:bg-yellow-500/10 text-yellow-500 hover:border-yellow-500/50"
                     )}
                     onClick={() => handleTogglePause(sub)}
                   >
-                    {sub.name.endsWith(" (paused)") ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+                    {sub?.name?.endsWith(" (paused)") ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
                   </Button>
 
                   <Button
@@ -382,7 +397,7 @@ function ResellerSubscriptionsSection({
   );
 }
 
-const MobileResellerCard = ({ reseller, onProducts, onBalance, onEdit, onDelete }: any) => {
+const MobileResellerCard = ({ reseller, onProducts, onBalance, onEdit, onDelete, onPreview }: any) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -470,6 +485,15 @@ const MobileResellerCard = ({ reseller, onProducts, onBalance, onEdit, onDelete 
           <Sparkles className="h-3 w-3 text-emerald-500/40" />
           <span className="text-[9px] font-semibold text-zinc-400 uppercase tracking-widest">{(reseller.subscription_count || 0)} SUBSCRIPTIONS</span>
         </div>
+      </div>
+
+      <div className="flex items-center gap-4 pt-1">
+        <Button
+          onClick={() => onPreview(reseller)}
+          className="flex-1 h-12 rounded-xl bg-white/5 border border-zinc-800 hover:border-white/20 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-300 hover:text-white transition-all shadow-lg active:scale-95"
+        >
+          <Eye className="h-3.5 w-3.5 mr-2" /> DASHBOARD
+        </Button>
       </div>
 
       <Button
@@ -597,6 +621,8 @@ function ResellerCard({ reseller, onProducts, onBalance, onEdit, onDelete }: any
   );
 }
 
+
+
 export default function Resellers() {
   const [resellers, setResellers] = useState<Reseller[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
@@ -625,6 +651,7 @@ export default function Resellers() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<"all" | "active" | "inactive">("all");
+  const [previewReseller, setPreviewReseller] = useState<Reseller | null>(null);
   const { toast } = useToast();
 
   const [username, setUsername] = useState("");
@@ -891,560 +918,673 @@ export default function Resellers() {
   };
 
   return (
-    <DashboardLayout
-      title={currentUserType === "admin" ? "Reseller Management" : "My Account"}
-      subtitle={currentUserType === "admin" ? "Control partner accounts, credits, and product distribution" : "View and manage your reseller account"}
-    >
+    <>
+      <DashboardLayout
+        title={currentUserType === "admin" ? "Resellers" : "My Account"}
+        subtitle={currentUserType === "admin" ? "Manage reseller accounts, credits, and apps" : "View your account details"}
+      >
 
 
-      <div className="space-y-8 transition-all duration-300">
-        {/* Top Summary Bar */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-5 sm:p-8 rounded-xl bg-[#111111]/80 border border-zinc-800/80 backdrop-blur-md shadow-2xl shadow-black/20">
-          <div className="flex items-center gap-4 sm:gap-5">
-            <div className="p-3 sm:p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 shadow-lg shadow-emerald-500/5">
-              <Sparkles className="h-6 w-6 sm:h-7 sm:w-7 text-emerald-500" />
-            </div>
-            <div>
-              <p className="text-[10px] sm:text-[11px] font-bold text-zinc-500 uppercase tracking-wide">Network Control</p>
-              <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                {currentUserType === "admin" ? "Partner Infrastructure" : (resellers[0]?.username || "System Operator")}
-              </h2>
+        <div className="space-y-8 transition-all duration-300">
+          {/* Top Summary Bar */}
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-5 sm:p-8 rounded-xl bg-[#111111]/80 border border-zinc-800/80 backdrop-blur-md shadow-2xl shadow-black/20">
+            <div className="flex items-center gap-4 sm:gap-5">
+              <div className="p-3 sm:p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 shadow-lg shadow-emerald-500/5">
+                <Sparkles className="h-6 w-6 sm:h-7 sm:w-7 text-emerald-500" />
+              </div>
+              <div>
+                <p className="text-[10px] sm:text-[11px] font-bold text-zinc-500 uppercase tracking-wide">Reseller Network</p>
+                <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                  {currentUserType === "admin" ? "Reseller Network" : (resellers[0]?.username || "System Operator")}
+                </h2>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { label: "Network Nodes", value: resellers.length, icon: UserCog, color: "zinc", delay: '0ms' },
-            { label: "Active Authority", value: activeNodes, icon: Check, color: "emerald", delay: '75ms' },
-            { label: "Global Liquidity", value: `$${totalLiquidity.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, icon: Wallet, color: "blue", delay: '150ms' },
-            { label: "Asset Provision", value: globalAsset, icon: Coins, color: "zinc", delay: '225ms' }
-          ].map((stat, i) => (
-            <div
-              key={i}
-              className="bg-[#111111]/80 border border-zinc-800/80 p-4 sm:p-5 rounded-lg backdrop-blur-md hover:border-zinc-700 transition-all duration-300 shadow-xl shadow-black/20"
-            >
-              <div className="flex items-center justify-between mb-3 sm:mb-4">
-                <p className="text-[10px] sm:text-[11px] font-bold text-zinc-500 uppercase tracking-widest truncate mr-1">{stat.label}</p>
-                <stat.icon className={cn("h-4 w-4 sm:h-5 sm:w-5 opacity-60 flex-shrink-0", `text-${stat.color}-500`)} />
-              </div>
-              <p className="text-xl sm:text-2xl font-black text-white tracking-tight leading-none">{stat.value}</p>
-              <div className="mt-3 sm:mt-4 h-1 w-full bg-zinc-900 rounded-full overflow-hidden">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { label: "Total Resellers", value: resellers.length, icon: UserCog, color: "zinc", delay: '0ms' },
+              { label: "Active", value: activeNodes, icon: Check, color: "emerald", delay: '75ms' },
+              { label: "Total Balance", value: `$${totalLiquidity.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, icon: Wallet, color: "blue", delay: '150ms' },
+              { label: "Total Licenses", value: globalAsset, icon: Coins, color: "zinc", delay: '225ms' }
+            ].map((stat, i) => {
+              const Icon = stat.icon;
+              return (
                 <div
-                  className={cn("h-full opacity-40", `bg-${stat.color}-500`)}
-                  style={{ width: '60%' }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Control Bar */}
-        <div className="flex flex-col md:flex-row md:items-center gap-4">
-          <div className="flex-1 relative group">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600 group-focus-within:text-emerald-500 transition-colors" />
-            <Input
-              placeholder="Search partner network..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-11 bg-zinc-900/50 border-zinc-800 h-10 md:h-12 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-lg transition-all"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-white transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
+                  key={i}
+                  className="bg-[#111111]/80 border border-zinc-800/80 p-4 sm:p-5 rounded-lg backdrop-blur-md hover:border-zinc-700 transition-all duration-300 shadow-xl shadow-black/20"
+                >
+                  <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    <p className="text-[10px] sm:text-[11px] font-bold text-zinc-500 uppercase tracking-widest truncate mr-1">{stat.label}</p>
+                    <Icon className={cn("h-4 w-4 sm:h-5 sm:w-5 opacity-60 flex-shrink-0", `text-${stat.color}-500`)} />
+                  </div>
+                  <p className="text-xl sm:text-2xl font-black text-white tracking-tight leading-none">{stat.value}</p>
+                  <div className="mt-3 sm:mt-4 h-1 w-full bg-zinc-900 rounded-full overflow-hidden">
+                    <div
+                      className={cn("h-full opacity-40", `bg-${stat.color}-500`)}
+                      style={{ width: '60%' }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
-          <div className="flex items-center gap-1.5 bg-zinc-900/50 p-1.5 rounded-lg border border-zinc-800 overflow-x-auto md:overflow-visible shadow-lg shadow-black/20">
-            {currentUserType === "admin" && (
-              <>
-                <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 md:h-10 w-9 md:w-10 hover:bg-emerald-500/10 hover:text-emerald-400 flex-shrink-0 text-zinc-500 transition-all active:scale-95"
-                      title="Add New Reseller"
-                    >
-                      <Plus className="h-4.25 w-4.25" />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="w-[95vw] sm:w-full rounded-2xl border-zinc-800 sm:max-w-[500px] max-h-[90vh] overflow-hidden bg-zinc-950/98 backdrop-blur-3xl p-0 shadow-2xl">
-                    <div className="flex flex-col h-full max-h-[90vh]">
-                      {/* Tactical Header - Refined */}
-                      <div className="relative p-6 bg-gradient-to-br from-zinc-900/80 to-black overflow-hidden border-b border-zinc-800/50">
-                        <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none">
-                          <UserCog className="h-32 w-32 -mr-10 -mt-10 text-white" />
+          {/* Control Bar */}
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
+            <div className="flex-1 relative group">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600 group-focus-within:text-emerald-500 transition-colors" />
+              <Input
+                placeholder="Search partner network..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-11 bg-zinc-900/50 border-zinc-800 h-10 md:h-12 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-lg transition-all"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-white transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-1.5 bg-zinc-900/50 p-1.5 rounded-lg border border-zinc-800 overflow-x-auto md:overflow-visible shadow-lg shadow-black/20">
+              {currentUserType === "admin" && (
+                <>
+                  <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 md:h-10 w-9 md:w-10 hover:bg-emerald-500/10 hover:text-emerald-400 flex-shrink-0 text-zinc-500 transition-all active:scale-95"
+                        title="Add New Reseller"
+                      >
+                        <Plus className="h-4.25 w-4.25" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="w-[95vw] sm:w-full rounded-2xl border-zinc-800 sm:max-w-[500px] max-h-[90vh] overflow-hidden bg-zinc-950/98 backdrop-blur-3xl p-0 shadow-2xl">
+                      <div className="flex flex-col h-full max-h-[90vh]">
+                        {/* Tactical Header - Refined */}
+                        <div className="relative p-6 bg-gradient-to-br from-zinc-900/80 to-black overflow-hidden border-b border-zinc-800/50">
+                          <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none">
+                            <UserCog className="h-32 w-32 -mr-10 -mt-10 text-white" />
+                          </div>
+
+                          <div className="relative z-10 flex items-center gap-4">
+                            <div className="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-lg">
+                              {editReseller ? <Edit className="h-6 w-6 text-emerald-500" /> : <Plus className="h-6 w-6 text-emerald-500" />}
+                            </div>
+                            <div>
+                              <DialogTitle className="text-xl font-black text-white tracking-tight uppercase leading-none">
+                                {editReseller ? "Edit Reseller" : "New Reseller"}
+                              </DialogTitle>
+                              <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1.5 flex items-center gap-2">
+                                <Shield className="h-3 w-3 text-emerald-500/50" />
+                                {editReseller ? `${editReseller.username}` : "Create Account"}
+                              </p>
+                            </div>
+                          </div>
                         </div>
 
-                        <div className="relative z-10 flex items-center gap-4">
-                          <div className="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-lg">
-                            {editReseller ? <Edit className="h-6 w-6 text-emerald-500" /> : <Plus className="h-6 w-6 text-emerald-500" />}
-                          </div>
-                          <div>
-                            <DialogTitle className="text-xl font-black text-white tracking-tight uppercase leading-none">
-                              {editReseller ? "Edit Partner" : "New Reseller"}
-                            </DialogTitle>
-                            <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1.5 flex items-center gap-2">
-                              <Shield className="h-3 w-3 text-emerald-500/50" />
-                              {editReseller ? `${editReseller.username}` : "Initialize Account"}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex-1 overflow-y-auto p-6 space-y-5 custom-scrollbar">
-                        {/* Identity Card */}
-                        <div className="rounded-xl border border-zinc-800/60 bg-zinc-900/20 p-5 space-y-4">
-                          <div className="flex items-center gap-2 pb-2 border-b border-zinc-800/50">
-                            <div className="h-6 w-6 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-                              <UserCog className="h-3.5 w-3.5 text-emerald-500" />
+                        <div className="flex-1 overflow-y-auto p-6 space-y-5 custom-scrollbar">
+                          {/* Identity Card */}
+                          <div className="rounded-xl border border-zinc-800/60 bg-zinc-900/20 p-5 space-y-4">
+                            <div className="flex items-center gap-2 pb-2 border-b border-zinc-800/50">
+                              <div className="h-6 w-6 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                                <UserCog className="h-3.5 w-3.5 text-emerald-500" />
+                              </div>
+                              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">User Details</h4>
                             </div>
-                            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Identity Protocol</h4>
-                          </div>
 
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Username</Label>
-                              <div className="relative group">
-                                <div className="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center border-r border-zinc-800/50 bg-zinc-900/50 rounded-l-lg">
-                                  <UserCog className="h-4 w-4 text-zinc-600 group-focus-within:text-emerald-500 transition-colors" />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Username</Label>
+                                <div className="relative group">
+                                  <div className="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center border-r border-zinc-800/50 bg-zinc-900/50 rounded-l-lg">
+                                    <UserCog className="h-4 w-4 text-zinc-600 group-focus-within:text-emerald-500 transition-colors" />
+                                  </div>
+                                  <Input
+                                    placeholder="Emerite"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    disabled={!!editReseller}
+                                    className="h-10 pl-12 border-zinc-800 bg-black/40 focus:bg-zinc-900/60 focus:ring-1 focus:ring-emerald-500/50 transition-all rounded-lg text-white placeholder:text-zinc-700 text-xs font-bold font-mono"
+                                  />
                                 </div>
-                                <Input
-                                  placeholder="Emerite"
-                                  value={username}
-                                  onChange={(e) => setUsername(e.target.value)}
-                                  disabled={!!editReseller}
-                                  className="h-10 pl-12 border-zinc-800 bg-black/40 focus:bg-zinc-900/60 focus:ring-1 focus:ring-emerald-500/50 transition-all rounded-lg text-white placeholder:text-zinc-700 text-xs font-bold font-mono"
-                                />
                               </div>
-                            </div>
-                            <div className="space-y-2">
-                              <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Email</Label>
-                              <div className="relative group">
-                                <div className="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center border-r border-zinc-800/50 bg-zinc-900/50 rounded-l-lg">
-                                  <FileText className="h-4 w-4 text-zinc-600 group-focus-within:text-emerald-500 transition-colors" />
+                              <div className="space-y-2">
+                                <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Email</Label>
+                                <div className="relative group">
+                                  <div className="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center border-r border-zinc-800/50 bg-zinc-900/50 rounded-l-lg">
+                                    <FileText className="h-4 w-4 text-zinc-600 group-focus-within:text-emerald-500 transition-colors" />
+                                  </div>
+                                  <Input
+                                    type="email"
+                                    placeholder="emerite@gmail.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="h-10 pl-12 border-zinc-800 bg-black/40 focus:bg-zinc-900/60 focus:ring-1 focus:ring-emerald-500/50 transition-all rounded-lg text-white placeholder:text-zinc-700 text-xs font-bold font-mono"
+                                  />
                                 </div>
-                                <Input
-                                  type="email"
-                                  placeholder="emerite@gmail.com"
-                                  value={email}
-                                  onChange={(e) => setEmail(e.target.value)}
-                                  className="h-10 pl-12 border-zinc-800 bg-black/40 focus:bg-zinc-900/60 focus:ring-1 focus:ring-emerald-500/50 transition-all rounded-lg text-white placeholder:text-zinc-700 text-xs font-bold font-mono"
-                                />
                               </div>
                             </div>
-                          </div>
 
-                          <div className="space-y-2">
-                            <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Discord ID</Label>
-                            <div className="relative group">
-                              <div className="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center border-r border-zinc-800/50 bg-zinc-900/50 rounded-l-lg">
-                                <Shield className="h-4 w-4 text-zinc-600 group-focus-within:text-emerald-500 transition-colors" />
-                              </div>
-                              <Input
-                                placeholder="123456789012345678"
-                                value={discordId}
-                                onChange={(e) => setDiscordId(e.target.value)}
-                                className="h-10 pl-12 border-zinc-800 bg-black/40 focus:bg-zinc-900/60 focus:ring-1 focus:ring-emerald-500/50 transition-all rounded-lg text-white placeholder:text-zinc-700 text-xs font-bold font-mono"
-                              />
-                            </div>
-                          </div>
-
-                          {!editReseller && (
                             <div className="space-y-2">
-                              <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Password</Label>
+                              <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Discord ID</Label>
                               <div className="relative group">
                                 <div className="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center border-r border-zinc-800/50 bg-zinc-900/50 rounded-l-lg">
                                   <Shield className="h-4 w-4 text-zinc-600 group-focus-within:text-emerald-500 transition-colors" />
                                 </div>
                                 <Input
-                                  type="password"
-                                  placeholder="••••••••••••"
-                                  value={password}
-                                  onChange={(e) => setPassword(e.target.value)}
+                                  placeholder="123456789012345678"
+                                  value={discordId}
+                                  onChange={(e) => setDiscordId(e.target.value)}
                                   className="h-10 pl-12 border-zinc-800 bg-black/40 focus:bg-zinc-900/60 focus:ring-1 focus:ring-emerald-500/50 transition-all rounded-lg text-white placeholder:text-zinc-700 text-xs font-bold font-mono"
                                 />
                               </div>
                             </div>
+
+                            {!editReseller && (
+                              <div className="space-y-2">
+                                <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Password</Label>
+                                <div className="relative group">
+                                  <div className="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center border-r border-zinc-800/50 bg-zinc-900/50 rounded-l-lg">
+                                    <Shield className="h-4 w-4 text-zinc-600 group-focus-within:text-emerald-500 transition-colors" />
+                                  </div>
+                                  <Input
+                                    type="password"
+                                    placeholder="••••••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="h-10 pl-12 border-zinc-800 bg-black/40 focus:bg-zinc-900/60 focus:ring-1 focus:ring-emerald-500/50 transition-all rounded-lg text-white placeholder:text-zinc-700 text-xs font-bold font-mono"
+                                  />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Business Card */}
+                          <div className="rounded-xl border border-zinc-800/60 bg-zinc-900/20 p-5 space-y-4">
+                            <div className="flex items-center gap-2 pb-2 border-b border-zinc-800/50">
+                              <div className="h-6 w-6 rounded-lg bg-teal-500/10 flex items-center justify-center border border-teal-500/20">
+                                <Building className="h-3.5 w-3.5 text-teal-500" />
+                              </div>
+                              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Company</h4>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Organization</Label>
+                                <div className="relative group">
+                                  <div className="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center border-r border-zinc-800/50 bg-zinc-900/50 rounded-l-lg">
+                                    <Building className="h-4 w-4 text-zinc-600 group-focus-within:text-teal-500 transition-colors" />
+                                  </div>
+                                  <Input
+                                    placeholder="Emerite Store"
+                                    value={companyName}
+                                    onChange={(e) => setCompanyName(e.target.value)}
+                                    className="h-10 pl-12 border-zinc-800 bg-black/40 focus:bg-zinc-900/60 focus:ring-1 focus:ring-teal-500/50 transition-all rounded-lg text-white placeholder:text-zinc-700 text-xs font-bold"
+                                  />
+                                </div>
+                              </div>
+                              <div className="space-y-2">
+                                <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Contact</Label>
+                                <div className="relative group">
+                                  <div className="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center border-r border-zinc-800/50 bg-zinc-900/50 rounded-l-lg">
+                                    <Phone className="h-4 w-4 text-zinc-600 group-focus-within:text-teal-500 transition-colors" />
+                                  </div>
+                                  <Input
+                                    placeholder="+91 1234567890"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    className="h-10 pl-12 border-zinc-800 bg-black/40 focus:bg-zinc-900/60 focus:ring-1 focus:ring-teal-500/50 transition-all rounded-lg text-white placeholder:text-zinc-700 text-xs font-bold font-mono"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Capitalization */}
+                          {!editReseller && (
+                            <div className="rounded-xl border border-zinc-800/60 bg-gradient-to-br from-zinc-900/50 to-black p-5 space-y-4 shadow-xl">
+                              <div className="flex items-center justify-between pb-2 border-b border-zinc-800/50">
+                                <div className="flex items-center gap-2">
+                                  <div className="h-6 w-6 rounded-lg bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
+                                    <Wallet className="h-3.5 w-3.5 text-amber-500" />
+                                  </div>
+                                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Credits</h4>
+                                </div>
+                                <div className="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-[9px] font-bold text-amber-500 uppercase">
+                                  Initial Deposit
+                                </div>
+                              </div>
+
+                              <div className="relative group">
+                                <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-3 pointer-events-none">
+                                  <div className="h-8 w-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center group-focus-within:border-amber-500/50 transition-colors">
+                                    <span className="font-serif text-lg text-amber-500 font-bold">$</span>
+                                  </div>
+                                  <div className="h-8 w-px bg-zinc-800/80" />
+                                </div>
+                                <Input
+                                  type="text"
+                                  value={credits}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (val === "" || /^\d*$/.test(val)) {
+                                      setCredits(val);
+                                    }
+                                  }}
+                                  className="h-14 pl-20 text-2xl font-black border-zinc-800 bg-black/40 focus:bg-black/60 focus:ring-1 focus:ring-amber-500/50 transition-all rounded-lg text-white tracking-tighter shadow-inner placeholder:text-zinc-800"
+                                  placeholder="0"
+                                />
+                              </div>
+                            </div>
                           )}
+
+                          {editReseller && (
+                            <div className="p-4 rounded-xl bg-zinc-900/30 border border-zinc-800 flex items-center justify-between group hover:border-emerald-500/30 transition-all text-left">
+                              <div className="flex items-center gap-3">
+                                <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center border transition-all", isActive ? "bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]" : "bg-red-500/10 border-red-500/20 opacity-50")}>
+                                  <Shield className={cn("h-5 w-5", isActive ? "text-emerald-500" : "text-red-500")} />
+                                </div>
+                                <div className="flex flex-col">
+                                  <span className="text-sm font-bold text-white tracking-tight">Status</span>
+                                  <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider">{isActive ? "Active" : "Disabled"}</span>
+                                </div>
+                              </div>
+                              <Switch checked={isActive} onCheckedChange={setIsActive} className="h-6 w-11 data-[state=checked]:bg-emerald-500" />
+                            </div>
+                          )}
+
+                          <Button
+                            onClick={handleSubmit}
+                            className="w-full h-12 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-black font-black text-[11px] uppercase tracking-[0.2em] rounded-xl transition-all duration-300 shadow-xl border-0"
+                          >
+                            <span className="flex items-center justify-center gap-2.5">
+                              {editReseller ? <RefreshCw className="h-3.5 w-3.5" /> : <PlusCircle className="h-3.5 w-3.5" />}
+                              {editReseller ? "SAVE" : "ADD RESELLER"}
+                            </span>
+                          </Button>
                         </div>
-
-                        {/* Business Card */}
-                        <div className="rounded-xl border border-zinc-800/60 bg-zinc-900/20 p-5 space-y-4">
-                          <div className="flex items-center gap-2 pb-2 border-b border-zinc-800/50">
-                            <div className="h-6 w-6 rounded-lg bg-teal-500/10 flex items-center justify-center border border-teal-500/20">
-                              <Building className="h-3.5 w-3.5 text-teal-500" />
-                            </div>
-                            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Context</h4>
-                          </div>
-
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Organization</Label>
-                              <div className="relative group">
-                                <div className="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center border-r border-zinc-800/50 bg-zinc-900/50 rounded-l-lg">
-                                  <Building className="h-4 w-4 text-zinc-600 group-focus-within:text-teal-500 transition-colors" />
-                                </div>
-                                <Input
-                                  placeholder="Emerite Store"
-                                  value={companyName}
-                                  onChange={(e) => setCompanyName(e.target.value)}
-                                  className="h-10 pl-12 border-zinc-800 bg-black/40 focus:bg-zinc-900/60 focus:ring-1 focus:ring-teal-500/50 transition-all rounded-lg text-white placeholder:text-zinc-700 text-xs font-bold"
-                                />
-                              </div>
-                            </div>
-                            <div className="space-y-2">
-                              <Label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Contact</Label>
-                              <div className="relative group">
-                                <div className="absolute left-0 top-0 bottom-0 w-10 flex items-center justify-center border-r border-zinc-800/50 bg-zinc-900/50 rounded-l-lg">
-                                  <Phone className="h-4 w-4 text-zinc-600 group-focus-within:text-teal-500 transition-colors" />
-                                </div>
-                                <Input
-                                  placeholder="+91 1234567890"
-                                  value={phone}
-                                  onChange={(e) => setPhone(e.target.value)}
-                                  className="h-10 pl-12 border-zinc-800 bg-black/40 focus:bg-zinc-900/60 focus:ring-1 focus:ring-teal-500/50 transition-all rounded-lg text-white placeholder:text-zinc-700 text-xs font-bold font-mono"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Capitalization */}
-                        {!editReseller && (
-                          <div className="rounded-xl border border-zinc-800/60 bg-gradient-to-br from-zinc-900/50 to-black p-5 space-y-4 shadow-xl">
-                            <div className="flex items-center justify-between pb-2 border-b border-zinc-800/50">
-                              <div className="flex items-center gap-2">
-                                <div className="h-6 w-6 rounded-lg bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
-                                  <Wallet className="h-3.5 w-3.5 text-amber-500" />
-                                </div>
-                                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Capital</h4>
-                              </div>
-                              <div className="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-[9px] font-bold text-amber-500 uppercase">
-                                Initial Deposit
-                              </div>
-                            </div>
-
-                            <div className="relative group">
-                              <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-3 pointer-events-none">
-                                <div className="h-8 w-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center group-focus-within:border-amber-500/50 transition-colors">
-                                  <span className="font-serif text-lg text-amber-500 font-bold">$</span>
-                                </div>
-                                <div className="h-8 w-px bg-zinc-800/80" />
-                              </div>
-                              <Input
-                                type="text"
-                                value={credits}
-                                onChange={(e) => {
-                                  const val = e.target.value;
-                                  if (val === "" || /^\d*$/.test(val)) {
-                                    setCredits(val);
-                                  }
-                                }}
-                                className="h-14 pl-20 text-2xl font-black border-zinc-800 bg-black/40 focus:bg-black/60 focus:ring-1 focus:ring-amber-500/50 transition-all rounded-lg text-white tracking-tighter shadow-inner placeholder:text-zinc-800"
-                                placeholder="0"
-                              />
-                            </div>
-                          </div>
-                        )}
-
-                        {editReseller && (
-                          <div className="p-4 rounded-xl bg-zinc-900/30 border border-zinc-800 flex items-center justify-between group hover:border-emerald-500/30 transition-all text-left">
-                            <div className="flex items-center gap-3">
-                              <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center border transition-all", isActive ? "bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]" : "bg-red-500/10 border-red-500/20 opacity-50")}>
-                                <Shield className={cn("h-5 w-5", isActive ? "text-emerald-500" : "text-red-500")} />
-                              </div>
-                              <div className="flex flex-col">
-                                <span className="text-sm font-bold text-white tracking-tight">Access Authority</span>
-                                <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider">{isActive ? "Fully Operational" : "Deactivated / Revoked"}</span>
-                              </div>
-                            </div>
-                            <Switch checked={isActive} onCheckedChange={setIsActive} className="h-6 w-11 data-[state=checked]:bg-emerald-500" />
-                          </div>
-                        )}
-
-                        <Button
-                          onClick={handleSubmit}
-                          className="w-full h-12 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-black font-black text-[11px] uppercase tracking-[0.2em] rounded-xl transition-all duration-300 shadow-xl border-0"
-                        >
-                          <span className="flex items-center justify-center gap-2.5">
-                            {editReseller ? <RefreshCw className="h-3.5 w-3.5" /> : <PlusCircle className="h-3.5 w-3.5" />}
-                            {editReseller ? "SYNC NODE" : "AUTHORIZE PARTNER"}
-                          </span>
-                        </Button>
                       </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                    </DialogContent>
+                  </Dialog>
 
-                <div className="w-px h-6 bg-zinc-800/80 mx-1" />
-              </>
-            )}
-
-            {/* Filter */}
-            <Select value={filterStatus} onValueChange={(value: any) => setFilterStatus(value)}>
-              <SelectTrigger className="h-9 md:h-10 border-0 bg-transparent hover:bg-zinc-800/50 px-2 w-auto gap-1 [&>svg]:h-4 [&>svg]:w-4 flex-shrink-0 text-zinc-500 transition-all">
-                <Filter className="h-4.25 w-4.25" />
-              </SelectTrigger>
-              <SelectContent className="bg-zinc-900 border-zinc-800">
-                <SelectItem value="all" className="text-white focus:bg-zinc-800">All Nodes</SelectItem>
-                <SelectItem value="active" className="text-white focus:bg-zinc-800">Active Only</SelectItem>
-                <SelectItem value="inactive" className="text-white focus:bg-zinc-800">Inactive Only</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <div className="w-px h-6 bg-zinc-800/80 mx-1" />
-
-            {/* Refresh */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className="h-9 md:h-10 w-9 md:w-10 hover:bg-zinc-800/50 flex-shrink-0 text-zinc-500 transition-all active:scale-95 group"
-            >
-              <RefreshCw className={cn("h-4.25 w-4.25 group-hover:text-emerald-500 transition-colors", isRefreshing && "animate-spin")} />
-            </Button>
-          </div>
-        </div>
-
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-72 rounded-xl bg-zinc-900/40 border border-zinc-800 animate-pulse shadow-sm" />
-            ))}
-          </div>
-        ) : filteredResellers.length === 0 ? (
-          <div className="p-20 text-center rounded-xl border border-dashed border-zinc-800 bg-zinc-900/20 flex flex-col items-center justify-center">
-            <div className="h-20 w-20 rounded-lg bg-zinc-900 flex items-center justify-center border border-zinc-800 shadow-xl mb-6">
-              <UserCog className="h-10 w-10 text-zinc-700" />
-            </div>
-            <p className="text-xl font-black text-zinc-500 uppercase tracking-widest">No Active Nodes</p>
-            <p className="text-xs text-zinc-600 mt-2 font-medium max-w-[280px]">No results found matching your current matrix parameters</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 pb-20">
-            {filteredResellers.map((reseller) => (
-              <div key={reseller.id} className="h-full">
-                {/* Responsive Switch */}
-                <div className="hidden md:block h-full">
-                  <ResellerCard
-                    reseller={reseller}
-                    onProducts={openProductsDialog}
-                    onBalance={openBalanceDialog}
-                    onEdit={openEdit}
-                    onDelete={handleDelete}
-                  />
-                </div>
-                <div className="md:hidden">
-                  <MobileResellerCard
-                    reseller={reseller}
-                    onProducts={openProductsDialog}
-                    onBalance={openBalanceDialog}
-                    onEdit={openEdit}
-                    onDelete={handleDelete}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <Dialog open={balanceDialogOpen} onOpenChange={setBalanceDialogOpen}>
-        <DialogContent className="border-zinc-800/80 sm:max-w-[400px] rounded-2xl bg-zinc-950/98 backdrop-blur-3xl p-0 overflow-hidden shadow-2xl">
-          <div className="p-8 space-y-8">
-            <DialogHeader>
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-xl bg-teal-500/10 flex items-center justify-center border border-teal-500/20 shadow-inner">
-                  <Wallet className="h-6 w-6 text-teal-500" />
-                </div>
-                <div>
-                  <DialogTitle className="text-2xl font-bold tracking-normal text-white uppercase">Credit Manager</DialogTitle>
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wide">{selectedReseller?.username} • Financial adjustment</p>
-                </div>
-              </div>
-            </DialogHeader>
-
-            <div className="space-y-6">
-              <div className="relative group p-6 sm:p-8 rounded-xl bg-gradient-to-br from-zinc-900/80 to-black border border-zinc-800/50 text-center overflow-hidden shadow-xl">
-                <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                  <Coins className="h-24 w-24 sm:h-32 sm:w-32 -mr-6 -mt-6 sm:-mr-8 sm:-mt-8 text-white rotate-12" />
-                </div>
-                <p className="text-[9px] sm:text-[10px] font-black text-zinc-500 tracking-[0.3em] uppercase mb-2 sm:mb-3 relative z-10">
-                  Current Liquidity
-                </p>
-                <div className="flex items-center justify-center gap-1 sm:gap-2 relative z-10 text-white">
-                  <span className="text-xl sm:text-2xl font-bold opacity-30">$</span>
-                  <span className="text-4xl sm:text-6xl font-black tracking-tighter">
-                    {parseFloat(String(selectedReseller?.credits || 0)).toFixed(2)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 p-1.5 bg-zinc-900/50 rounded-xl border border-zinc-800/50 shadow-inner">
-                <button
-                  onClick={() => setBalanceAction("add")}
-                  className={cn(
-                    "flex items-center justify-center gap-2 h-12 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all",
-                    balanceAction === "add"
-                      ? "bg-emerald-500 text-black shadow-lg shadow-emerald-500/20"
-                      : "text-zinc-500 hover:text-white"
-                  )}
-                >
-                  <PlusCircle className="h-4 w-4" />
-                  Deposit
-                </button>
-                <button
-                  onClick={() => setBalanceAction("deduct")}
-                  className={cn(
-                    "flex items-center justify-center gap-2 h-12 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all",
-                    balanceAction === "deduct"
-                      ? "bg-red-500 text-white shadow-lg shadow-red-500/20"
-                      : "text-zinc-500 hover:text-white"
-                  )}
-                >
-                  <MinusCircle className="h-4 w-4" />
-                  Withdraw
-                </button>
-              </div>
-
-              <div className="space-y-3">
-                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">Transaction Amount</Label>
-                <div className="relative group">
-                  <div className="absolute left-6 top-1/2 -translate-y-1/2 text-xl font-bold text-zinc-600 transition-colors group-focus-within:text-emerald-500">$</div>
-                  <Input
-                    type="text"
-                    placeholder="0"
-                    value={balanceAmount}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (val === "" || /^\d*\.?\d{0,2}$/.test(val)) {
-                        setBalanceAmount(val);
-                      }
-                    }}
-                    className="h-20 pl-12 pr-6 text-4xl font-black border-zinc-800 bg-zinc-900/30 focus:bg-zinc-900/60 focus:ring-2 focus:ring-emerald-500/20 transition-all rounded-lg text-white tracking-tighter placeholder:text-zinc-800"
-                  />
-                </div>
-              </div>
-
-              {balanceAmount && !isNaN(parseFloat(balanceAmount)) && parseFloat(balanceAmount) > 0 && (
-                <div className="p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-300">
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wide">Projected Balance</p>
-                    <p className="text-2xl font-bold text-white">
-                      ${(parseFloat(String(selectedReseller?.credits || 0)) + (balanceAction === "add" ? 1 : -1) * parseFloat(balanceAmount)).toFixed(2)}
-                    </p>
-                  </div>
-                  <div className={cn("h-10 w-10 rounded-full flex items-center justify-center border", balanceAction === 'add' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' : 'bg-red-500/10 border-red-500/20 text-red-500')}>
-                    {balanceAction === 'add' ? <PlusCircle className="h-5 w-5" /> : <MinusCircle className="h-5 w-5" />}
-                  </div>
-                </div>
+                  <div className="w-px h-6 bg-zinc-800/80 mx-1" />
+                </>
               )}
 
+              {/* Filter */}
+              <Select value={filterStatus} onValueChange={(value: any) => setFilterStatus(value)}>
+                <SelectTrigger className="h-9 md:h-10 border-0 bg-transparent hover:bg-zinc-800/50 px-2 w-auto gap-1 [&>svg]:h-4 [&>svg]:w-4 flex-shrink-0 text-zinc-500 transition-all">
+                  <Filter className="h-4.25 w-4.25" />
+                </SelectTrigger>
+                <SelectContent className="bg-zinc-900 border-zinc-800">
+                  <SelectItem value="all" className="text-white focus:bg-zinc-800">All Nodes</SelectItem>
+                  <SelectItem value="active" className="text-white focus:bg-zinc-800">Active Only</SelectItem>
+                  <SelectItem value="inactive" className="text-white focus:bg-zinc-800">Inactive Only</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <div className="w-px h-6 bg-zinc-800/80 mx-1" />
+
+              {/* Refresh */}
               <Button
-                onClick={handleBalanceChange}
-                disabled={!balanceAmount || isNaN(parseFloat(balanceAmount)) || parseFloat(balanceAmount) <= 0}
-                className={cn(
-                  "w-full h-16 font-black text-[11px] uppercase tracking-[0.4em] transition-all rounded-lg border-0 shadow-2xl relative overflow-hidden group",
-                  balanceAction === 'add' ? 'bg-white hover:bg-emerald-500 text-black' : 'bg-zinc-900 hover:bg-red-500 text-white hover:text-white'
-                )}
+                variant="ghost"
+                size="icon"
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="h-9 md:h-10 w-9 md:w-10 hover:bg-zinc-800/50 flex-shrink-0 text-zinc-500 transition-all active:scale-95 group"
               >
-                <div className={cn("absolute inset-0 transition-opacity opacity-0 group-hover:opacity-100", balanceAction === 'add' ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-red-500')} />
-                <span className="relative z-10 flex items-center justify-center gap-3">
-                  {balanceAction === "add" ? "PROCESS DEPOSIT" : "PROCESS WITHDRAWAL"}
-                  <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </span>
+                <RefreshCw className={cn("h-4.25 w-4.25 group-hover:text-emerald-500 transition-colors", isRefreshing && "animate-spin")} />
               </Button>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
 
-      <Dialog open={productsDialogOpen} onOpenChange={setProductsDialogOpen}>
-        <DialogContent className="border-zinc-800 sm:max-w-2xl max-h-[85vh] flex flex-col rounded-xl backdrop-blur-2xl bg-zinc-950/95 p-0 overflow-hidden shadow-2xl">
-          <div className="p-8 flex flex-col h-full overflow-hidden">
-            <DialogHeader className="mb-6">
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shadow-inner">
-                  <Package className="h-6 w-6 text-emerald-500" />
-                </div>
-                <div>
-                  <DialogTitle className="text-2xl font-bold tracking-tight text-white uppercase">Access Portfolio</DialogTitle>
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wide">{selectedReseller?.username} • Ecosystem permissions</p>
-                </div>
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-72 rounded-xl bg-zinc-900/40 border border-zinc-800 animate-pulse shadow-sm" />
+              ))}
+            </div>
+          ) : filteredResellers.length === 0 ? (
+            <div className="p-20 text-center rounded-xl border border-dashed border-zinc-800 bg-zinc-900/20 flex flex-col items-center justify-center">
+              <div className="h-20 w-20 rounded-lg bg-zinc-900 flex items-center justify-center border border-zinc-800 shadow-xl mb-6">
+                <UserCog className="h-10 w-10 text-zinc-700" />
               </div>
-            </DialogHeader>
-
-            <div className="flex-1 flex flex-col min-h-0">
-              <div className="flex p-1 bg-zinc-900/50 rounded-xl border border-zinc-800/50 mb-6 relative">
-                <div
-                  className="absolute inset-y-1 rounded-lg bg-zinc-800 shadow-sm transition-all duration-300 ease-out"
-                  style={{
-                    left: '4px',
-                    width: 'calc(50% - 4px)',
-                    transform: activeTab === "subscriptions" ? 'translateX(100%)' : 'translateX(0)'
-                  }}
-                />
-                <button
-                  onClick={() => setActiveTab("products")}
-                  className={cn(
-                    "relative z-10 flex-1 flex items-center justify-center gap-2 h-10 rounded-lg font-black text-[10px] uppercase tracking-widest transition-colors duration-200",
-                    activeTab === "products" ? "text-white" : "text-zinc-500 hover:text-zinc-300"
-                  )}
-                >
-                  <Package className="h-3.5 w-3.5" />
-                  Primary Products
-                </button>
-                <button
-                  onClick={() => setActiveTab("subscriptions")}
-                  className={cn(
-                    "relative z-10 flex-1 flex items-center justify-center gap-2 h-10 rounded-lg font-black text-[10px] uppercase tracking-widest transition-colors duration-200",
-                    activeTab === "subscriptions" ? "text-white" : "text-zinc-500 hover:text-zinc-300"
-                  )}
-                >
-                  <Sparkles className="h-3.5 w-3.5" />
-                  Active Plans
-                </button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-                {activeTab === "products" ? (
-                  productsLoading ? (
-                    <div className="flex flex-col items-center justify-center py-20 opacity-50">
-                      <RefreshCw className="h-8 w-8 text-emerald-500 animate-spin mb-4" />
-                      <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Retrieving node data...</p>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
-                      {applications.length === 0 ? (
-                        <div className="col-span-full text-center py-20 bg-zinc-900/20 rounded-xl border border-dashed border-zinc-800">
-                          <Package className="h-12 w-12 text-zinc-700 mx-auto mb-4" />
-                          <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">No products in inventory</p>
+              <p className="text-xl font-black text-zinc-500 uppercase tracking-widest">No Active Nodes</p>
+              <p className="text-xs text-zinc-600 mt-2 font-medium max-w-[280px]">No results found matching your current matrix parameters</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              <div className="border border-zinc-800/80 rounded-xl overflow-hidden bg-[#111111]/80 backdrop-blur-md">
+                <DataTable
+                  keyExtractor={(r) => String(r.id)}
+                  columns={[
+                    {
+                      key: "reseller",
+                      header: "Reseller",
+                      render: (r: Reseller) => (
+                        <div className="flex items-center gap-4">
+                          <div className="h-10 w-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                            <UserCog className="h-5 w-5 text-emerald-500" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-white">{r.username}</p>
+                            <p className="text-[10px] text-zinc-500 font-medium">{r.email}</p>
+                          </div>
                         </div>
-                      ) : (
-                        applications.map((app) => {
-                          const appIdStr = String(app.id);
-                          const isAssigned = resellerProducts.includes(appIdStr);
-                          const isProcessing = !!processingProducts[appIdStr];
-                          return (
-                            <div
-                              key={app.id}
-                              className={cn(
-                                "group p-5 rounded-xl border transition-all relative overflow-hidden",
-                                isAssigned
-                                  ? "bg-emerald-500/5 border-emerald-500/20"
-                                  : "bg-zinc-900/20 border-zinc-800 hover:border-zinc-700"
-                              )}
-                            >
-                              <div className="flex flex-col gap-4 relative z-10">
-                                <div className="flex items-center justify-between">
+                      ),
+                    },
+                    {
+                      key: "liquidity",
+                      header: "Liquidity",
+                      render: (r: Reseller) => (
+                        <div className="flex items-center gap-2">
+                          <Wallet className="h-3.5 w-3.5 text-emerald-500/50" />
+                          <span className="text-sm font-black text-white">${parseFloat(String(r.credits || 0)).toFixed(2)}</span>
+                        </div>
+                      ),
+                    },
+                    {
+                      key: "integrity",
+                      header: "Status",
+                      render: (r: Reseller) => (
+                        <Badge className={cn(
+                          "text-[9px] uppercase font-black px-2 py-0.5",
+                          r.is_active ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]" : "bg-red-500/10 text-red-500 border-red-500/20"
+                        )}>
+                          {r.is_active ? "Active" : "Inactive"}
+                        </Badge>
+                      ),
+                    },
+                    {
+                      key: "context",
+                      header: "Company",
+                      render: (r: Reseller) => (
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-1.5">
+                            <Building className="h-3 w-3 text-zinc-600" />
+                            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight">{r.company_name || 'Individual'}</span>
+                          </div>
+                          {r.phone && (
+                            <div className="flex items-center gap-1.5">
+                              <Phone className="h-3 w-3 text-zinc-600" />
+                              <span className="text-[10px] font-medium text-zinc-500 font-mono tracking-tighter">{r.phone}</span>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    },
+                    {
+                      key: "commands",
+                      header: "Actions",
+                      render: (r: Reseller) => (
+                        <div className="flex items-center gap-1.5">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setPreviewReseller(r)}
+                            className="h-8 w-8 hover:bg-white/5 text-zinc-500 hover:text-white transition-all"
+                            title="Preview"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openProductsDialog(r)}
+                            className="h-8 w-8 hover:bg-emerald-500/10 text-zinc-500 hover:text-emerald-500 transition-all"
+                            title="Manage"
+                          >
+                            <Package className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openBalanceDialog(r)}
+                            className="h-8 w-8 hover:bg-amber-500/10 text-zinc-500 hover:text-amber-500 transition-all"
+                            title="Add Credits"
+                          >
+                            <Wallet className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openEdit(r)}
+                            className="h-8 w-8 hover:bg-blue-500/10 text-zinc-500 hover:text-blue-500 transition-all"
+                            title="Edit"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDelete(r.id, r.username)}
+                            className="h-8 w-8 hover:bg-red-500/10 text-zinc-500 hover:text-red-500 transition-all"
+                            title="Delete"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ),
+                    },
+                  ]}
+                  data={filteredResellers}
+                />
+              </div>
+
+              {/* Mobile View Alternative */}
+              <div className="md:hidden space-y-4 pb-20">
+                {filteredResellers.map((reseller) => (
+                  <MobileResellerCard
+                    key={reseller.id}
+                    reseller={reseller}
+                    onProducts={openProductsDialog}
+                    onBalance={openBalanceDialog}
+                    onEdit={openEdit}
+                    onDelete={handleDelete}
+                    onPreview={setPreviewReseller}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <Dialog open={balanceDialogOpen} onOpenChange={setBalanceDialogOpen}>
+          <DialogContent className="border-zinc-800/80 sm:max-w-[400px] rounded-2xl bg-zinc-950/98 backdrop-blur-3xl p-0 overflow-hidden shadow-2xl">
+            <div className="p-8 space-y-8">
+              <DialogHeader>
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-xl bg-teal-500/10 flex items-center justify-center border border-teal-500/20 shadow-inner">
+                    <Wallet className="h-6 w-6 text-teal-500" />
+                  </div>
+                  <div>
+                    <DialogTitle className="text-2xl font-bold tracking-normal text-white uppercase">Add Credits</DialogTitle>
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wide">{selectedReseller?.username || "Selected"} • Balance adjustment</p>
+                  </div>
+                </div>
+                <p className="sr-only">Form to deposit or withdraw credits from reseller account</p>
+              </DialogHeader>
+
+              <div className="space-y-6">
+                <div className="relative group p-6 sm:p-8 rounded-xl bg-gradient-to-br from-zinc-900/80 to-black border border-zinc-800/50 text-center overflow-hidden shadow-xl">
+                  <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                    <Coins className="h-24 w-24 sm:h-32 sm:w-32 -mr-6 -mt-6 sm:-mr-8 sm:-mt-8 text-white rotate-12" />
+                  </div>
+                  <p className="text-[9px] sm:text-[10px] font-black text-zinc-500 tracking-[0.3em] uppercase mb-2 sm:mb-3 relative z-10">
+                    Current Credits
+                  </p>
+                  <div className="flex items-center justify-center gap-1 sm:gap-2 relative z-10 text-white">
+                    <span className="text-xl sm:text-2xl font-bold opacity-30">$</span>
+                    <span className="text-4xl sm:text-6xl font-black tracking-tighter">
+                      {parseFloat(String(selectedReseller?.credits || 0)).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 p-1.5 bg-zinc-900/50 rounded-xl border border-zinc-800/50 shadow-inner">
+                  <button
+                    onClick={() => setBalanceAction("add")}
+                    className={cn(
+                      "flex items-center justify-center gap-2 h-12 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all",
+                      balanceAction === "add"
+                        ? "bg-emerald-500 text-black shadow-lg shadow-emerald-500/20"
+                        : "text-zinc-500 hover:text-white"
+                    )}
+                  >
+                    <PlusCircle className="h-4 w-4" />
+                    Deposit
+                  </button>
+                  <button
+                    onClick={() => setBalanceAction("deduct")}
+                    className={cn(
+                      "flex items-center justify-center gap-2 h-12 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all",
+                      balanceAction === "deduct"
+                        ? "bg-red-500 text-white shadow-lg shadow-red-500/20"
+                        : "text-zinc-500 hover:text-white"
+                    )}
+                  >
+                    <MinusCircle className="h-4 w-4" />
+                    Withdraw
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">Transaction Amount</Label>
+                  <div className="relative group">
+                    <div className="absolute left-6 top-1/2 -translate-y-1/2 text-xl font-bold text-zinc-600 transition-colors group-focus-within:text-emerald-500">$</div>
+                    <Input
+                      type="text"
+                      placeholder="0"
+                      value={balanceAmount}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === "" || /^\d*\.?\d{0,2}$/.test(val)) {
+                          setBalanceAmount(val);
+                        }
+                      }}
+                      className="h-20 pl-12 pr-6 text-4xl font-black border-zinc-800 bg-zinc-900/30 focus:bg-zinc-900/60 focus:ring-2 focus:ring-emerald-500/20 transition-all rounded-lg text-white tracking-tighter placeholder:text-zinc-800"
+                    />
+                  </div>
+                </div>
+
+                {balanceAmount && !isNaN(parseFloat(balanceAmount)) && parseFloat(balanceAmount) > 0 && (
+                  <div className="p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wide">Projected Balance</p>
+                      <p className="text-2xl font-bold text-white">
+                        ${(parseFloat(String(selectedReseller?.credits || 0)) + (balanceAction === "add" ? 1 : -1) * parseFloat(balanceAmount)).toFixed(2)}
+                      </p>
+                    </div>
+                    <div className={cn("h-10 w-10 rounded-full flex items-center justify-center border", balanceAction === 'add' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' : 'bg-red-500/10 border-red-500/20 text-red-500')}>
+                      {balanceAction === 'add' ? <PlusCircle className="h-5 w-5" /> : <MinusCircle className="h-5 w-5" />}
+                    </div>
+                  </div>
+                )}
+
+                <Button
+                  onClick={handleBalanceChange}
+                  disabled={!balanceAmount || isNaN(parseFloat(balanceAmount)) || parseFloat(balanceAmount) <= 0}
+                  className={cn(
+                    "w-full h-16 font-black text-[11px] uppercase tracking-[0.4em] transition-all rounded-lg border-0 shadow-2xl relative overflow-hidden group",
+                    balanceAction === 'add' ? 'bg-white hover:bg-emerald-500 text-black' : 'bg-zinc-900 hover:bg-red-500 text-white hover:text-white'
+                  )}
+                >
+                  <div className={cn("absolute inset-0 transition-opacity opacity-0 group-hover:opacity-100", balanceAction === 'add' ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-red-500')} />
+                  <span className="relative z-10 flex items-center justify-center gap-3">
+                    {balanceAction === "add" ? "PROCESS DEPOSIT" : "PROCESS WITHDRAWAL"}
+                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={productsDialogOpen} onOpenChange={setProductsDialogOpen}>
+          <DialogContent className="border-zinc-800 sm:max-w-2xl max-h-[85vh] flex flex-col rounded-xl backdrop-blur-2xl bg-zinc-950/95 p-0 overflow-hidden shadow-2xl">
+            <div className="p-8 flex flex-col h-full overflow-hidden">
+              <DialogHeader className="mb-6">
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shadow-inner">
+                    <Package className="h-6 w-6 text-emerald-500" />
+                  </div>
+                  <div>
+                    <DialogTitle className="text-2xl font-bold tracking-tight text-white uppercase">Access Portfolio</DialogTitle>
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wide">{selectedReseller?.username || "Selected"} • Ecosystem permissions</p>
+                  </div>
+                </div>
+                <p className="sr-only">Manage product and subscription assignments for this reseller</p>
+              </DialogHeader>
+
+              <div className="flex-1 flex flex-col min-h-0">
+                <div className="flex p-1 bg-zinc-900/50 rounded-xl border border-zinc-800/50 mb-6 relative">
+                  <div
+                    className="absolute inset-y-1 rounded-lg bg-zinc-800 shadow-sm transition-all duration-300 ease-out"
+                    style={{
+                      left: '4px',
+                      width: 'calc(50% - 4px)',
+                      transform: activeTab === "subscriptions" ? 'translateX(100%)' : 'translateX(0)'
+                    }}
+                  />
+                  <button
+                    onClick={() => setActiveTab("products")}
+                    className={cn(
+                      "relative z-10 flex-1 flex items-center justify-center gap-2 h-10 rounded-lg font-black text-[10px] uppercase tracking-widest transition-colors duration-200",
+                      activeTab === "products" ? "text-white" : "text-zinc-500 hover:text-zinc-300"
+                    )}
+                  >
+                    <Package className="h-3.5 w-3.5" />
+                    Primary Products
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("subscriptions")}
+                    className={cn(
+                      "relative z-10 flex-1 flex items-center justify-center gap-2 h-10 rounded-lg font-black text-[10px] uppercase tracking-widest transition-colors duration-200",
+                      activeTab === "subscriptions" ? "text-white" : "text-zinc-500 hover:text-zinc-300"
+                    )}
+                  >
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Active Plans
+                  </button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                  {activeTab === "products" ? (
+                    productsLoading ? (
+                      <div className="flex flex-col items-center justify-center py-20 opacity-50">
+                        <RefreshCw className="h-8 w-8 text-emerald-500 animate-spin mb-4" />
+                        <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Retrieving node data...</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
+                        {applications.length === 0 ? (
+                          <div className="col-span-full text-center py-20 bg-zinc-900/20 rounded-xl border border-dashed border-zinc-800">
+                            <Package className="h-12 w-12 text-zinc-700 mx-auto mb-4" />
+                            <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">No products in inventory</p>
+                          </div>
+                        ) : (
+                          applications.map((app) => {
+                            const appIdStr = String(app.id);
+                            const isAssigned = resellerProducts.includes(appIdStr);
+                            const isProcessing = !!processingProducts[appIdStr];
+                            return (
+                              <div
+                                key={app.id}
+                                className={cn(
+                                  "group p-5 rounded-xl border transition-all relative overflow-hidden",
+                                  isAssigned
+                                    ? "bg-emerald-500/5 border-emerald-500/20"
+                                    : "bg-zinc-900/20 border-zinc-800 hover:border-zinc-700"
+                                )}
+                              >
+                                <div className="flex flex-col gap-4 relative z-10">
                                   <div className={cn(
                                     "h-10 w-10 rounded-lg flex items-center justify-center border transition-all",
                                     isAssigned ? "bg-emerald-500/10 border-emerald-500/20 shadow-inner" : "bg-zinc-950/50 border-zinc-800"
@@ -1457,7 +1597,7 @@ export default function Resellers() {
                                 <div>
                                   <h4 className="font-black text-sm text-white tracking-tight truncate">{app.name}</h4>
                                   <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wide mt-1">
-                                    {isAssigned ? "Operational Access" : "Awaiting Authorization"}
+                                    {isAssigned ? "Has Access" : "Awaiting Setup"}
                                   </p>
                                 </div>
 
@@ -1475,47 +1615,318 @@ export default function Resellers() {
                                   {isProcessing ? (
                                     <RefreshCw className="h-3 w-3 animate-spin" />
                                   ) : isAssigned ? (
-                                    <>Revoke Authority</>
+                                    <>Remove Access</>
                                   ) : (
-                                    <>Authorize Client</>
+                                    <>Assign Access</>
                                   )}
                                 </Button>
                               </div>
-                            </div>
-                          );
-                        })
-                      )}
+                            );
+                          })
+                        )}
+                      </div>
+                    )
+                  ) : (
+                    <div className="pb-4">
+                      <ResellerSubscriptionsSection
+                        reseller={selectedReseller}
+                        resellerProducts={resellerProducts}
+                        resellerSubscriptions={resellerSubscriptions}
+                        setResellerSubscriptions={setResellerSubscriptions}
+                        toast={toast}
+                        applications={applications}
+                      />
                     </div>
-                  )
-                ) : (
-                  <div className="pb-4">
-                    <ResellerSubscriptionsSection
-                      reseller={selectedReseller}
-                      resellerProducts={resellerProducts}
-                      resellerSubscriptions={resellerSubscriptions}
-                      setResellerSubscriptions={setResellerSubscriptions}
-                      toast={toast}
-                      applications={applications}
-                    />
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-      <ConfirmDialog
-        open={deleteConfirm.open}
-        title="Delete Reseller Account"
-        description="This action is permanent and will revoke all reseller access immediately."
-        message={`Are you sure you want to delete "${deleteConfirm.username}"?`}
-        confirmText="Delete Account"
-        cancelText="Keep Account"
-        variant="danger"
-        isLoading={isDeleting}
-        onConfirm={confirmDelete}
-        onCancel={() => setDeleteConfirm({ open: false, id: null, username: "" })}
-      />
-    </DashboardLayout >
+          </DialogContent>
+        </Dialog>
+        <ConfirmDialog
+          open={deleteConfirm.open}
+          title="Delete Reseller Account"
+          description="This action is permanent and will remove all access immediately."
+          message={`Are you sure you want to delete "${deleteConfirm.username}"?`}
+          confirmText="Delete"
+          cancelText="Cancel"
+          variant="danger"
+          isLoading={isDeleting}
+          onConfirm={confirmDelete}
+          onCancel={() => setDeleteConfirm({ open: false, id: null, username: "" })}
+        />
+      </DashboardLayout>
+
+      {previewReseller && (
+        <AdminResellerPreview
+          key={previewReseller.id}
+          reseller={previewReseller}
+          onClose={() => setPreviewReseller(null)}
+        />
+      )}
+    </>
   );
 }
+
+// Tactical Header - Refined Preview Component
+function AdminResellerPreview({ reseller, onClose }: { reseller: Reseller; onClose: () => void }) {
+  const [apps, setApps] = useState<any[]>([]);
+  const [subscriptions, setSubscriptions] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    if (!reseller?.id) return;
+    setLoading(true);
+    try {
+      const [a, s, t] = await Promise.all([
+        getResellerApplications(reseller.id).catch(() => []),
+        getResellerSubscriptions(reseller.id).catch(() => []),
+        getResellerTransactions(reseller.id).catch(() => [])
+      ]);
+      setApps(Array.isArray(a) ? a : []);
+      setSubscriptions(Array.isArray(s) ? s : []);
+      setTransactions(Array.isArray(t) ? t : []);
+    } catch (error) {
+      console.error("Preview fail:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (reseller?.id) {
+      fetchData();
+    }
+  }, [reseller?.id]);
+
+  if (!reseller) return null;
+
+  return (
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[850px] h-[85vh] p-0 bg-[#0c0c0c] border border-white/10 rounded-2xl overflow-hidden flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+        <DialogHeader className="sr-only">
+          <DialogTitle>Reseller Overview: {reseller.username}</DialogTitle>
+          <p className="sr-only">Detailed view of reseller metrics and logs</p>
+        </DialogHeader>
+
+        {/* Profile Header */}
+        <div className="relative p-8 bg-zinc-900/30 border-b border-white/5 overflow-hidden">
+          <div className="absolute top-0 right-0 p-12 opacity-[0.02] pointer-events-none">
+            <UserCog className="h-48 w-48 -mr-16 -mt-16 text-white" />
+          </div>
+
+          <div className="relative z-10 flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <div className="h-16 w-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center p-0.5 shadow-2xl">
+                <div className="h-full w-full rounded-xl bg-zinc-950 flex items-center justify-center">
+                  <UserCog className="h-8 w-8 text-emerald-500" />
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-2xl font-black text-white uppercase tracking-tight">{reseller.username || "Unknown Reseller"}</h2>
+                  <Badge className={cn(
+                    "text-[10px] uppercase font-black px-2",
+                    reseller.is_active ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : "bg-red-500/10 text-red-500 border-red-500/20"
+                  )}>
+                    {reseller.is_active ? "Active" : "Inactive"}
+                  </Badge>
+                </div>
+                <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1.5 flex items-center gap-2">
+                  {reseller.email || "No Email"} <span className="h-1 w-1 rounded-full bg-zinc-800" /> ID: {reseller.id}
+                </p>
+              </div>
+            </div>
+
+            <div className="text-right">
+              <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-1">Total Balance</p>
+              <p className="text-3xl font-black text-white tracking-tighter">
+                <span className="text-emerald-500 text-xl mr-1">$</span>
+                {parseFloat(String(reseller.credits || 0)).toFixed(2)}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar">
+          {loading ? (
+            <div className="h-full flex flex-col items-center justify-center gap-6">
+              <div className="relative">
+                <RefreshCw className="h-12 w-12 animate-spin text-emerald-500 opacity-20" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                </div>
+              </div>
+              <div className="text-center">
+                <p className="text-xs font-black text-white uppercase tracking-[0.3em] mb-2">Loading...</p>
+                <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Retrieving reseller settings...</p>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Quick Stats */}
+              <div className="grid grid-cols-3 gap-6">
+                {[
+                  { label: "Assigned Apps", value: apps?.length || 0, icon: Package, color: "zinc" },
+                  { label: "Active Plans", value: subscriptions?.length || 0, icon: Sparkles, color: "emerald" },
+                  { label: "Licenses Created", value: reseller.total_licenses_created || 0, icon: Coins, color: "blue" }
+                ].map((stat, i) => {
+                  const Icon = stat.icon;
+                  return (
+                    <div key={i} className="p-6 bg-zinc-900/40 border border-white/5 rounded-2xl group hover:border-white/10 transition-all shadow-xl">
+                      <div className="flex items-center justify-between mb-4">
+                        <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{stat.label}</p>
+                        <Icon className={cn("h-4 w-4 opacity-40 group-hover:opacity-100 transition-opacity", `text-${stat.color}-500`)} />
+                      </div>
+                      <p className="text-3xl font-black text-white tracking-tighter">{stat.value}</p>
+                      <div className="h-0.5 w-full bg-zinc-800 mt-4 rounded-full overflow-hidden">
+                        <div className={cn("h-full opacity-40", `bg-${stat.color}-500`)} style={{ width: '40%' }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <Tabs defaultValue="apps" className="w-full">
+                <TabsList className="bg-zinc-900/50 border border-white/5 p-1 rounded-xl mb-8 flex w-fit">
+                  <TabsTrigger value="apps" className="data-[state=active]:bg-white data-[state=active]:text-black text-[10px] font-black uppercase tracking-widest px-8 h-10 transition-all rounded-lg">Apps</TabsTrigger>
+                  <TabsTrigger value="subs" className="data-[state=active]:bg-white data-[state=active]:text-black text-[10px] font-black uppercase tracking-widest px-8 h-10 transition-all rounded-lg">Plans</TabsTrigger>
+                  <TabsTrigger value="ledger" className="data-[state=active]:bg-white data-[state=active]:text-black text-[10px] font-black uppercase tracking-widest px-8 h-10 transition-all rounded-lg">Ledger</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="apps" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                  {apps && apps.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-4">
+                      {apps.map((app) => (
+                        <div key={app?.id || Math.random()} className="p-5 bg-zinc-900/20 border border-white/5 rounded-xl flex items-center gap-4 hover:bg-zinc-900/40 transition-all group">
+                          <div className="h-12 w-12 rounded-xl bg-zinc-950 border border-white/5 flex items-center justify-center p-2 group-hover:border-emerald-500/30 transition-all">
+                            <Package className="h-full w-full text-zinc-500 group-hover:text-emerald-500 transition-colors" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-black text-sm text-white uppercase tracking-tight truncate">{app?.name || "Unknown App"}</h4>
+                            <p className="text-[10px] font-bold text-zinc-600 uppercase mt-1 tracking-widest">ID: {app?.id || "—"}</p>
+                          </div>
+                          <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="py-20 bg-zinc-900/20 rounded-2xl border border-dashed border-white/5 flex flex-col items-center justify-center gap-4 text-center">
+                      <div className="h-16 w-16 rounded-2xl bg-zinc-900 flex items-center justify-center border border-white/5 opacity-50">
+                        <Package className="h-8 w-8 text-zinc-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-black text-white uppercase tracking-widest">No Apps Assigned</p>
+                        <p className="text-[10px] font-bold text-zinc-600 uppercase mt-1">This reseller has no assigned apps</p>
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="subs" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                  {subscriptions && subscriptions.length > 0 ? (
+                    <div className="grid gap-3">
+                      {subscriptions.map((sub) => (
+                        <div key={sub?.id || Math.random()} className="p-5 bg-zinc-900/20 border border-white/5 rounded-2xl hover:bg-zinc-900/40 transition-all flex items-center gap-6 group">
+                          <div className="h-14 w-14 rounded-2xl bg-zinc-950 border border-white/5 flex items-center justify-center group-hover:border-emerald-500/30 transition-all">
+                            <Shield className="h-7 w-7 text-emerald-500/80 group-hover:scale-110 transition-all" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-black text-base text-white uppercase tracking-tight truncate">{sub?.name || "Untitled Plan"}</h4>
+                              {sub?.name?.endsWith("(paused)") && (
+                                <Badge className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20 text-[8px] px-1.5 h-4 font-black">PAUSED</Badge>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest flex items-center gap-2">
+                                <Package className="h-3 w-3" /> {sub?.app_name || "System App"}
+                              </span>
+                              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest flex items-center gap-2">
+                                <Clock className="h-3 w-3" /> {formatIST(sub?.expires_at, { dateStyle: 'medium' })}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="py-20 bg-zinc-900/20 rounded-2xl border border-dashed border-white/5 flex flex-col items-center justify-center gap-4 text-center">
+                      <div className="h-16 w-16 rounded-2xl bg-zinc-900 flex items-center justify-center border border-white/5 opacity-50">
+                        <Sparkles className="h-8 w-8 text-zinc-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-black text-white uppercase tracking-widest">No Active Plans</p>
+                        <p className="text-[10px] font-bold text-zinc-600 uppercase mt-1">Assign plans to activate the reseller system</p>
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="ledger" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                  {transactions && transactions.length > 0 ? (
+                    <div className="bg-zinc-950/50 border border-white/5 rounded-2xl overflow-hidden">
+                      <table className="w-full text-left">
+                        <thead>
+                          <tr className="border-b border-white/5 bg-zinc-900/50">
+                            <th className="px-6 py-4 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Operation</th>
+                            <th className="px-6 py-4 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Flow</th>
+                            <th className="px-6 py-4 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Notes</th>
+                            <th className="px-6 py-4 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Date</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/[0.03]">
+                          {transactions.map((tx: any) => (
+                            <tr key={tx?.id || Math.random()} className="hover:bg-white/[0.01] transition-colors">
+                              <td className="px-6 py-4">
+                                <div className="flex items-center gap-3">
+                                  <div className={cn(
+                                    "h-8 w-8 rounded-lg flex items-center justify-center border",
+                                    tx?.type === "CREDIT" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" : "bg-red-500/10 border-red-500/20 text-red-500"
+                                  )}>
+                                    {tx?.type === "CREDIT" ? <PlusCircle className="h-4 w-4" /> : <MinusCircle className="h-4 w-4" />}
+                                  </div>
+                                  <span className="text-xs font-bold text-white uppercase tracking-tight">{tx?.type || "ADJUST"}</span>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4">
+                                <span className={cn(
+                                  "text-sm font-black tracking-tighter",
+                                  tx?.type === "CREDIT" ? "text-emerald-500" : "text-red-500"
+                                )}>
+                                  {tx?.type === "CREDIT" ? "+" : "-"}${(Number(tx?.amount) || 0).toFixed(2)}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4">
+                                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest line-clamp-1">{tx?.description || "System Adjustment"}</p>
+                              </td>
+                              <td className="px-6 py-4">
+                                <span className="text-[10px] font-medium text-zinc-600 font-mono">{formatIST(tx?.created_at, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="py-20 bg-zinc-900/20 rounded-2xl border border-dashed border-white/5 flex flex-col items-center justify-center gap-4 text-center">
+                      <div className="h-16 w-16 rounded-2xl bg-zinc-900 flex items-center justify-center border border-white/5 opacity-50">
+                        <TrendingUp className="h-8 w-8 text-zinc-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-black text-white uppercase tracking-widest">No Transactions Registered</p>
+                        <p className="text-[10px] font-bold text-zinc-600 uppercase mt-1">Financial ledger is currently empty</p>
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
+            </>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
