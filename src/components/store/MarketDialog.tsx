@@ -51,7 +51,7 @@ export const MarketDialog = ({ open, onOpenChange }: MarketDialogProps) => {
                     </div>
 
                     {/* Content */}
-                    <div className="p-6 bg-black/40">
+                    <div className="p-6 bg-black/40 overflow-y-auto max-h-[60vh] custom-scrollbar">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {regions.map((region) => {
                                 const isSelected = selectedRegion?.id === region.id;
