@@ -37,6 +37,9 @@ interface Product {
     app_id?: number;
     status?: string;
     is_active: boolean;
+    tags?: string;
+    showcase_images?: string;
+    author?: string;
     plans?: { id?: number; name: string; price: number }[];
 }
 
@@ -78,6 +81,9 @@ export default function ManageProducts() {
         platform: "Windows",
         status: "Undetected",
         app_id: "" as string | number,
+        tags: "",
+        showcase_images: "",
+        author: "Administrator",
         plans: [] as { id?: number; name: string; price: string; duration_days: string; is_lifetime: boolean; subscription_plan_id?: string | number; is_best_value: boolean }[]
     });
 
@@ -226,6 +232,9 @@ export default function ManageProducts() {
             platform: "Windows",
             status: "Undetected",
             app_id: "",
+            tags: "",
+            showcase_images: "",
+            author: "Administrator",
             plans: []
         });
         setEditingProduct(null);
@@ -246,6 +255,9 @@ export default function ManageProducts() {
             platform: product.platform || "Windows",
             status: product.status === "Working" ? "Undetected" : (product.status || "Undetected"),
             app_id: product.app_id || "",
+            tags: product.tags || "",
+            showcase_images: product.showcase_images || "",
+            author: product.author || "Administrator",
             plans: product.plans ? product.plans.map((p: any) => ({
                 id: p.id,
                 name: p.name,
@@ -267,7 +279,7 @@ export default function ManageProducts() {
     return (
         <DashboardLayout title="Store Management" subtitle="Configure marketplace storefront and assets">
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500 outline-none">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-6 bg-zinc-900/40 border border-zinc-800 rounded-xl backdrop-blur-md">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-6 bg-black/40 border border-white/5 rounded-xl backdrop-blur-md shadow-[0_0_30px_rgba(0,0,0,0.3)]">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
                             <Tag className="h-6 w-6" />
@@ -290,12 +302,12 @@ export default function ManageProducts() {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search products in repository..."
-                            className="w-full bg-zinc-900/40 border-zinc-800 hover:border-zinc-700 focus:border-emerald-500/50 h-12 pl-12 rounded-xl backdrop-blur-md transition-all text-sm font-medium"
+                            className="w-full bg-black/40 border-white/5 hover:border-white/10 focus:border-emerald-500/50 h-12 pl-12 rounded-xl backdrop-blur-md transition-all text-sm font-medium placeholder:text-zinc-600 font-mono text-zinc-300"
                         />
                     </div>
 
                     {/* Master Action Nexus */}
-                    <div className="flex items-center bg-zinc-900/40 border border-zinc-800 rounded-xl h-12 px-1 backdrop-blur-md">
+                    <div className="flex items-center bg-black/40 border border-white/5 rounded-xl h-12 px-1 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.2)]">
                         <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
                             <DialogTrigger asChild>
                                 <button
@@ -695,6 +707,22 @@ export default function ManageProducts() {
                                                         </div>
                                                         <p className="text-[10px] text-zinc-500">Embedded on the product details page.</p>
                                                     </div>
+
+                                                    <div className="space-y-2">
+                                                        <Label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-1">Showcase Images (Comma separated)</Label>
+                                                        <Textarea value={formData.showcase_images} onChange={e => setFormData({ ...formData, showcase_images: e.target.value })} className="bg-zinc-900/50 border-zinc-800 h-24 pl-3 focus:ring-emerald-500/20" placeholder="https://image1.jpg, https://image2.jpg..." />
+                                                        <p className="text-[10px] text-zinc-500">Additional images for detail page showcase.</p>
+                                                    </div>
+
+                                                    <div className="space-y-2">
+                                                        <Label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-1">Tags (Comma separated)</Label>
+                                                        <Input value={formData.tags} onChange={e => setFormData({ ...formData, tags: e.target.value })} className="bg-zinc-900/50 border-zinc-800 h-11 focus:ring-emerald-500/20" placeholder="e.g. Undetected, Best Seller, Premium" />
+                                                    </div>
+
+                                                    <div className="space-y-2">
+                                                        <Label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-1">Author / Publisher</Label>
+                                                        <Input value={formData.author} onChange={e => setFormData({ ...formData, author: e.target.value })} className="bg-zinc-900/50 border-zinc-800 h-11 focus:ring-emerald-500/20" placeholder="Administrator" />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </TabsContent>
@@ -918,96 +946,98 @@ export default function ManageProducts() {
                     </DialogContent>
                 </Dialog>
 
-                {isLoading ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {[1, 2, 3].map(i => (
-                            <div key={i} className="h-80 bg-zinc-900/40 border border-zinc-800 rounded-xl animate-pulse" />
-                        ))}
-                    </div>
-                ) : (
-                    <>
+                {
+                    isLoading ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {filteredProducts.map(p => (
-                                <Card key={p.id} className="bg-zinc-900/20 border-zinc-800/80 group hover:border-emerald-500/40 transition-all overflow-hidden backdrop-blur-sm">
-                                    <div className="h-48 bg-zinc-950 flex items-center justify-center relative overflow-hidden border-b border-zinc-800/50">
-                                        {p.image_url ? (
-                                            <img src={p.image_url} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                                        ) : (
-                                            <ImageIcon className="h-12 w-12 text-zinc-800" />
-                                        )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-
-                                        <div className="absolute top-3 right-3 flex gap-2 translate-y-2 md:translate-y-2 group-hover:translate-y-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300">
-                                            <Button onClick={() => openStatusLog(p.id)} size="icon" variant="secondary" title="Maintain Log" className="h-9 w-9 bg-black/60 border border-zinc-800 backdrop-blur-md hover:bg-blue-500 hover:text-black hover:border-blue-400 transition-all rounded-xl">
-                                                <FileText className="h-4 w-4" />
-                                            </Button>
-                                            <Button onClick={() => openEdit(p)} size="icon" variant="secondary" className="h-9 w-9 bg-black/60 border border-zinc-800 backdrop-blur-md hover:bg-emerald-500 hover:text-black hover:border-emerald-400 transition-all rounded-xl">
-                                                <Edit3 className="h-4 w-4" />
-                                            </Button>
-                                            <Button onClick={() => handleDelete(p.id)} size="icon" variant="destructive" className="h-9 w-9 bg-red-950/40 border border-red-900/20 backdrop-blur-md hover:bg-red-500 hover:text-white transition-all rounded-xl">
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-
-                                        {p.yt_video_url && (
-                                            <div className="absolute bottom-3 left-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                                <Badge className="bg-red-600/10 text-red-500 border-red-500/20 flex items-center gap-1.5 px-2 py-1 rounded-lg">
-                                                    <Video className="h-3 w-3" />
-                                                    <span className="text-[9px] font-black tracking-widest uppercase">Intel Linked</span>
-                                                </Badge>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <CardContent className="p-6">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div className="min-w-0">
-                                                <p className="text-[9px] font-black text-emerald-500 uppercase tracking-[0.25em] mb-1.5 flex items-center gap-1.5">
-                                                    {p.platform?.toLowerCase().includes('windows') ? <Monitor className="w-3 h-3" /> : (p.platform?.toLowerCase().includes('android') || p.platform?.toLowerCase().includes('ios') ? <Smartphone className="w-3 h-3" /> : <Globe className="w-3 h-3" />)}
-                                                    {p.category || "Protocol"} • {p.platform}
-                                                </p>
-                                                <CardTitle className="text-xl font-black text-white uppercase tracking-tight truncate">{p.name}</CardTitle>
-                                            </div>
-                                            <div className="text-right flex-shrink-0">
-                                                <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">Base Price</p>
-                                                <p className="text-xl font-black text-white tracking-tighter">₹{p.price}</p>
-                                            </div>
-                                        </div>
-                                        <p className="text-xs text-zinc-500 font-medium line-clamp-2 h-8 leading-relaxed mb-4">{p.description}</p>
-
-                                        <div className="flex items-center gap-3 pt-4 border-t border-zinc-800/50">
-                                            <div className="flex items-center gap-1.5 text-zinc-600">
-                                                <Shield className="h-3 w-3" />
-                                                <span className="text-[9px] font-bold uppercase">Locked Entry</span>
-                                            </div>
-                                            <div className="h-1 w-1 rounded-full bg-zinc-800" />
-                                            <div className={cn(
-                                                "flex items-center gap-1.5 font-black text-[9px] uppercase tracking-widest",
-                                                (p.status === 'Working' || p.status === 'Undetected' || p.status === 'Running') ? "text-emerald-500/60" :
-                                                    p.status === 'Updating' ? "text-blue-500/60" :
-                                                        p.status === 'Maintenance' ? "text-yellow-500/60" :
-                                                            p.status === 'Testing' ? "text-purple-500/60" :
-                                                                p.status === 'Risk' ? "text-orange-500/60" :
-                                                                    "text-red-500/60"
-                                            )}>
-                                                Status: {p.status === 'Working' ? 'Undetected' : (p.status || "Unknown")}
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                            {[1, 2, 3].map(i => (
+                                <div key={i} className="h-80 bg-zinc-900/40 border border-zinc-800 rounded-xl animate-pulse" />
                             ))}
                         </div>
-                        {products.length === 0 && (
-                            <div className="col-span-full py-32 bg-zinc-900/10 border border-dashed border-zinc-800 rounded-2xl flex flex-col items-center justify-center text-zinc-600 relative overflow-hidden">
-                                <div className="absolute inset-0 bg-emerald-500/5 animate-pulse" />
-                                <Package className="h-16 w-16 mb-4 opacity-10 relative z-10" />
-                                <p className="font-black uppercase tracking-[0.4em] text-[10px] relative z-10">Data Repository Empty</p>
-                                <p className="text-[9px] font-bold text-zinc-700 uppercase mt-2 relative z-10">Awaiting asset initialization</p>
-                            </div>
-                        )}
-                    </>
-                )}
+                    ) : (
+                        <>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {filteredProducts.map(p => (
+                                    <Card key={p.id} className="bg-zinc-900/20 border-zinc-800/80 group hover:border-emerald-500/40 transition-all overflow-hidden backdrop-blur-sm">
+                                        <div className="h-48 bg-zinc-950 flex items-center justify-center relative overflow-hidden border-b border-zinc-800/50">
+                                            {p.image_url ? (
+                                                <img src={p.image_url} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                            ) : (
+                                                <ImageIcon className="h-12 w-12 text-zinc-800" />
+                                            )}
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
 
-            </div>
+                                            <div className="absolute top-3 right-3 flex gap-2 translate-y-2 md:translate-y-2 group-hover:translate-y-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300">
+                                                <Button onClick={() => openStatusLog(p.id)} size="icon" variant="secondary" title="Maintain Log" className="h-9 w-9 bg-black/60 border border-zinc-800 backdrop-blur-md hover:bg-blue-500 hover:text-black hover:border-blue-400 transition-all rounded-xl">
+                                                    <FileText className="h-4 w-4" />
+                                                </Button>
+                                                <Button onClick={() => openEdit(p)} size="icon" variant="secondary" className="h-9 w-9 bg-black/60 border border-zinc-800 backdrop-blur-md hover:bg-emerald-500 hover:text-black hover:border-emerald-400 transition-all rounded-xl">
+                                                    <Edit3 className="h-4 w-4" />
+                                                </Button>
+                                                <Button onClick={() => handleDelete(p.id)} size="icon" variant="destructive" className="h-9 w-9 bg-red-950/40 border border-red-900/20 backdrop-blur-md hover:bg-red-500 hover:text-white transition-all rounded-xl">
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+
+                                            {p.yt_video_url && (
+                                                <div className="absolute bottom-3 left-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                                    <Badge className="bg-red-600/10 text-red-500 border-red-500/20 flex items-center gap-1.5 px-2 py-1 rounded-lg">
+                                                        <Video className="h-3 w-3" />
+                                                        <span className="text-[9px] font-black tracking-widest uppercase">Intel Linked</span>
+                                                    </Badge>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <CardContent className="p-6">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div className="min-w-0">
+                                                    <p className="text-[9px] font-black text-emerald-500 uppercase tracking-[0.25em] mb-1.5 flex items-center gap-1.5">
+                                                        {p.platform?.toLowerCase().includes('windows') ? <Monitor className="w-3 h-3" /> : (p.platform?.toLowerCase().includes('android') || p.platform?.toLowerCase().includes('ios') ? <Smartphone className="w-3 h-3" /> : <Globe className="w-3 h-3" />)}
+                                                        {p.category || "Protocol"} • {p.platform}
+                                                    </p>
+                                                    <CardTitle className="text-xl font-black text-white uppercase tracking-tight truncate">{p.name}</CardTitle>
+                                                </div>
+                                                <div className="text-right flex-shrink-0">
+                                                    <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">Base Price</p>
+                                                    <p className="text-xl font-black text-white tracking-tighter">₹{p.price}</p>
+                                                </div>
+                                            </div>
+                                            <p className="text-xs text-zinc-500 font-medium line-clamp-2 h-8 leading-relaxed mb-4">{p.description}</p>
+
+                                            <div className="flex items-center gap-3 pt-4 border-t border-zinc-800/50">
+                                                <div className="flex items-center gap-1.5 text-zinc-600">
+                                                    <Shield className="h-3 w-3" />
+                                                    <span className="text-[9px] font-bold uppercase">Locked Entry</span>
+                                                </div>
+                                                <div className="h-1 w-1 rounded-full bg-zinc-800" />
+                                                <div className={cn(
+                                                    "flex items-center gap-1.5 font-black text-[9px] uppercase tracking-widest",
+                                                    (p.status === 'Working' || p.status === 'Undetected' || p.status === 'Running') ? "text-emerald-500/60" :
+                                                        p.status === 'Updating' ? "text-blue-500/60" :
+                                                            p.status === 'Maintenance' ? "text-yellow-500/60" :
+                                                                p.status === 'Testing' ? "text-purple-500/60" :
+                                                                    p.status === 'Risk' ? "text-orange-500/60" :
+                                                                        "text-red-500/60"
+                                                )}>
+                                                    Status: {p.status === 'Working' ? 'Undetected' : (p.status || "Unknown")}
+                                                </div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
+                            {products.length === 0 && (
+                                <div className="col-span-full py-32 bg-zinc-900/10 border border-dashed border-zinc-800 rounded-2xl flex flex-col items-center justify-center text-zinc-600 relative overflow-hidden">
+                                    <div className="absolute inset-0 bg-emerald-500/5 animate-pulse" />
+                                    <Package className="h-16 w-16 mb-4 opacity-10 relative z-10" />
+                                    <p className="font-black uppercase tracking-[0.4em] text-[10px] relative z-10">Data Repository Empty</p>
+                                    <p className="text-[9px] font-bold text-zinc-700 uppercase mt-2 relative z-10">Awaiting asset initialization</p>
+                                </div>
+                            )}
+                        </>
+                    )
+                }
+
+            </div >
         </DashboardLayout >
     );
 }

@@ -857,6 +857,16 @@ export const verifyRazorpayPayment = (data: {
   body: JSON.stringify(data),
 });
 
+export const submitManualStoreOrder = (data: {
+  amount: number;
+  items: any[];
+  payment_method: string;
+  transaction_id: string;
+}) => apiRequest("/payments/manual/submit", {
+  method: "POST",
+  body: JSON.stringify(data),
+});
+
 export const resellerCreateTopupOrder = (amount: number) =>
   apiRequest("/reseller/credits/topup/create-order", {
     method: "POST",

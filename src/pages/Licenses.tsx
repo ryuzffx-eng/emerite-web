@@ -343,7 +343,7 @@ export default function Licenses() {
         onClick={() => openLicenseInfo(license)}
         className="w-full text-left group"
       >
-        <div className="rounded-xl border border-zinc-800/80 bg-[#111111]/90 backdrop-blur-xl p-5 space-y-4 transition-all duration-300 hover:border-emerald-500/40 shadow-xl group-active:scale-[0.98]">
+        <div className="rounded-xl border border-white/5 bg-black/40 backdrop-blur-md p-5 space-y-4 transition-all duration-300 hover:border-emerald-500/40 shadow-xl group-active:scale-[0.98]">
           {/* Header: Product + Status */}
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
@@ -585,7 +585,7 @@ export default function Licenses() {
 
       <div className="space-y-8 transition-all duration-300">
         {/* Top Summary Bar */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-5 sm:p-8 rounded-xl bg-[#111111]/80 border border-zinc-800/80 backdrop-blur-md shadow-2xl shadow-black/20">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-5 sm:p-8 rounded-xl bg-black/40 border border-white/5 backdrop-blur-md shadow-2xl shadow-black/20">
           <div className="flex items-center gap-4 sm:gap-5">
             <div className="p-3 sm:p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 shadow-lg shadow-emerald-500/5">
               <Key className="h-6 w-6 sm:h-7 sm:w-7 text-emerald-500" />
@@ -607,7 +607,7 @@ export default function Licenses() {
           ].map((stat, i) => (
             <div
               key={i}
-              className="bg-[#111111]/80 border border-zinc-800/80 p-4 sm:p-5 rounded-xl animate-card-in backdrop-blur-md hover:border-zinc-700 transition-all duration-300 shadow-xl shadow-black/20"
+              className="bg-black/40 border border-white/5 p-4 sm:p-5 rounded-xl animate-card-in backdrop-blur-md hover:border-white/10 transition-all duration-300 shadow-xl shadow-black/20"
               style={{ animationDelay: stat.delay }}
             >
               <div className="flex items-center justify-between mb-3 sm:mb-4">
@@ -632,7 +632,7 @@ export default function Licenses() {
               placeholder="Search licenses..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-11 bg-zinc-900/50 border-zinc-800 h-10 md:h-12 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-xl transition-all"
+              className="pl-11 bg-black/40 border-white/5 h-10 md:h-12 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-xl transition-all hover:bg-black/60 focus:bg-black/80"
             />
             {searchQuery && (
               <button
@@ -657,7 +657,7 @@ export default function Licenses() {
                   <Plus className="h-4.25 w-4.25" />
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[500px] border-zinc-800 bg-zinc-950/95 backdrop-blur-2xl">
+              <DialogContent className="sm:max-w-[500px] border-white/10 bg-black/90 backdrop-blur-2xl">
                 <ErrorBoundary>
                   <DialogHeader>
                     <DialogTitle className="text-xl text-white">Create Licenses</DialogTitle>
@@ -898,7 +898,7 @@ export default function Licenses() {
             {isLoading ? (
               <LoadingSkeletons count={3} variant="card" />
             ) : filteredLicenses.length === 0 ? (
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-8 text-center">
+              <div className="rounded-xl border border-white/5 bg-black/40 backdrop-blur-md p-8 text-center">
                 <p className="text-zinc-400 text-sm">No licenses found. Create your first license to get started!</p>
               </div>
             ) : (
@@ -908,7 +908,7 @@ export default function Licenses() {
             )}
           </div>
         ) : (
-          <div className="rounded-xl border border-zinc-800 overflow-hidden bg-zinc-900/30">
+          <div className="rounded-xl border border-white/5 overflow-hidden bg-black/40 backdrop-blur-md">
             <DataTable
               columns={columns}
               data={filteredLicenses}
@@ -922,7 +922,7 @@ export default function Licenses() {
 
       {/* License Info Dialog */}
       <Dialog open={infoOpen} onOpenChange={setInfoOpen}>
-        <DialogContent className="w-[95vw] sm:w-full rounded-[1.5rem] sm:rounded-[2.5rem] border-zinc-800 sm:max-w-xl max-h-[94vh] sm:max-h-[90vh] overflow-hidden bg-zinc-950/98 backdrop-blur-3xl p-0 shadow-2xl">
+        <DialogContent className="w-[95vw] sm:w-full rounded-[1.5rem] sm:rounded-[2.5rem] border-white/10 sm:max-w-xl max-h-[94vh] sm:max-h-[90vh] overflow-hidden bg-black/90 backdrop-blur-3xl p-0 shadow-2xl">
           <div className="flex flex-col h-full max-h-[94vh] sm:max-h-[90vh]">
             {/* Tactical Header */}
             <div className="relative p-5 sm:p-8 bg-gradient-to-br from-zinc-900/80 to-black overflow-hidden border-b border-zinc-800/50">

@@ -117,7 +117,7 @@ export default function ResellerApplications() {
       subtitle="Browse and manage your available software products"
     >
       <div className="space-y-8 transition-all duration-300">
-        <div className="flex flex-col gap-6 p-6 sm:p-8 rounded-xl bg-[#111111]/80 border border-zinc-800/80 backdrop-blur-md shadow-2xl shadow-black/20">
+        <div className="flex flex-col gap-6 p-6 sm:p-8 rounded-xl bg-black/40 border border-white/5 backdrop-blur-md shadow-2xl shadow-black/20">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="flex items-center gap-5">
               <div className="h-14 w-14 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shadow-lg shadow-blue-500/5 transition-transform hover:rotate-12">
@@ -149,7 +149,7 @@ export default function ResellerApplications() {
           ].map((stat, i) => (
             <div
               key={i}
-              className="bg-[#111111]/80 border border-zinc-800/80 p-5 sm:p-6 rounded-lg backdrop-blur-md hover:border-emerald-500/20 transition-all duration-300 shadow-xl shadow-black/20 group"
+              className="bg-black/40 border border-white/5 p-5 sm:p-6 rounded-lg backdrop-blur-md hover:border-emerald-500/20 transition-all duration-300 shadow-xl shadow-black/20 group"
               style={{ animationDelay: stat.delay }}
             >
               <div className="flex items-center justify-between mb-4">
@@ -185,7 +185,7 @@ export default function ResellerApplications() {
               placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-11 bg-zinc-900/50 border-zinc-800 h-10 md:h-12 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-xl transition-all"
+              className="pl-11 bg-black/40 border-white/5 h-10 md:h-12 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-xl transition-all hover:bg-black/60 focus:bg-black/80"
             />
             {searchQuery && (
               <button
@@ -197,9 +197,9 @@ export default function ResellerApplications() {
             )}
           </div>
 
-          <div className="flex items-center gap-1.5 bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-800 overflow-x-auto md:overflow-visible shadow-lg shadow-black/20">
+          <div className="flex items-center gap-1.5 bg-black/40 p-1.5 rounded-xl border border-white/5 overflow-x-auto md:overflow-visible shadow-lg shadow-black/20 backdrop-blur-md">
             {/* View Mode */}
-            <div className="flex items-center gap-1 bg-zinc-900/50 p-0.5 rounded-lg border border-zinc-800/50">
+            <div className="flex items-center gap-1 bg-black/40 p-0.5 rounded-lg border border-white/5">
               <Button
                 variant="ghost"
                 size="icon"
@@ -241,7 +241,7 @@ export default function ResellerApplications() {
               {filteredProducts.map((app) => (
                 <div
                   key={app.id}
-                  className="group relative bg-[#111111]/90 backdrop-blur-xl rounded-xl border border-zinc-800/80 hover:border-emerald-500/40 p-5 sm:p-6 transition-all duration-500 shadow-2xl hover:shadow-emerald-500/5 overflow-hidden flex flex-col h-full"
+                  className="group relative bg-black/40 backdrop-blur-xl rounded-xl border border-white/5 hover:border-emerald-500/40 p-5 sm:p-6 transition-all duration-500 shadow-2xl hover:shadow-emerald-500/5 overflow-hidden flex flex-col h-full"
                 >
                   <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -302,7 +302,7 @@ export default function ResellerApplications() {
               {filteredProducts.map((app) => (
                 <div
                   key={app.id}
-                  className="group bg-zinc-900/40 rounded-lg border border-zinc-800 hover:border-emerald-500/50 p-4 transition-all duration-300 hover:shadow-md hover:shadow-emerald-500/5"
+                  className="group bg-black/40 rounded-lg border border-white/5 hover:border-emerald-500/50 p-4 transition-all duration-300 hover:shadow-md hover:shadow-emerald-500/5 backdrop-blur-md"
                 >
                   <div className="grid grid-cols-12 gap-4 items-center">
                     <div className="col-span-12 md:col-span-4">
@@ -352,7 +352,7 @@ export default function ResellerApplications() {
           )
         ) : (
           <div className="col-span-full">
-            <div className="bg-zinc-900/30 rounded-xl border border-dashed border-zinc-800 p-12 text-center">
+            <div className="bg-black/40 rounded-xl border border-dashed border-white/5 p-12 text-center backdrop-blur-md">
               <div className="p-4 rounded-full bg-zinc-900/50 w-fit mx-auto mb-4 border border-zinc-800">
                 <AppWindow className="h-12 w-12 text-zinc-500" />
               </div>
@@ -364,7 +364,7 @@ export default function ResellerApplications() {
 
         {/* Documentation Dialog */}
         <Dialog open={infoDialogOpen} onOpenChange={setInfoDialogOpen}>
-          <DialogContent className="border-zinc-800 bg-zinc-950/98 backdrop-blur-3xl sm:max-w-3xl rounded-xl p-0 overflow-hidden shadow-2xl">
+          <DialogContent className="border-white/10 bg-black/90 backdrop-blur-3xl sm:max-w-3xl rounded-xl p-0 overflow-hidden shadow-2xl">
             <div className="relative">
               {/* Tactical Header */}
               <div className="relative p-6 sm:p-10 bg-gradient-to-br from-zinc-900 to-black border-b border-zinc-800/50 overflow-hidden">
@@ -382,7 +382,7 @@ export default function ResellerApplications() {
                     </DialogTitle>
                     <div className="flex items-center gap-3 mt-3">
                       <Badge className="bg-emerald-500 text-black font-black text-[10px] px-3 py-1 rounded-lg uppercase tracking-wider">V{selectedProduct?.version}</Badge>
-                      <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] px-3 py-1 bg-zinc-900/50 border border-zinc-800/50 rounded-lg">ID #{selectedProduct?.id}</span>
+                      <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] px-3 py-1 bg-black/40 border border-white/5 rounded-lg">ID #{selectedProduct?.id}</span>
                     </div>
                   </div>
                 </div>
@@ -390,7 +390,7 @@ export default function ResellerApplications() {
 
               <div className="p-6 sm:p-10">
                 <Tabs defaultValue="deployment" className="w-full relative z-10">
-                  <TabsList className="grid grid-cols-3 bg-zinc-950/50 p-1.5 rounded-xl border border-zinc-900 mb-8 h-14">
+                  <TabsList className="grid grid-cols-3 bg-black/40 p-1.5 rounded-xl border border-white/5 mb-8 h-14">
                     <TabsTrigger value="deployment" className="data-[state=active]:bg-zinc-900 data-[state=active]:text-emerald-500 data-[state=active]:shadow-lg rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Instructions</TabsTrigger>
                     <TabsTrigger value="generation" className="data-[state=active]:bg-zinc-900 data-[state=active]:text-emerald-500 data-[state=active]:shadow-lg rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Creation</TabsTrigger>
                     <TabsTrigger value="info" className="data-[state=active]:bg-zinc-900 data-[state=active]:text-emerald-500 data-[state=active]:shadow-lg rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Info</TabsTrigger>
@@ -478,7 +478,7 @@ function DocSection({ title, steps }: { title: string; steps: string[] }) {
 
 function DocCard({ icon: Icon, title, desc }: { icon: any; title: string; desc: string }) {
   return (
-    <div className="flex items-start gap-4 p-4 rounded-xl bg-black/20 border border-zinc-800/50 hover:bg-zinc-900/40 transition-colors">
+    <div className="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-white/5 hover:bg-black/60 transition-colors">
       <div className="h-10 w-10 rounded-xl bg-zinc-900 flex items-center justify-center border border-zinc-800 shrink-0">
         <Icon className="h-5 w-5 text-emerald-500" />
       </div>

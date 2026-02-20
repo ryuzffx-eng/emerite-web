@@ -79,7 +79,7 @@ export default function Orders() {
         <DashboardLayout title="Recent Orders" subtitle="View and manage all your store sales">
             <div className="space-y-6 pb-12">
                 {/* Order Registry Banner */}
-                <div className="flex items-center gap-5 p-6 bg-[#111111]/80 border border-zinc-800 rounded-2xl backdrop-blur-md shadow-lg shadow-black/20">
+                <div className="flex items-center gap-5 p-6 bg-black/40 border border-white/5 rounded-2xl backdrop-blur-md shadow-lg shadow-black/20">
                     <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
                         <ShoppingCart className="h-6 w-6" />
                     </div>
@@ -97,7 +97,7 @@ export default function Orders() {
                             placeholder="Search orders..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-11 pr-10 bg-zinc-900/50 border border-zinc-800 h-10 md:h-12 text-sm text-white placeholder:text-zinc-600 rounded-xl transition-all outline-none focus:border-zinc-700"
+                            className="w-full pl-11 pr-10 bg-black/40 border border-white/5 h-10 md:h-12 text-sm text-white placeholder:text-zinc-600 rounded-xl transition-all outline-none focus:border-emerald-500/50 hover:bg-black/60 focus:bg-black/80"
                         />
                         {searchQuery && (
                             <button
@@ -112,14 +112,14 @@ export default function Orders() {
                     <Link
                         to="/products"
                         target="_blank"
-                        className="flex items-center gap-2 px-5 h-10 md:h-12 bg-zinc-900/50 border border-zinc-800 hover:border-emerald-500/50 text-zinc-400 hover:text-emerald-400 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all group shadow-lg shadow-black/20"
+                        className="flex items-center gap-2 px-5 h-10 md:h-12 bg-black/40 border border-white/5 hover:border-emerald-500/50 text-zinc-400 hover:text-emerald-400 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all group shadow-lg shadow-black/20"
                     >
                         <ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:scale-110 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                         <span className="hidden sm:inline">View Customer Store</span>
                         <span className="sm:hidden">Store</span>
                     </Link>
 
-                    <div className="flex items-center gap-1.5 bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-800 shadow-lg shadow-black/20">
+                    <div className="flex items-center gap-1.5 bg-black/40 p-1.5 rounded-xl border border-white/5 shadow-lg shadow-black/20 backdrop-blur-md">
                         <Select value={filterStatus} onValueChange={setFilterStatus}>
                             <SelectTrigger className="h-9 md:h-10 border-0 bg-transparent hover:bg-zinc-800/50 px-2 w-auto gap-1 [&>svg]:h-4 [&>svg]:w-4 flex-shrink-0 text-zinc-500 transition-all select-none focus:ring-0">
                                 <Filter className="h-4.25 w-4.25" />
@@ -147,7 +147,7 @@ export default function Orders() {
                 </div>
 
                 {/* Main Table */}
-                <div className="bg-[#111111]/80 border border-zinc-800 rounded-2xl overflow-hidden backdrop-blur-xl shadow-2xl">
+                <div className="bg-black/40 border border-white/5 rounded-2xl overflow-hidden backdrop-blur-xl shadow-2xl">
                     <div className="overflow-x-auto">
                         {isLoading ? (
                             <div className="p-8">
@@ -156,7 +156,7 @@ export default function Orders() {
                         ) : (
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="bg-black/40 border-b border-zinc-800">
+                                    <tr className="bg-black/60 border-b border-white/5">
                                         <th className="px-6 py-5">
                                             <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
                                                 Order ID <ArrowUpDown className="h-2.5 w-2.5" />
@@ -170,7 +170,7 @@ export default function Orders() {
                                         <th className="px-6 py-5 text-[10px] font-semibold uppercase tracking-wider text-zinc-500 text-right">Time</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-zinc-800">
+                                <tbody className="divide-y divide-white/5">
                                     {filteredOrders.map((order: any) => (
                                         <tr key={order.id} className="group hover:bg-white/[0.02] transition-colors">
                                             <td className="px-6 py-4">
@@ -255,7 +255,7 @@ export default function Orders() {
                 </div>
 
                 {/* Pagination Placeholder */}
-                <div className="flex items-center justify-between p-6 bg-[#111111]/80 border border-zinc-800 rounded-2xl backdrop-blur-sm shadow-xl shadow-black/20">
+                <div className="flex items-center justify-between p-6 bg-black/40 border border-white/5 rounded-2xl backdrop-blur-sm shadow-xl shadow-black/20">
                     <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Showing {filteredOrders.length} orders</p>
                     <div className="flex gap-2">
                         <Button disabled size="icon" variant="outline" className="h-8 w-8 bg-black/40 border-zinc-800 text-zinc-700 transition-all"><ChevronLeft className="h-4 w-4" /></Button>

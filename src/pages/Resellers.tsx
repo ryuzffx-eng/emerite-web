@@ -263,7 +263,7 @@ function ResellerSubscriptionsSection({
             {availablePlans.map((plan) => (
               <div
                 key={plan.id}
-                className="group relative p-4 rounded-xl bg-zinc-900/40 border border-zinc-800/80 hover:border-emerald-500/30 hover:bg-zinc-900/60 transition-all duration-300 flex flex-col justify-between overflow-hidden"
+                className="group relative p-4 rounded-xl bg-black/40 border border-white/5 hover:border-emerald-500/30 hover:bg-black/60 transition-all duration-300 flex flex-col justify-between overflow-hidden backdrop-blur-md"
               >
                 <div className="absolute top-0 right-0 p-3 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
                   <Package className="h-16 w-16 -mr-4 -mt-4 rotate-12" />
@@ -329,7 +329,7 @@ function ResellerSubscriptionsSection({
             {resellerSubscriptions.map((sub: any) => (
               <div
                 key={sub.id}
-                className="group relative p-4 rounded-xl border border-zinc-800/80 bg-zinc-900/20 hover:bg-zinc-900/40 hover:border-emerald-500/20 transition-all duration-500 flex items-center gap-4 overflow-hidden"
+                className="group relative p-4 rounded-xl border border-white/5 bg-black/40 hover:bg-black/60 hover:border-emerald-500/20 transition-all duration-500 flex items-center gap-4 overflow-hidden backdrop-blur-md"
               >
                 <div className="absolute right-12 top-1/2 -translate-y-1/2 h-full w-32 bg-gradient-to-l from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
@@ -401,7 +401,7 @@ const MobileResellerCard = ({ reseller, onProducts, onBalance, onEdit, onDelete,
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="rounded-xl border border-zinc-800/80 bg-[#111111]/90 backdrop-blur-xl p-5 space-y-5 transition-all duration-300 hover:border-emerald-500/40 shadow-xl">
+    <div className="rounded-xl border border-white/5 bg-black/40 backdrop-blur-xl p-5 space-y-5 transition-all duration-300 hover:border-emerald-500/40 shadow-xl">
       {/* Header: Identity + Status */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
@@ -429,7 +429,7 @@ const MobileResellerCard = ({ reseller, onProducts, onBalance, onEdit, onDelete,
               <MoreVertical className="h-5 w-5" />
             </Button>
           </DialogTrigger>
-          <DialogContent className="w-[90vw] max-w-[300px] border-zinc-800 rounded-xl bg-zinc-950/98 backdrop-blur-3xl p-3 shadow-2xl">
+          <DialogContent className="w-[90vw] max-w-[300px] border-white/10 rounded-xl bg-black/90 backdrop-blur-3xl p-3 shadow-2xl">
             <div className="flex flex-col gap-1.5">
               <Button onClick={() => { setOpen(false); onProducts(reseller); }} variant="ghost" className="justify-start h-12 rounded-lg gap-3 text-zinc-300 hover:text-white font-bold text-xs uppercase tracking-tight">
                 <Package className="h-4 w-4 text-emerald-500" /> Products
@@ -451,7 +451,7 @@ const MobileResellerCard = ({ reseller, onProducts, onBalance, onEdit, onDelete,
 
       {/* Statistics */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="p-4 rounded-xl bg-zinc-950/50 border border-zinc-800/50 flex flex-col justify-center text-left">
+        <div className="p-4 rounded-xl bg-black/40 border border-white/5 flex flex-col justify-center text-left">
           <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1 flex items-center gap-1.5">
             <Wallet className="h-2.5 w-2.5" /> BALANCE
           </p>
@@ -462,7 +462,7 @@ const MobileResellerCard = ({ reseller, onProducts, onBalance, onEdit, onDelete,
             </span>
           </div>
         </div>
-        <div className="p-4 rounded-xl bg-zinc-950/50 border border-zinc-800/50 flex flex-col justify-center items-start">
+        <div className="p-4 rounded-xl bg-black/40 border border-white/5 flex flex-col justify-center items-start">
           <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1 flex items-center gap-1.5">
             <Shield className="h-2.5 w-2.5" /> STATUS
           </p>
@@ -513,7 +513,7 @@ function ResellerCard({ reseller, onProducts, onBalance, onEdit, onDelete }: any
     <div className="group relative">
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-teal-500/5 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500 blur-xl -z-10" />
 
-      <div className="relative overflow-hidden bg-zinc-900/40 backdrop-blur-md border border-zinc-800/80 hover:border-emerald-500/30 rounded-xl p-6 transition-all duration-500 shadow-xl hover:shadow-emerald-500/10 h-full flex flex-col">
+      <div className="relative overflow-hidden bg-black/40 backdrop-blur-md border border-white/5 hover:border-emerald-500/30 rounded-xl p-6 transition-all duration-500 shadow-xl hover:shadow-emerald-500/10 h-full flex flex-col">
         {/* Decorative Watermark */}
         <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-700 pointer-events-none group-hover:rotate-12 group-hover:scale-110">
           <UserCog className="h-32 w-32 -mr-12 -mt-12 text-white" />
@@ -545,7 +545,7 @@ function ResellerCard({ reseller, onProducts, onBalance, onEdit, onDelete }: any
                 <MoreVertical className="h-5 w-5" />
               </Button>
             </DialogTrigger>
-            <DialogContent className="border-zinc-800 sm:max-w-xs rounded-xl bg-zinc-950/95 backdrop-blur-xl p-3">
+            <DialogContent className="border-white/10 sm:max-w-xs rounded-xl bg-black/90 backdrop-blur-xl p-3">
               <div className="flex flex-col gap-1">
                 <Button onClick={() => { setOpen(false); onProducts(reseller); }} variant="ghost" className="justify-start h-12 rounded-xl gap-3 text-zinc-300 hover:text-white font-bold">
                   <Package className="h-4 w-4 text-emerald-500" /> Products
@@ -566,7 +566,7 @@ function ResellerCard({ reseller, onProducts, onBalance, onEdit, onDelete }: any
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-6 relative z-10 flex-1">
-          <div className="p-4 rounded-xl bg-zinc-950/50 border border-zinc-800/50 group-hover:border-emerald-500/20 transition-all duration-500 flex flex-col justify-center text-left">
+          <div className="p-4 rounded-xl bg-black/40 border border-white/5 group-hover:border-emerald-500/20 transition-all duration-500 flex flex-col justify-center text-left">
             <p className="text-[9px] font-semibold text-zinc-600 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
               <Wallet className="h-3 w-3" /> BALANCE
             </p>
@@ -577,7 +577,7 @@ function ResellerCard({ reseller, onProducts, onBalance, onEdit, onDelete }: any
               </span>
             </div>
           </div>
-          <div className="p-4 rounded-xl bg-zinc-950/50 border border-zinc-800/50 flex flex-col justify-center items-start">
+          <div className="p-4 rounded-xl bg-black/40 border border-white/5 flex flex-col justify-center items-start">
             <p className="text-[9px] font-semibold text-zinc-600 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
               <Shield className="h-3 w-3" /> STATUS
             </p>
@@ -605,7 +605,7 @@ function ResellerCard({ reseller, onProducts, onBalance, onEdit, onDelete }: any
         <div className="flex gap-2 relative z-10 mt-auto">
           <Button
             onClick={() => onProducts(reseller)}
-            className="flex-1 h-12 rounded-xl bg-zinc-950/50 border border-zinc-800 hover:border-emerald-500/50 hover:bg-zinc-900 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-all duration-300"
+            className="flex-1 h-12 rounded-xl bg-black/40 border border-white/5 hover:border-emerald-500/50 hover:bg-black/60 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-all duration-300"
           >
             Manage
           </Button>
@@ -927,7 +927,7 @@ export default function Resellers() {
 
         <div className="space-y-8 transition-all duration-300">
           {/* Top Summary Bar */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-5 sm:p-8 rounded-xl bg-[#111111]/80 border border-zinc-800/80 backdrop-blur-md shadow-2xl shadow-black/20">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-5 sm:p-8 rounded-xl bg-black/40 border border-white/5 backdrop-blur-md shadow-2xl shadow-black/20">
             <div className="flex items-center gap-4 sm:gap-5">
               <div className="p-3 sm:p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 shadow-lg shadow-emerald-500/5">
                 <Sparkles className="h-6 w-6 sm:h-7 sm:w-7 text-emerald-500" />
@@ -953,7 +953,7 @@ export default function Resellers() {
               return (
                 <div
                   key={i}
-                  className="bg-[#111111]/80 border border-zinc-800/80 p-4 sm:p-5 rounded-lg backdrop-blur-md hover:border-zinc-700 transition-all duration-300 shadow-xl shadow-black/20"
+                  className="bg-black/40 border border-white/5 p-4 sm:p-5 rounded-lg backdrop-blur-md hover:border-white/10 transition-all duration-300 shadow-xl shadow-black/20"
                 >
                   <div className="flex items-center justify-between mb-3 sm:mb-4">
                     <p className="text-[10px] sm:text-[11px] font-bold text-zinc-500 uppercase tracking-widest truncate mr-1">{stat.label}</p>
@@ -979,7 +979,7 @@ export default function Resellers() {
                 placeholder="Search partner network..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-11 bg-zinc-900/50 border-zinc-800 h-10 md:h-12 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-lg transition-all"
+                className="pl-11 bg-black/40 border-white/5 h-10 md:h-12 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-lg transition-all hover:bg-black/60 focus:bg-black/80"
               />
               {searchQuery && (
                 <button
@@ -991,7 +991,7 @@ export default function Resellers() {
               )}
             </div>
 
-            <div className="flex items-center gap-1.5 bg-zinc-900/50 p-1.5 rounded-lg border border-zinc-800 overflow-x-auto md:overflow-visible shadow-lg shadow-black/20">
+            <div className="flex items-center gap-1.5 bg-black/40 p-1.5 rounded-lg border border-white/5 overflow-x-auto md:overflow-visible shadow-lg shadow-black/20 backdrop-blur-md">
               {currentUserType === "admin" && (
                 <>
                   <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
@@ -1005,7 +1005,7 @@ export default function Resellers() {
                         <Plus className="h-4.25 w-4.25" />
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="w-[95vw] sm:w-full rounded-2xl border-zinc-800 sm:max-w-[500px] max-h-[90vh] overflow-hidden bg-zinc-950/98 backdrop-blur-3xl p-0 shadow-2xl">
+                    <DialogContent className="w-[95vw] sm:w-full rounded-2xl border-white/10 sm:max-w-[500px] max-h-[90vh] overflow-hidden bg-black/90 backdrop-blur-3xl p-0 shadow-2xl">
                       <div className="flex flex-col h-full max-h-[90vh]">
                         {/* Tactical Header - Refined */}
                         <div className="relative p-6 bg-gradient-to-br from-zinc-900/80 to-black overflow-hidden border-b border-zinc-800/50">
@@ -1031,7 +1031,7 @@ export default function Resellers() {
 
                         <div className="flex-1 overflow-y-auto p-6 space-y-5 custom-scrollbar">
                           {/* Identity Card */}
-                          <div className="rounded-xl border border-zinc-800/60 bg-zinc-900/20 p-5 space-y-4">
+                          <div className="rounded-xl border border-white/5 bg-black/40 p-5 space-y-4">
                             <div className="flex items-center gap-2 pb-2 border-b border-zinc-800/50">
                               <div className="h-6 w-6 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
                                 <UserCog className="h-3.5 w-3.5 text-emerald-500" />
@@ -1107,7 +1107,7 @@ export default function Resellers() {
                           </div>
 
                           {/* Business Card */}
-                          <div className="rounded-xl border border-zinc-800/60 bg-zinc-900/20 p-5 space-y-4">
+                          <div className="rounded-xl border border-white/5 bg-black/40 p-5 space-y-4">
                             <div className="flex items-center gap-2 pb-2 border-b border-zinc-800/50">
                               <div className="h-6 w-6 rounded-lg bg-teal-500/10 flex items-center justify-center border border-teal-500/20">
                                 <Building className="h-3.5 w-3.5 text-teal-500" />
@@ -1252,7 +1252,7 @@ export default function Resellers() {
               ))}
             </div>
           ) : filteredResellers.length === 0 ? (
-            <div className="p-20 text-center rounded-xl border border-dashed border-zinc-800 bg-zinc-900/20 flex flex-col items-center justify-center">
+            <div className="p-20 text-center rounded-xl border border-dashed border-white/5 bg-black/40 flex flex-col items-center justify-center backdrop-blur-md">
               <div className="h-20 w-20 rounded-lg bg-zinc-900 flex items-center justify-center border border-zinc-800 shadow-xl mb-6">
                 <UserCog className="h-10 w-10 text-zinc-700" />
               </div>
@@ -1261,7 +1261,7 @@ export default function Resellers() {
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="border border-zinc-800/80 rounded-xl overflow-hidden bg-[#111111]/80 backdrop-blur-md">
+              <div className="border border-white/5 rounded-xl overflow-hidden bg-black/40 backdrop-blur-md shadow-2xl">
                 <DataTable
                   keyExtractor={(r) => String(r.id)}
                   columns={[
@@ -1397,7 +1397,7 @@ export default function Resellers() {
         </div>
 
         <Dialog open={balanceDialogOpen} onOpenChange={setBalanceDialogOpen}>
-          <DialogContent className="border-zinc-800/80 sm:max-w-[400px] rounded-2xl bg-zinc-950/98 backdrop-blur-3xl p-0 overflow-hidden shadow-2xl">
+          <DialogContent className="border-white/10 sm:max-w-[400px] rounded-2xl bg-black/90 backdrop-blur-3xl p-0 overflow-hidden shadow-2xl">
             <div className="p-8 space-y-8">
               <DialogHeader>
                 <div className="flex items-center gap-4">
@@ -1428,7 +1428,7 @@ export default function Resellers() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 p-1.5 bg-zinc-900/50 rounded-xl border border-zinc-800/50 shadow-inner">
+                <div className="grid grid-cols-2 gap-3 p-1.5 bg-black/40 rounded-xl border border-white/5 shadow-inner">
                   <button
                     onClick={() => setBalanceAction("add")}
                     className={cn(
@@ -1475,7 +1475,7 @@ export default function Resellers() {
                 </div>
 
                 {balanceAmount && !isNaN(parseFloat(balanceAmount)) && parseFloat(balanceAmount) > 0 && (
-                  <div className="p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="p-6 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-300">
                     <div className="space-y-1">
                       <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wide">Projected Balance</p>
                       <p className="text-2xl font-bold text-white">
@@ -1508,7 +1508,7 @@ export default function Resellers() {
         </Dialog>
 
         <Dialog open={productsDialogOpen} onOpenChange={setProductsDialogOpen}>
-          <DialogContent className="border-zinc-800 sm:max-w-2xl max-h-[85vh] flex flex-col rounded-xl backdrop-blur-2xl bg-zinc-950/95 p-0 overflow-hidden shadow-2xl">
+          <DialogContent className="border-white/10 sm:max-w-2xl max-h-[85vh] flex flex-col rounded-xl backdrop-blur-2xl bg-black/90 p-0 overflow-hidden shadow-2xl">
             <div className="p-8 flex flex-col h-full overflow-hidden">
               <DialogHeader className="mb-6">
                 <div className="flex items-center gap-4">
@@ -1524,7 +1524,7 @@ export default function Resellers() {
               </DialogHeader>
 
               <div className="flex-1 flex flex-col min-h-0">
-                <div className="flex p-1 bg-zinc-900/50 rounded-xl border border-zinc-800/50 mb-6 relative">
+                <div className="flex p-1 bg-black/40 rounded-xl border border-white/5 mb-6 relative">
                   <div
                     className="absolute inset-y-1 rounded-lg bg-zinc-800 shadow-sm transition-all duration-300 ease-out"
                     style={{
@@ -1581,7 +1581,7 @@ export default function Resellers() {
                                   "group p-5 rounded-xl border transition-all relative overflow-hidden",
                                   isAssigned
                                     ? "bg-emerald-500/5 border-emerald-500/20"
-                                    : "bg-zinc-900/20 border-zinc-800 hover:border-zinc-700"
+                                    : "bg-black/40 border-white/5 hover:border-white/10"
                                 )}
                               >
                                 <div className="flex flex-col gap-4 relative z-10">
@@ -1704,7 +1704,7 @@ function AdminResellerPreview({ reseller, onClose }: { reseller: Reseller; onClo
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[850px] h-[85vh] p-0 bg-[#0c0c0c] border border-white/10 rounded-2xl overflow-hidden flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.8)]">
+      <DialogContent className="sm:max-w-[850px] h-[85vh] p-0 bg-black/95 border border-white/10 rounded-2xl overflow-hidden flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.8)] backdrop-blur-3xl">
         <DialogHeader className="sr-only">
           <DialogTitle>Reseller Overview: {reseller.username}</DialogTitle>
           <p className="sr-only">Detailed view of reseller metrics and logs</p>
@@ -1774,7 +1774,7 @@ function AdminResellerPreview({ reseller, onClose }: { reseller: Reseller; onClo
                 ].map((stat, i) => {
                   const Icon = stat.icon;
                   return (
-                    <div key={i} className="p-6 bg-zinc-900/40 border border-white/5 rounded-2xl group hover:border-white/10 transition-all shadow-xl">
+                    <div key={i} className="p-6 bg-black/40 border border-white/5 rounded-2xl group hover:border-white/10 transition-all shadow-xl backdrop-blur-md">
                       <div className="flex items-center justify-between mb-4">
                         <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{stat.label}</p>
                         <Icon className={cn("h-4 w-4 opacity-40 group-hover:opacity-100 transition-opacity", `text-${stat.color}-500`)} />
@@ -1789,7 +1789,7 @@ function AdminResellerPreview({ reseller, onClose }: { reseller: Reseller; onClo
               </div>
 
               <Tabs defaultValue="apps" className="w-full">
-                <TabsList className="bg-zinc-900/50 border border-white/5 p-1 rounded-xl mb-8 flex w-fit">
+                <TabsList className="bg-black/40 border border-white/5 p-1 rounded-xl mb-8 flex w-fit">
                   <TabsTrigger value="apps" className="data-[state=active]:bg-white data-[state=active]:text-black text-[10px] font-black uppercase tracking-widest px-8 h-10 transition-all rounded-lg">Apps</TabsTrigger>
                   <TabsTrigger value="subs" className="data-[state=active]:bg-white data-[state=active]:text-black text-[10px] font-black uppercase tracking-widest px-8 h-10 transition-all rounded-lg">Plans</TabsTrigger>
                   <TabsTrigger value="ledger" className="data-[state=active]:bg-white data-[state=active]:text-black text-[10px] font-black uppercase tracking-widest px-8 h-10 transition-all rounded-lg">Ledger</TabsTrigger>
@@ -1799,7 +1799,7 @@ function AdminResellerPreview({ reseller, onClose }: { reseller: Reseller; onClo
                   {apps && apps.length > 0 ? (
                     <div className="grid grid-cols-2 gap-4">
                       {apps.map((app) => (
-                        <div key={app?.id || Math.random()} className="p-5 bg-zinc-900/20 border border-white/5 rounded-xl flex items-center gap-4 hover:bg-zinc-900/40 transition-all group">
+                        <div key={app?.id || Math.random()} className="p-5 bg-black/40 border border-white/5 rounded-xl flex items-center gap-4 hover:bg-black/60 transition-all group backdrop-blur-md">
                           <div className="h-12 w-12 rounded-xl bg-zinc-950 border border-white/5 flex items-center justify-center p-2 group-hover:border-emerald-500/30 transition-all">
                             <Package className="h-full w-full text-zinc-500 group-hover:text-emerald-500 transition-colors" />
                           </div>
@@ -1828,7 +1828,7 @@ function AdminResellerPreview({ reseller, onClose }: { reseller: Reseller; onClo
                   {subscriptions && subscriptions.length > 0 ? (
                     <div className="grid gap-3">
                       {subscriptions.map((sub) => (
-                        <div key={sub?.id || Math.random()} className="p-5 bg-zinc-900/20 border border-white/5 rounded-2xl hover:bg-zinc-900/40 transition-all flex items-center gap-6 group">
+                        <div key={sub?.id || Math.random()} className="p-5 bg-black/40 border border-white/5 rounded-2xl hover:bg-black/60 transition-all flex items-center gap-6 group backdrop-blur-md">
                           <div className="h-14 w-14 rounded-2xl bg-zinc-950 border border-white/5 flex items-center justify-center group-hover:border-emerald-500/30 transition-all">
                             <Shield className="h-7 w-7 text-emerald-500/80 group-hover:scale-110 transition-all" />
                           </div>

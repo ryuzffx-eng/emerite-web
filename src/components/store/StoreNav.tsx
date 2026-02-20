@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { isAuthenticated, clearAuth, getAuth } from "@/lib/api";
 import { MarketDialog } from "./MarketDialog";
+import { Checkout } from "./Checkout";
 import {
     Sheet,
     SheetContent,
@@ -45,6 +46,7 @@ export const StoreNav = () => {
     const { selectedRegion, isMarketOpen, setIsMarketOpen } = useMarket();
     const { toast } = useToast();
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -115,9 +117,9 @@ export const StoreNav = () => {
                         borderRadius: isScrolled ? 0 : 12,
                         padding: isScrolled ? "12px 24px" : "14px 12px",
                         backgroundColor: isScrolled
-                            ? "rgba(5, 5, 5, 0.97)"
-                            : "rgba(8, 8, 8, 0.4)",
-                        backdropFilter: "blur(16px)",
+                            ? "rgba(5, 5, 5, 0.7)"
+                            : "rgba(8, 8, 8, 0.3)",
+                        backdropFilter: "blur(20px)",
                         maxWidth: isScrolled ? "100%" : "80rem",
                         boxShadow: isScrolled
                             ? "0 8px 32px rgba(0, 0, 0, 0.5)"
@@ -360,7 +362,7 @@ export const StoreNav = () => {
                                                 <motion.button
                                                     whileHover={{ y: -1 }}
                                                     whileTap={{ scale: 0.98 }}
-                                                    onClick={() => { setIsCartOpen(false); navigate('/checkout'); }}
+                                                    onClick={() => { setIsCartOpen(false); setIsCheckoutOpen(true); }}
                                                     className="h-12 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-[0_4px_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2"
                                                 >
                                                     Checkout
@@ -487,7 +489,7 @@ export const StoreNav = () => {
             <MarketDialog open={isMarketOpen} onOpenChange={setIsMarketOpen} />
 
             {/* Minimalist Mobile Navigation Bar */}
-            <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden border-t border-emerald-500/20 bg-[#050505]/90 backdrop-blur-2xl shadow-[0_-10px_30px_rgba(0,0_0,0.5)]">
+            <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden border-t border-emerald-500/20 bg-black/80 backdrop-blur-2xl shadow-[0_-10px_30px_rgba(0,0_0,0.5)]">
                 <nav className="flex items-center h-16 max-w-lg mx-auto px-2">
                     {navItems.map((item) => {
                         const isActive = location.pathname === item.path;
@@ -536,6 +538,8 @@ export const StoreNav = () => {
                     }
                 }
             `}} />
+
+            <Checkout isOpen={isCheckoutOpen} onOpenChange={setIsCheckoutOpen} />
         </>
     );
 };

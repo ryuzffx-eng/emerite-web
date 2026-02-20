@@ -87,7 +87,7 @@ const MobileUserCard = ({ user, onSelect, onImpersonate, onPreview }: { user: St
             onClick={() => onSelect(user.id)}
             className="w-full text-left group"
         >
-            <div className="rounded-xl border border-zinc-800 bg-[#111111]/80 backdrop-blur-md p-5 space-y-4 transition-all duration-300 hover:border-zinc-700 shadow-xl group-active:scale-[0.98]">
+            <div className="rounded-xl border border-white/5 bg-black/40 backdrop-blur-md p-5 space-y-4 transition-all duration-300 hover:border-white/10 shadow-xl group-active:scale-[0.98]">
                 <div className="flex items-start justify-between gap-4">
                     <div className="flex items-center gap-4 min-w-0 flex-1">
                         <div className="h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-emerald-500/10 border border-emerald-500/20 overflow-hidden">
@@ -425,7 +425,7 @@ export default function Clients() {
             subtitle="Manage registered users from the store website"
         >
             <div className="space-y-8 transition-all duration-500">
-                <div className="p-5 sm:p-8 rounded-xl bg-[#111111]/80 border border-zinc-800/80 backdrop-blur-md shadow-2xl shadow-black/20">
+                <div className="p-5 sm:p-8 rounded-xl bg-black/40 border border-white/5 backdrop-blur-md shadow-2xl shadow-black/20">
                     <div className="flex items-center gap-4 sm:gap-6">
                         <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-lg shadow-emerald-500/5">
                             <UsersIcon className="h-6 w-6 sm:h-7 sm:w-7 text-emerald-500" />
@@ -446,7 +446,7 @@ export default function Clients() {
                     ].map((stat, i) => (
                         <div
                             key={i}
-                            className="bg-[#111111]/80 border border-zinc-800/80 p-4 sm:p-5 rounded-xl backdrop-blur-md hover:border-zinc-700 transition-all duration-300 shadow-xl shadow-black/20"
+                            className="bg-black/40 border border-white/5 p-4 sm:p-5 rounded-xl backdrop-blur-md hover:border-white/10 transition-all duration-300 shadow-xl shadow-black/20"
                         >
                             <div className="flex items-center justify-between mb-3 sm:mb-4">
                                 <p className="text-[10px] sm:text-[11px] font-semibold text-zinc-500 uppercase tracking-widest truncate mr-1">{stat.label}</p>
@@ -470,11 +470,11 @@ export default function Clients() {
                             placeholder="Search Client Node Registry..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-12 bg-[#050505] border-zinc-900 h-12 text-white placeholder:text-zinc-700 rounded-xl transition-all shadow-2xl focus:ring-1 focus:ring-emerald-500/20"
+                            className="pl-12 bg-black/40 border-white/5 h-12 text-white placeholder:text-zinc-600 rounded-xl transition-all shadow-2xl focus:ring-1 focus:ring-emerald-500/20 hover:bg-black/60 focus:bg-black/80"
                         />
                     </div>
 
-                    <div className="flex items-center gap-1.5 bg-[#050505] p-1.5 rounded-xl border border-zinc-900 shadow-2xl">
+                    <div className="flex items-center gap-1.5 bg-black/40 p-1.5 rounded-xl border border-white/5 shadow-2xl backdrop-blur-md">
                         <Select value={activeTab} onValueChange={(val: any) => setActiveTab(val)}>
                             <SelectTrigger className="h-9 border-0 bg-zinc-900/40 hover:bg-zinc-800/60 px-3 w-auto gap-2 flex-shrink-0 text-zinc-400 transition-all focus:ring-0 rounded-lg">
                                 <Filter className="h-4 w-4" />
@@ -514,7 +514,7 @@ export default function Clients() {
                     </div>
                 </div>
 
-                <div className="border border-zinc-800/80 rounded-xl overflow-hidden bg-[#111111]/80 backdrop-blur-md">
+                <div className="border border-white/5 rounded-xl overflow-hidden bg-black/40 backdrop-blur-md shadow-xl">
                     {isMobile ? (
                         <div className="p-4 space-y-4">
                             {filteredClients.map(client => (
@@ -609,8 +609,8 @@ const AdminClientPreview = ({ client, onClose }: { client: StoreClient; onClose:
 
     return (
         <Dialog open={true} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[800px] h-[85vh] p-0 bg-[#0c0c0c] border border-white/10 rounded-xl overflow-hidden flex flex-col">
-                <div className="p-6 border-b border-white/5 bg-zinc-900/30">
+            <DialogContent className="sm:max-w-[800px] h-[85vh] p-0 bg-black/90 border border-white/10 rounded-xl overflow-hidden flex flex-col backdrop-blur-xl">
+                <div className="p-6 border-b border-white/5 bg-black/40">
                     <div className="flex items-center gap-4">
                         <div className="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center p-0.5 overflow-hidden">
                             {client.avatar_url ? (

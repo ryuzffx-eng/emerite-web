@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
     Shield, ShieldCheck, Lock, CreditCard, Wallet,
     Bitcoin, User, CheckCircle2, ChevronRight, ChevronLeft,
-    Terminal, Cpu, AlertCircle, Loader2, Copy, Key, Zap
+    Terminal, Cpu, AlertCircle, Loader2, Copy, Key, Zap, MessageSquare
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +33,7 @@ const Checkout = () => {
 
     // State
     const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'crypto'>('razorpay');
+    const [selectedCrypto, setSelectedCrypto] = useState<'usdt_trc20' | 'usdt_bep20' | 'ltc' | 'btc'>('usdt_trc20');
 
 
     const [isAgreed, setIsAgreed] = useState(false);
@@ -56,6 +57,15 @@ const Checkout = () => {
         }
     }, [auth.token, items.length, navigate]);
 
+    // Set default payment method based on region
+    useEffect(() => {
+        if (selectedRegion?.currency_code === 'INR') {
+            setPaymentMethod('razorpay');
+        } else {
+            setPaymentMethod('crypto');
+        }
+    }, [selectedRegion]);
+
     // Currency Conversion
     const displayTotal = items.reduce((acc, item) => {
         return acc + (item.price * item.quantity);
@@ -69,6 +79,37 @@ const Checkout = () => {
             script.onerror = () => resolve(false);
             document.body.appendChild(script);
         });
+    };
+
+    const cryptoAccounts = {
+        usdt_trc20: {
+            name: "USDT (TRC20)",
+            address: "TT2fYWs2gfUbbyMzU3wdUps6ECqGPUt7zP",
+            network: "TRON (TRC20)",
+            color: "text-emerald-500",
+            qr: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=TT2fYWs2gfUbbyMzU3wdUps6ECqGPUt7zP`
+        },
+        usdt_bep20: {
+            name: "USDT (BEP20)",
+            address: "0x680e71e7733a8333f1a8dca2532a4d3f87724e90",
+            network: "Binance Smart Chain",
+            color: "text-yellow-500",
+            qr: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=0x680e71e7733a8333f1a8dca2532a4d3f87724e90`
+        },
+        ltc: {
+            name: "Litecoin (LTC)",
+            address: "Contact support for address",
+            network: "Litecoin Network",
+            color: "text-blue-400",
+            qr: ""
+        },
+        btc: {
+            name: "Bitcoin (BTC)",
+            address: "Contact support for address",
+            network: "Bitcoin Network",
+            color: "text-orange-500",
+            qr: ""
+        }
     };
 
     const handlePayment = async () => {
@@ -105,7 +146,7 @@ const Checkout = () => {
             }));
 
             const options = {
-                key: "rzp_live_SGSDs7w1ie6YS8",
+                key: (orderData as any).key_id || "rzp_live_SGSDs7w1ie6YS8",
                 amount: orderData.amount,
                 currency: orderData.currency,
                 name: "Emerite Store",
@@ -179,9 +220,7 @@ const Checkout = () => {
     return (
         <StoreLayout hideFooter={true}>
             <div className="min-h-screen pt-20 pb-20 px-4 flex items-center justify-center relative overflow-hidden">
-                {/* Background Ambient - Optimized */}
-                <div className="absolute top-0 right-0 w-[900px] h-[900px] bg-emerald-500/4 blur-[180px] rounded-full pointer-events-none -translate-y-1/3 translate-x-1/3 opacity-60" />
-                <div className="absolute bottom-0 left-0 w-[700px] h-[700px] bg-blue-500/4 blur-[180px] rounded-full pointer-events-none translate-y-1/3 -translate-x-1/3 opacity-60" />
+
 
                 <div className="w-full max-w-7xl relative z-10">
                     {/* Breadcrumb Navigation */}
@@ -223,7 +262,7 @@ const Checkout = () => {
                             {/* Billing Identity Card */}
                             <motion.div
                                 whileHover={{ borderColor: 'rgb(16, 185, 129)' }}
-                                className="bg-gradient-to-br from-white/[0.03] to-white/[0.01] backdrop-blur-sm border border-white/10 rounded-2xl p-6 relative overflow-hidden group transition-all duration-300"
+                                className="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 relative overflow-hidden group transition-all duration-300"
                             >
                                 <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500 opacity-60" />
                                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -260,7 +299,7 @@ const Checkout = () => {
                                     <h3 className="text-sm font-black text-white uppercase tracking-wider">Payment Method</h3>
                                 </div>
 
-                                <div className="space-y-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     {selectedRegion?.currency_code === 'INR' ? (
                                         /* Razorpay Option */
                                         <motion.div
@@ -268,10 +307,10 @@ const Checkout = () => {
                                             whileTap={{ scale: 0.98 }}
                                             onClick={() => setPaymentMethod('razorpay')}
                                             className={cn(
-                                                "cursor-pointer rounded-xl p-5 border transition-all duration-300 relative group overflow-hidden",
+                                                "cursor-pointer rounded-xl p-5 border transition-all duration-300 relative group overflow-hidden sm:col-span-2",
                                                 paymentMethod === 'razorpay'
                                                     ? "bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border-emerald-500/50 shadow-lg shadow-emerald-500/10"
-                                                    : "bg-white/5 border-white/10 hover:bg-white/[0.08] hover:border-white/20"
+                                                    : "bg-black/40 border-white/5 hover:bg-black/60 hover:border-white/20"
                                             )}
                                         >
                                             {paymentMethod === 'razorpay' && (
@@ -306,10 +345,10 @@ const Checkout = () => {
                                             whileTap={{ scale: 0.98 }}
                                             onClick={() => setPaymentMethod('crypto')}
                                             className={cn(
-                                                "cursor-pointer rounded-xl p-5 border transition-all duration-300 relative group overflow-hidden",
+                                                "cursor-pointer rounded-xl p-5 border transition-all duration-300 relative group overflow-hidden sm:col-span-2",
                                                 paymentMethod === 'crypto'
                                                     ? "bg-gradient-to-br from-yellow-500/10 to-yellow-500/5 border-yellow-500/50 shadow-lg shadow-yellow-500/10"
-                                                    : "bg-white/5 border-white/10 hover:bg-white/[0.08] hover:border-white/20"
+                                                    : "bg-black/40 border-white/5 hover:bg-black/60 hover:border-white/20"
                                             )}
                                         >
                                             {paymentMethod === 'crypto' && (
@@ -325,23 +364,31 @@ const Checkout = () => {
                                                         ? "bg-yellow-500/20 border border-yellow-500/30"
                                                         : "bg-yellow-500/10 border border-yellow-500/20"
                                                 )}>
-                                                    <Wallet className={cn(
+                                                    <Bitcoin className={cn(
                                                         "w-6 h-6",
                                                         paymentMethod === 'crypto' ? "text-yellow-400" : "text-yellow-400"
                                                     )} />
                                                 </div>
 
                                                 <div className="flex-1">
-                                                    <h4 className="text-white font-bold text-sm">Crypto / Binance Pay</h4>
+                                                    <h4 className="text-white font-bold text-sm">Cryptocurrency</h4>
                                                     <p className="text-zinc-500 text-xs font-medium mt-0.5">USDT, BTC, LTC - Manual processing via support</p>
                                                 </div>
 
-                                                <div className="px-2.5 py-1 rounded-md bg-yellow-500/10 border border-yellow-500/20 text-yellow-600 text-[9px] font-bold uppercase tracking-wider whitespace-nowrap">
-                                                    Manual
+                                                <div className="px-2.5 py-1 rounded-md bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 text-[9px] font-bold uppercase tracking-wider whitespace-nowrap">
+                                                    Global
                                                 </div>
                                             </div>
                                         </motion.div>
                                     )}
+                                </div>
+
+                                {/* Security Notification */}
+                                <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 flex items-start gap-3">
+                                    <AlertCircle className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
+                                    <p className="text-[11px] text-zinc-500 font-medium leading-relaxed">
+                                        Your payment information is encrypted and processed through industry-standard secure gateways. Emerite does not store sensitive payment credentials.
+                                    </p>
                                 </div>
                             </div>
                         </motion.div>
@@ -353,7 +400,7 @@ const Checkout = () => {
                             transition={{ delay: 0.1, duration: 0.4 }}
                             className="lg:col-span-1"
                         >
-                            <div className="bg-gradient-to-br from-white/[0.05] to-white/[0.02] backdrop-blur-sm border border-white/10 rounded-2xl p-7 sticky top-24 shadow-xl overflow-hidden">
+                            <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-7 sticky top-24 shadow-xl overflow-hidden">
                                 {/* Decorative accent */}
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-3xl rounded-full -translate-y-1/2 translate-x-1/2" />
 
@@ -382,7 +429,7 @@ const Checkout = () => {
                                                 </span>
                                             </div>
                                             <span className="text-white font-semibold text-sm ml-2 whitespace-nowrap">
-                                                ₹{(item.price * item.quantity).toFixed(2)}
+                                                {selectedRegion?.currency_symbol || '₹'}{(item.price * item.quantity).toFixed(2)}
                                             </span>
                                         </motion.div>
                                     ))}
@@ -412,12 +459,12 @@ const Checkout = () => {
                                 <div className="space-y-3 mb-7">
                                     <div className="flex justify-between text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                                         <span>Subtotal</span>
-                                        <span>₹{displayTotal.toFixed(2)}</span>
+                                        <span>{selectedRegion?.currency_symbol || '₹'}{displayTotal.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between items-baseline pt-2 border-t border-white/10">
                                         <span className="text-sm font-black text-white uppercase tracking-tight">Total Amount</span>
                                         <span className="text-2xl font-black text-white tracking-tight tabular-nums">
-                                            ₹{displayTotal.toFixed(2)}
+                                            {selectedRegion?.currency_symbol || '₹'}{displayTotal.toFixed(2)}
                                         </span>
                                     </div>
                                 </div>
@@ -449,7 +496,7 @@ const Checkout = () => {
                                     ) : (
                                         <span className="flex items-center justify-center gap-2">
                                             <Zap className="w-4 h-4" />
-                                            Pay ₹{displayTotal.toFixed(2)}
+                                            Pay {selectedRegion?.currency_symbol || '₹'}{displayTotal.toFixed(2)}
                                         </span>
                                     )}
                                 </Button>
@@ -627,71 +674,145 @@ const Checkout = () => {
 
             {/* Crypto Payment Dialog */}
             <Dialog open={isCryptoDialogOpen} onOpenChange={setIsCryptoDialogOpen}>
-                <DialogContent className="max-w-lg bg-gradient-to-br from-white/[0.08] to-white/[0.02] backdrop-blur-xl border border-white/20 p-0 overflow-hidden gap-0 rounded-2xl shadow-2xl">
-                    <div className="p-8 pb-4">
-                        <DialogHeader className="mb-6">
-                            <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ type: 'spring', damping: 15, stiffness: 200 }}
-                                className="w-14 h-14 rounded-xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center mx-auto mb-4 shadow-lg"
-                            >
-                                <Wallet className="w-7 h-7 text-yellow-500" />
-                            </motion.div>
-                            <DialogTitle className="text-xl font-black text-white uppercase tracking-tight text-center">
-                                Crypto Payment
-                            </DialogTitle>
-                            <DialogDescription className="text-center text-zinc-400 text-xs font-medium uppercase tracking-wide">
-                                Secure manual processing
-                            </DialogDescription>
-                        </DialogHeader>
-
-                        <div className="space-y-5">
-                            <div className="bg-white/5 rounded-xl p-5 border border-white/10 text-center backdrop-blur-sm">
-                                <span className="text-xs uppercase font-bold text-zinc-500 block mb-2">Amount Due</span>
-                                <span className="text-3xl font-black text-white block">
-                                    {selectedRegion?.currency_symbol || '$'}{displayTotal.toFixed(2)}
-                                </span>
+                <DialogContent className="max-w-2xl bg-black border border-white/10 p-0 overflow-hidden rounded-3xl shadow-[0_0_50px_rgba(0,0,0,1)]">
+                    <div className="grid grid-cols-1 md:grid-cols-5 h-full">
+                        {/* Sidebar - Coin Selection */}
+                        <div className="md:col-span-2 bg-[#050505] border-r border-white/5 p-6 flex flex-col gap-6">
+                            <div>
+                                <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-4 px-1">Choose Asset</h3>
+                                <div className="space-y-2">
+                                    {Object.entries(cryptoAccounts).map(([key, coin]) => (
+                                        <button
+                                            key={key}
+                                            onClick={() => setSelectedCrypto(key as any)}
+                                            className={cn(
+                                                "w-full p-4 rounded-2xl border transition-all duration-300 flex items-center justify-between group text-left",
+                                                selectedCrypto === key
+                                                    ? "bg-white/5 border-white/20 shadow-lg"
+                                                    : "bg-transparent border-transparent hover:bg-white/[0.03] hover:border-white/5"
+                                            )}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className={cn("w-8 h-8 rounded-lg bg-black border border-white/5 flex items-center justify-center", coin.color)}>
+                                                    {key.includes('btc') ? <Bitcoin className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs font-bold text-white leading-none mb-1">{coin.name.split(' ')[0]}</p>
+                                                    <p className="text-[9px] font-medium text-zinc-600 group-hover:text-zinc-400 transition-colors uppercase tracking-wider">{coin.network.split(' ')[0]}</p>
+                                                </div>
+                                            </div>
+                                            {selectedCrypto === key && <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]" />}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
 
-                            <motion.div
-                                whileHover={{ borderColor: 'rgb(255, 193, 7)' }}
-                                className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 transition-all duration-300"
-                            >
-                                <div className="w-10 h-10 rounded-lg bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center flex-shrink-0">
-                                    <Zap className="w-5 h-5 text-yellow-500" />
+                            <div className="mt-auto space-y-3">
+                                <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10">
+                                    <p className="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-1.5 flex items-center gap-2">
+                                        <Shield className="w-3 h-3" /> Need Help?
+                                    </p>
+                                    <p className="text-[10px] text-zinc-500 font-medium leading-relaxed">
+                                        Contact our team on Discord or Telegram for instant assistance.
+                                    </p>
                                 </div>
-                                <div className="flex-1">
-                                    <p className="text-sm font-bold text-white">Contact Support Team</p>
-                                    <p className="text-xs text-zinc-500 leading-relaxed mt-0.5">Complete secure manual processing for cryptocurrency payments.</p>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => window.open("https://discord.gg/bCBn7hFe4B", "_blank")}
+                                        className="flex-1 h-10 bg-[#5865F2] hover:bg-[#4752c4] rounded-xl flex items-center justify-center text-white transition-all active:scale-95 shadow-lg shadow-blue-500/10"
+                                    >
+                                        <Zap className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => window.open("https://t.me/DevImGui", "_blank")}
+                                        className="flex-1 h-10 bg-[#0088cc] hover:bg-[#0077b3] rounded-xl flex items-center justify-center text-white transition-all active:scale-95 shadow-lg shadow-blue-500/10"
+                                    >
+                                        <Terminal className="w-4 h-4" />
+                                    </button>
                                 </div>
-                            </motion.div>
+                            </div>
+                        </div>
+
+                        {/* Main Content - Selected Coin Details */}
+                        <div className="md:col-span-3 p-8 flex flex-col items-center justify-center relative">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={selectedCrypto}
+                                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="w-full flex flex-col items-center text-center"
+                                >
+                                    <div className="mb-6 relative">
+                                        <div className="absolute inset-0 bg-emerald-500/5 blur-3xl rounded-full" />
+                                        <div className="relative w-40 h-40 bg-white/[0.03] border border-white/10 rounded-3xl p-3 shadow-2xl backdrop-blur-sm group overflow-hidden">
+                                            {cryptoAccounts[selectedCrypto].qr ? (
+                                                <img
+                                                    src={cryptoAccounts[selectedCrypto].qr}
+                                                    alt="QR Code"
+                                                    className="w-full h-full object-contain filter invert opacity-90 group-hover:opacity-100 transition-opacity"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex flex-col items-center justify-center text-zinc-600 gap-3">
+                                                    <AlertCircle className="w-10 h-10 opacity-20" />
+                                                    <span className="text-[10px] font-black uppercase tracking-widest px-4 text-center">Address via Ticket Only</span>
+                                                </div>
+                                            )}
+                                            <div className="absolute top-0 left-0 w-full h-full bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4 w-full">
+                                        <div>
+                                            <h4 className="text-xl font-black text-white uppercase tracking-tight">{cryptoAccounts[selectedCrypto].name}</h4>
+                                            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-1">Network: {cryptoAccounts[selectedCrypto].network}</p>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em]">Deposit Address</label>
+                                            <div className="flex items-center gap-2 bg-black border border-white/5 rounded-2xl p-4 group hover:border-white/10 transition-all">
+                                                <code className="flex-1 text-[11px] font-mono text-emerald-400 truncate tracking-wider">
+                                                    {cryptoAccounts[selectedCrypto].address}
+                                                </code>
+                                                {cryptoAccounts[selectedCrypto].address.includes('0x') || cryptoAccounts[selectedCrypto].address.startsWith('T') ? (
+                                                    <button
+                                                        onClick={() => {
+                                                            navigator.clipboard.writeText(cryptoAccounts[selectedCrypto].address);
+                                                            toast({ title: "Copied!", description: "Address copied to clipboard." });
+                                                        }}
+                                                        className="p-2 rounded-lg bg-white/5 hover:bg-emerald-500/20 text-emerald-500 transition-all active:scale-90"
+                                                    >
+                                                        <Copy className="w-4 h-4" />
+                                                    </button>
+                                                ) : null}
+                                            </div>
+                                        </div>
+
+                                        <div className="pt-4">
+                                            <Button
+                                                onClick={() => window.open("https://discord.gg/bCBn7hFe4B", "_blank")}
+                                                className="w-full h-14 bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-emerald-500/20 flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+                                            >
+                                                <MessageSquare className="w-5 h-5" />
+                                                Finalize Transaction
+                                            </Button>
+                                            <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mt-4">
+                                                Provide TXID or Screenshot in your ticket for instant verification
+                                            </p>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
                     </div>
 
-                    <div className="p-6 pt-2 bg-white/[0.02] border-t border-white/10">
-                        <div className="grid grid-cols-1 gap-3">
-                            <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                            >
-                                <Button
-                                    onClick={() => window.open("https://discord.gg/bCBn7hFe4B", "_blank")}
-                                    className="w-full bg-[#5865F2] hover:bg-[#4752c4] text-white font-bold h-11 rounded-xl uppercase tracking-wider text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/20"
-                                >
-                                    <Shield className="w-4 h-4" />
-                                    Open Support Ticket
-                                </Button>
-                            </motion.div>
-                            <Button
-                                variant="ghost"
-                                onClick={() => setIsCryptoDialogOpen(false)}
-                                className="w-full text-zinc-500 hover:text-white font-bold h-10 rounded-xl uppercase tracking-wider text-xs transition-all hover:bg-white/5"
-                            >
-                                Cancel
-                            </Button>
-                        </div>
-                    </div>
+                    <button
+                        onClick={() => setIsCryptoDialogOpen(false)}
+                        className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-500 hover:text-white transition-all"
+                    >
+                        <Lock className="w-4 h-4" />
+                    </button>
                 </DialogContent>
             </Dialog>
         </StoreLayout>

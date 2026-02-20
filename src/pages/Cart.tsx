@@ -1,4 +1,5 @@
 import { StoreLayout } from "@/components/store/StoreLayout";
+import { Checkout } from "@/components/store/Checkout";
 import { useCart } from "@/context/CartContext";
 import { useMarket } from "@/context/MarketContext";
 import { Button } from "@/components/ui/button";
@@ -23,13 +24,7 @@ const Cart = () => {
     const { selectedRegion } = useMarket();
     const navigate = useNavigate();
     const { toast } = useToast();
-    const [isCheckingOut, setIsCheckingOut] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState<'upi' | 'crypto'>('upi');
-    const [isVerifying, setIsVerifying] = useState(false);
-    const [verificationStatus, setVerificationStatus] = useState<'processing' | 'success' | 'error'>('processing');
-    const [verificationMessage, setVerificationMessage] = useState("Awaiting Order Confirmation...");
-
-    const [purchasedKeys, setPurchasedKeys] = useState<{ product_name: string; key: string }[]>([]);
+    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [isCryptoDialogOpen, setIsCryptoDialogOpen] = useState(false);
 
     useEffect(() => {
@@ -39,133 +34,7 @@ const Cart = () => {
         }
     }, [navigate]);
 
-    const loadScript = (src: string) => {
-        return new Promise((resolve) => {
-            const script = document.createElement("script");
-            script.src = src;
-            script.onload = () => resolve(true);
-            script.onerror = () => resolve(false);
-            document.body.appendChild(script);
-        });
-    };
 
-    const handleCheckout = async () => {
-        if (items.length === 0) return;
-
-        if (paymentMethod === 'crypto') {
-            setIsCryptoDialogOpen(true);
-            return;
-        }
-
-        setIsCheckingOut(true);
-
-        try {
-            // Load Razorpay Script
-            const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
-            if (!res) {
-                toast({
-                    title: "Initialization Failed",
-                    description: "Razorpay SDK failed to load. Are you online?",
-                    variant: "destructive"
-                });
-                setIsCheckingOut(false);
-                return;
-            }
-
-            const orderData = await import("@/lib/api").then(api => api.initiateRazorpayOrder({
-                amount: displayTotal,
-                items: items.flatMap(item => Array(item.quantity).fill({
-                    product_id: item.id,
-                    plan_id: item.plan_id,
-                    price: item.price
-                }))
-            }));
-
-            const auth = getAuth();
-            const options = {
-                key: (orderData as any).key_id || "rzp_live_SGSDs7w1ie6YS8",
-                amount: orderData.amount,
-                currency: orderData.currency,
-                name: "Emerite Store",
-                description: `Order for ${items.length} items`,
-                image: "/favicon.ico",
-                order_id: orderData.id,
-                handler: async (response: any) => {
-                    setIsCheckingOut(false);
-                    setIsVerifying(true);
-                    setVerificationStatus('processing');
-                    setVerificationMessage("Payment Captured. Verifying Signature...");
-
-                    try {
-                        const verification = await import("@/lib/api").then(api => api.verifyRazorpayPayment({
-                            razorpay_order_id: response.razorpay_order_id,
-                            razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_signature: response.razorpay_signature
-                        }));
-
-                        if (verification.status === "success") {
-                            setVerificationStatus('success');
-                            setVerificationMessage("Payment Verified Successfully!");
-
-                            // Capture keys if returned
-                            if (verification.keys_data) {
-                                setPurchasedKeys(verification.keys_data);
-                            } else if (verification.keys) {
-                                // Fallback for simple key list
-                                setPurchasedKeys(verification.keys.map((k: string) => ({ product_name: "License Key", key: k })));
-                            }
-
-                            toast({
-                                title: "Payment Successful",
-                                description: "Your order has been processed. Check your dashboard for access.",
-                                variant: "default"
-                            });
-
-                            // Remove auto-redirect or make it longer if keys are shown
-                            // setTimeout(() => {
-                            //     clearCart();
-                            //     navigate("/client/dashboard");
-                            // }, 2500);
-                        } else {
-                            throw new Error(verification.message || "Verification Failed");
-                        }
-                    } catch (err: any) {
-                        setVerificationStatus('error');
-                        setVerificationMessage(err.message || "Cryptographic Verification Failed");
-                        toast({
-                            title: "Verification Failed",
-                            description: err.message || "Payment verification failed. Please contact support.",
-                            variant: "destructive"
-                        });
-                    }
-                },
-                prefill: {
-                    name: auth.user?.username || "",
-                    email: auth.user?.email || "",
-                },
-                theme: {
-                    color: "#10b981",
-                },
-                modal: {
-                    ondismiss: () => {
-                        setIsCheckingOut(false);
-                    }
-                }
-            };
-
-            const paymentObject = new (window as any).Razorpay(options);
-            paymentObject.open();
-
-        } catch (error: any) {
-            console.error("Checkout Error:", error);
-            toast({
-                title: "Internal Error",
-                description: error.message || "Something went wrong during checkout initialization.",
-                variant: "destructive"
-            });
-            setIsCheckingOut(false);
-        }
-    };
 
     if (!getAuth().token) return null;
 
@@ -176,9 +45,7 @@ const Cart = () => {
     return (
         <StoreLayout hideFooter={true}>
             <div className="relative pt-32 pb-32 px-4 sm:px-8 min-h-screen overflow-hidden">
-                {/* Background Decorations */}
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+
 
                 <div className="max-w-7xl mx-auto relative z-10">
                     {/* New Tech Header */}
@@ -364,7 +231,7 @@ const Cart = () => {
                                     </div>
 
                                     <Button
-                                        onClick={() => navigate('/checkout')}
+                                        onClick={() => setIsCheckoutOpen(true)}
                                         className="w-full h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow-lg shadow-emerald-500/10 active:scale-[0.98] transition-all duration-300 group/btn flex items-center justify-center gap-3"
                                     >
                                         <span>Proceed to Checkout</span>
@@ -407,153 +274,8 @@ const Cart = () => {
                 </div>
             </div>
 
-            {/* Premium Verification Overlay */}
-            <AnimatePresence>
-                {isVerifying && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl"
-                    >
-                        <div className="absolute inset-0 cyber-grid opacity-20" />
-
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.9, opacity: 0, y: -20 }}
-                            className="relative max-w-md w-full bg-[#080808]/80 border border-white/[0.08] rounded-3xl p-10 shadow-2xl overflow-hidden"
-                        >
-                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent" />
-                            <div className="scanline" />
-
-                            <div className="relative z-10 flex flex-col items-center text-center">
-                                {/* Status Icon Container */}
-                                <div className="relative mb-8">
-                                    {verificationStatus === 'processing' && (
-                                        <div className="relative">
-                                            <div className="w-24 h-24 rounded-full border-2 border-emerald-500/20 flex items-center justify-center">
-                                                <div className="w-20 h-20 rounded-full border-t-2 border-emerald-500 animate-spin" />
-                                            </div>
-                                            <Shield className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-emerald-500 animate-pulse" />
-                                        </div>
-                                    )}
-
-                                    {verificationStatus === 'success' && (
-                                        <motion.div
-                                            initial={{ scale: 0 }}
-                                            animate={{ scale: 1, rotate: [0, -10, 10, 0] }}
-                                            className="w-24 h-24 bg-emerald-500/10 rounded-full flex items-center justify-center border border-emerald-500/30"
-                                        >
-                                            <Check className="w-12 h-12 text-emerald-500" />
-                                        </motion.div>
-                                    )}
-
-                                    {verificationStatus === 'error' && (
-                                        <motion.div
-                                            initial={{ scale: 0 }}
-                                            animate={{ scale: 1, x: [0, -5, 5, -5, 5, 0] }}
-                                            className="w-24 h-24 bg-red-500/10 rounded-full flex items-center justify-center border border-red-500/30"
-                                        >
-                                            <Info className="w-12 h-12 text-red-500" />
-                                        </motion.div>
-                                    )}
-                                </div>
-
-                                {/* Text Content */}
-                                <h3 className="text-xl font-black text-white uppercase tracking-[0.2em] mb-4">
-                                    {verificationStatus === 'processing' ? 'System Verification' :
-                                        verificationStatus === 'success' ? 'Access Authorized' : 'Transaction Failed'}
-                                </h3>
-
-                                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest leading-relaxed mb-8 max-w-[250px]">
-                                    {verificationMessage}
-                                </p>
-
-                                {verificationStatus === 'success' && purchasedKeys.length > 0 && (
-                                    <div className="w-full space-y-3 mb-8 max-h-60 overflow-y-auto custom-scrollbar px-1">
-                                        <div className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-2 flex items-center gap-2">
-                                            <Key className="w-3 h-3" />
-                                            Generated Access Keys
-                                        </div>
-                                        {purchasedKeys.map((item, i) => (
-                                            <motion.div
-                                                key={i}
-                                                initial={{ opacity: 0, x: -10 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                transition={{ delay: i * 0.1 }}
-                                                className="bg-black/60 border border-emerald-500/30 rounded-xl p-4 flex flex-col gap-2 text-left group hover:bg-emerald-500/5 transition-colors relative overflow-hidden"
-                                            >
-                                                <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 rounded-bl-full -mr-8 -mt-8" />
-
-                                                <span className="text-[9px] font-bold text-zinc-500 uppercase truncate relative z-10">{item.product_name}</span>
-                                                <div className="flex items-center justify-between gap-3 bg-black/40 rounded-lg p-2 border border-white/5 relative z-10">
-                                                    <code className="text-xs font-mono text-emerald-400 tracking-wider truncate select-all">{item.key}</code>
-                                                    <button
-                                                        onClick={() => {
-                                                            navigator.clipboard.writeText(item.key);
-                                                            toast({ title: "Copied!", description: "Key copied to secure clipboard." });
-                                                        }}
-                                                        className="p-1.5 rounded-md bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 transition-colors"
-                                                    >
-                                                        <Copy className="w-3.5 h-3.5" />
-                                                    </button>
-                                                </div>
-                                            </motion.div>
-                                        ))}
-                                    </div>
-                                )}
-
-                                {verificationStatus === 'success' && (
-                                    <div className="flex flex-col w-full gap-3">
-                                        <Button
-                                            onClick={() => {
-                                                clearCart();
-                                                navigate("/client/dashboard");
-                                            }}
-                                            className="h-12 w-full bg-emerald-500 hover:bg-emerald-400 text-black font-black text-[10px] uppercase tracking-widest rounded-xl shadow-lg shadow-emerald-500/20 transition-all"
-                                        >
-                                            Go to Dashboard
-                                        </Button>
-                                        <Button
-                                            onClick={() => {
-                                                clearCart();
-                                                navigate("/products");
-                                            }}
-                                            variant="ghost"
-                                            className="text-zinc-600 hover:text-zinc-400 text-[9px] font-bold uppercase tracking-widest h-8"
-                                        >
-                                            Continue Browsing
-                                        </Button>
-                                    </div>
-                                )}
-
-                                {/* Action Button for Errors */}
-                                {verificationStatus === 'error' && (
-                                    <Button
-                                        onClick={() => setIsVerifying(false)}
-                                        className="h-12 px-8 bg-zinc-900 border border-white/5 hover:bg-zinc-800 text-white font-black text-[10px] uppercase tracking-widest rounded-xl transition-all"
-                                    >
-                                        Return to Cart
-                                    </Button>
-                                )}
-
-                                {/* Progress Bar for Loading */}
-                                {verificationStatus === 'processing' && (
-                                    <div className="w-full h-1 bg-zinc-900 rounded-full overflow-hidden mt-4">
-                                        <motion.div
-                                            initial={{ x: "-100%" }}
-                                            animate={{ x: "100%" }}
-                                            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                                            className="w-1/2 h-full bg-emerald-500 shadow-[0_0_10px_#10b981]"
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {/* Checkout Modal */}
+            <Checkout isOpen={isCheckoutOpen} onOpenChange={setIsCheckoutOpen} />
 
 
             {/* Crypto Payment Dialog */}

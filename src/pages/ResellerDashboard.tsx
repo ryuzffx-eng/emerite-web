@@ -101,7 +101,7 @@ const StatCard = ({
   trend?: "up" | "down" | "neutral";
   className?: string;
 }) => (
-  <div className={cn("relative overflow-hidden bg-[#0a0a0a] border border-zinc-800/60 p-6 rounded-xl shadow-sm flex flex-col justify-between h-full group hover:border-zinc-700/80 transition-all duration-500", className)}>
+  <div className={cn("relative overflow-hidden bg-black/40 border border-white/5 p-6 rounded-xl shadow-sm flex flex-col justify-between h-full group hover:border-white/10 transition-all duration-500 backdrop-blur-md", className)}>
     <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
     <div className="relative z-10 flex items-start justify-between mb-4">
@@ -130,7 +130,7 @@ const StatCard = ({
 const QuickAction = ({ icon: Icon, label, onClick }: { icon: any, label: string, onClick: () => void }) => (
   <button
     onClick={onClick}
-    className="flex items-center gap-4 p-4 w-full rounded-xl bg-[#0a0a0a] border border-zinc-800/60 hover:bg-zinc-900 hover:border-zinc-700 transition-all group text-left relative overflow-hidden"
+    className="flex items-center gap-4 p-4 w-full rounded-xl bg-black/40 border border-white/5 hover:bg-black/60 hover:border-white/10 transition-all group text-left relative overflow-hidden backdrop-blur-md"
   >
     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-zinc-800/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
     <div className="h-10 w-10 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover:border-zinc-600 transition-colors shrink-0">
@@ -146,7 +146,7 @@ const QuickAction = ({ icon: Icon, label, onClick }: { icon: any, label: string,
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-zinc-900 border border-zinc-800 p-3 rounded-lg shadow-2xl backdrop-blur-md">
+      <div className="bg-black/80 border border-white/10 p-3 rounded-lg shadow-2xl backdrop-blur-xl">
         <p className="text-[10px] text-zinc-500 font-bold uppercase mb-1">{label}</p>
         <p className="text-sm font-bold text-white">
           {payload[0].value} <span className="text-[10px] text-zinc-500 font-medium">Activity</span>
@@ -273,7 +273,7 @@ const TopupDialog = ({ open, onOpenChange, onSuccess }: { open: boolean; onOpenC
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] bg-[#0a0a0a] border-zinc-800">
+      <DialogContent className="sm:max-w-[400px] bg-black/90 border-white/10 backdrop-blur-2xl">
         <DialogHeader>
           <DialogTitle className="text-white">Add Funds (USD)</DialogTitle>
           <DialogDescription className="text-zinc-500">
@@ -512,7 +512,7 @@ export default function ResellerDashboard() {
       <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-700 pb-12">
 
         {/* Reseller Identity Card */}
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-[#111111]/80 backdrop-blur-md p-6 sm:p-8 shadow-2xl group">
+        <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-black/40 backdrop-blur-md p-6 sm:p-8 shadow-2xl group">
           <div className="absolute top-0 right-0 p-10 opacity-[0.03] pointer-events-none group-hover:opacity-[0.05] transition-opacity">
             <Shield className="h-40 w-40 -mr-16 -mt-16 text-emerald-500" />
           </div>
@@ -612,7 +612,7 @@ export default function ResellerDashboard() {
           <div className="flex flex-col gap-6">
 
             {/* Allocation */}
-            <div className="relative overflow-hidden bg-[#0a0a0a] border border-zinc-800/60 rounded-xl p-6 shadow-sm flex flex-col h-[320px] group hover:border-zinc-700/80 transition-all duration-500">
+            <div className="relative overflow-hidden bg-black/40 border border-white/5 rounded-xl p-6 shadow-sm flex flex-col h-[320px] group hover:border-white/10 transition-all duration-500 backdrop-blur-md">
               <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative z-10 flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
@@ -664,7 +664,7 @@ export default function ResellerDashboard() {
             </div>
 
             {/* Usage Pulse */}
-            <div className="relative overflow-hidden bg-[#0a0a0a] border border-zinc-800/60 rounded-xl p-6 shadow-sm flex flex-col h-[320px] group hover:border-zinc-700/80 transition-all duration-500">
+            <div className="relative overflow-hidden bg-black/40 border border-white/5 rounded-xl p-6 shadow-sm flex flex-col h-[320px] group hover:border-white/10 transition-all duration-500 backdrop-blur-md">
               <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative z-10 flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
@@ -697,7 +697,7 @@ export default function ResellerDashboard() {
           <div className="flex flex-col gap-6">
 
             {/* Registry Control */}
-            <div className="relative overflow-hidden bg-[#0a0a0a] border border-zinc-800/60 rounded-xl p-5 shadow-sm h-fit group hover:border-zinc-700/80 transition-all duration-500">
+            <div className="relative overflow-hidden bg-black/40 border border-white/5 rounded-xl p-5 shadow-sm h-fit group hover:border-white/10 transition-all duration-500 backdrop-blur-md">
               <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <h3 className="relative z-10 text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-4 flex items-center gap-2">
                 <Plus className="h-3 w-3" />
@@ -711,7 +711,7 @@ export default function ResellerDashboard() {
             </div>
 
             {/* Event Table (Registry History) */}
-            <div className="relative overflow-hidden bg-[#0a0a0a] border border-zinc-800/60 rounded-xl shadow-sm flex flex-col h-fit group hover:border-zinc-700/80 transition-all duration-500">
+            <div className="relative overflow-hidden bg-black/40 border border-white/5 rounded-xl shadow-sm flex flex-col h-fit group hover:border-white/10 transition-all duration-500 backdrop-blur-md">
               <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
               <div className="px-5 py-3 border-b border-zinc-800/50 flex items-center justify-between bg-[#0a0a0a]/50 backdrop-blur-md relative z-10">
@@ -787,7 +787,7 @@ export default function ResellerDashboard() {
             </div>
 
             {/* Network Integrity */}
-            <div className="relative overflow-hidden bg-[#0a0a0a] border border-zinc-800/60 rounded-xl p-5 shadow-sm h-fit group hover:border-zinc-700/80 transition-all duration-500">
+            <div className="relative overflow-hidden bg-black/40 border border-white/5 rounded-xl p-5 shadow-sm h-fit group hover:border-white/10 transition-all duration-500 backdrop-blur-md">
               <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <h3 className="relative z-10 text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-4 flex items-center gap-2">
                 <Shield className="h-3 w-3" />
@@ -795,7 +795,7 @@ export default function ResellerDashboard() {
               </h3>
 
               <div className="relative z-10 space-y-2.5">
-                <div className="p-2.5 bg-zinc-900/40 border border-zinc-800/50 rounded-lg flex items-center justify-between group hover:border-emerald-500/20 transition-colors">
+                <div className="p-2.5 bg-black/40 border border-white/5 rounded-lg flex items-center justify-between group hover:border-emerald-500/20 transition-colors">
                   <div className="flex items-center gap-2.5">
                     <Activity className="h-3.5 w-3.5 text-emerald-500" />
                     <span className="text-[11px] font-semibold text-zinc-300">API Node</span>

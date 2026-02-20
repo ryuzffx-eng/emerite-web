@@ -333,7 +333,7 @@ export default function Applications() {
       <div className="space-y-6 transition-all duration-300">
 
         {/* Top Summary Bar (Clean Version) */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-4 sm:p-5 rounded-xl bg-zinc-900/40 border border-zinc-800/60 shadow-sm">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-4 sm:p-5 rounded-xl bg-black/40 border border-white/5 shadow-sm backdrop-blur-md">
           <div className="flex items-center gap-4 sm:gap-5">
             <div className="p-3 sm:p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
               <AppWindow className="h-6 w-6 text-emerald-500" />
@@ -355,7 +355,7 @@ export default function Applications() {
           ].map((stat, i) => (
             <div
               key={i}
-              className="bg-zinc-900/30 border border-zinc-800/50 p-5 rounded-xl backdrop-blur-md hover:bg-zinc-900/50 hover:border-zinc-700/50 transition-all duration-300"
+              className="bg-black/40 border border-white/5 p-5 rounded-xl backdrop-blur-md hover:bg-black/60 hover:border-white/10 transition-all duration-300"
               style={{ animationDelay: stat.delay }}
             >
               <div className="flex items-center justify-between mb-4">
@@ -381,7 +381,7 @@ export default function Applications() {
               placeholder="Search applications..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-11 bg-zinc-900/50 border-zinc-800 h-11 text-white placeholder:text-zinc-600 rounded-xl transition-all"
+              className="pl-11 bg-black/40 border-white/5 h-11 text-white placeholder:text-zinc-600 rounded-xl transition-all hover:bg-black/60 focus:bg-black/80"
             />
             {searchQuery && (
               <button
@@ -393,7 +393,7 @@ export default function Applications() {
             )}
           </div>
 
-          <div className="flex items-center gap-1.5 bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-800 shadow-lg shadow-black/20">
+          <div className="flex items-center gap-1.5 bg-black/40 p-1.5 rounded-xl border border-white/5 shadow-lg shadow-black/20 backdrop-blur-md">
             {/* Create Button */}
             <Dialog
               open={dialogOpen}
@@ -503,7 +503,7 @@ export default function Applications() {
               {filteredApps.map((app) => (
                 <div
                   key={app.id}
-                  className="group relative bg-zinc-900/30 rounded-xl border border-zinc-800/60 hover:border-emerald-500/50 p-6 transition-all duration-300 hover:bg-zinc-900/50 overflow-hidden"
+                  className="group relative bg-black/40 rounded-xl border border-white/5 hover:border-emerald-500/50 p-6 transition-all duration-300 hover:bg-black/60 overflow-hidden backdrop-blur-md"
                 >
                   <div className="relative space-y-5">
                     {/* Header */}
@@ -717,8 +717,8 @@ export default function Applications() {
           )
         ) : (
           /* Empty State */
-          <div className="py-20 text-center bg-zinc-900/20 border border-dashed border-zinc-800/50 rounded-xl">
-            <div className="h-16 w-16 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto mb-6 shadow-xl">
+          <div className="py-20 text-center bg-black/20 border border-dashed border-white/5 rounded-xl backdrop-blur-md">
+            <div className="h-16 w-16 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center mx-auto mb-6 shadow-xl">
               <AppWindow className="h-8 w-8 text-zinc-600" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2">No Application Records</h3>

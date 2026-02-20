@@ -101,11 +101,6 @@ export default function Index() {
 
   return (
     <StoreLayout>
-      {/* Background Decor */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-emerald-500/5 blur-[120px] rounded-full opacity-30" />
-      </div>
-
       <div className="relative min-h-screen pt-20 pb-12 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto w-full">
           <motion.div

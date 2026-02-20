@@ -170,7 +170,7 @@ export default function ResellerTransactions() {
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-700 pb-12">
 
         {/* ==================== SUMMARY HEADER & CONTROLS ==================== */}
-        <div className="flex flex-col gap-6 p-6 sm:p-8 rounded-xl bg-[#111111]/80 border border-zinc-800/80 backdrop-blur-md shadow-2xl shadow-black/20">
+        <div className="flex flex-col gap-6 p-6 sm:p-8 rounded-xl bg-black/40 border border-white/5 backdrop-blur-md shadow-2xl shadow-black/20">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="flex items-center gap-5">
               <div className="h-14 w-14 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-lg shadow-emerald-500/5 transition-transform hover:rotate-12">
@@ -200,7 +200,7 @@ export default function ResellerTransactions() {
           { label: "Last Operation", val: transactions[0] ? new Date(transactions[0].created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "---", icon: Clock, color: "text-purple-500" },
           { label: "Status", val: "Live", icon: Zap, color: "text-amber-500" },
         ].map((stat, i) => (
-          <div key={i} className="bg-[#111111]/60 border border-zinc-800/60 p-4 rounded-xl flex items-center justify-between group hover:border-zinc-700 transition-all">
+          <div key={i} className="bg-black/40 border border-white/5 p-4 rounded-xl flex items-center justify-between group hover:border-white/10 transition-all backdrop-blur-md">
             <div>
               <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1">{stat.label}</p>
               <p className="text-xl font-black text-white tracking-tight">{stat.val}</p>
@@ -220,7 +220,7 @@ export default function ResellerTransactions() {
             placeholder="Search transactions..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-11 bg-zinc-900/50 border-zinc-800 h-10 md:h-12 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-xl transition-all"
+            className="pl-11 bg-black/40 border-white/5 h-10 md:h-12 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-xl transition-all hover:bg-black/60 focus:bg-black/80"
           />
           {searchQuery && (
             <button
@@ -232,7 +232,7 @@ export default function ResellerTransactions() {
           )}
         </div>
 
-        <div className="flex items-center gap-1.5 bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-800 overflow-x-auto md:overflow-visible shadow-lg shadow-black/20">
+        <div className="flex items-center gap-1.5 bg-black/40 p-1.5 rounded-xl border border-white/5 overflow-x-auto md:overflow-visible shadow-lg shadow-black/20 backdrop-blur-md">
           <Button
             variant="ghost"
             size="icon"
@@ -246,7 +246,7 @@ export default function ResellerTransactions() {
 
       {/* ==================== DATA TERMINAL ==================== */}
       {/* ==================== DATA TERMINAL ==================== */}
-      <div className="rounded-xl border border-zinc-800/80 overflow-hidden bg-[#111111]/80 backdrop-blur-md shadow-2xl">
+      <div className="rounded-xl border border-white/5 overflow-hidden bg-black/40 backdrop-blur-md shadow-2xl">
         <DataTable
           columns={columns}
           data={filteredTransactions}

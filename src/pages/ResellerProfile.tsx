@@ -17,7 +17,8 @@ import {
   Key,
   LogOut,
   History,
-  Terminal
+  Terminal,
+  Lock
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -157,7 +158,7 @@ export default function ResellerProfile() {
       <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-700 pb-12">
 
         {/* ==================== IDENTITY HEADER ==================== */}
-        <div className="relative overflow-hidden rounded-xl border border-zinc-800 bg-[#111111]/80 backdrop-blur-md p-6 sm:p-8 shadow-2xl group">
+        <div className="relative overflow-hidden rounded-xl border border-white/5 bg-black/40 backdrop-blur-md p-6 sm:p-8 shadow-2xl group">
           <div className="absolute top-0 right-0 p-12 opacity-[0.02] pointer-events-none group-hover:opacity-[0.04] transition-opacity">
             <Fingerprint className="h-64 w-64 -mr-20 -mt-20 text-emerald-500" />
           </div>
@@ -230,8 +231,8 @@ export default function ResellerProfile() {
 
           {/* ==================== LEFT: PROFILE INFORMATION ==================== */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="rounded-xl border border-zinc-800 bg-[#111111]/80 backdrop-blur-md overflow-hidden">
-              <div className="px-6 py-4 border-b border-zinc-800/80 bg-zinc-900/20 flex items-center justify-between">
+            <div className="rounded-xl border border-white/5 bg-black/40 backdrop-blur-md overflow-hidden">
+              <div className="px-6 py-4 border-b border-white/10 bg-black/40 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="h-8 w-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center">
                     <User className="h-4 w-4 text-zinc-500" />
@@ -252,7 +253,7 @@ export default function ResellerProfile() {
                       <Input
                         value={profile.username}
                         readOnly
-                        className="bg-zinc-900/30 border-zinc-800 h-11 text-zinc-300 text-sm pl-10 cursor-not-allowed focus:ring-0 focus:border-zinc-800 transition-colors"
+                        className="bg-black/40 border-white/5 h-11 text-zinc-300 text-sm pl-10 cursor-not-allowed focus:ring-0 focus:border-white/10 transition-colors"
                       />
                       <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600 group-hover:text-zinc-500 transition-colors" />
                     </div>
@@ -264,7 +265,7 @@ export default function ResellerProfile() {
                       <Input
                         value={profile.email}
                         readOnly
-                        className="bg-zinc-900/30 border-zinc-800 h-11 text-zinc-300 text-sm pl-10 cursor-not-allowed focus:ring-0 focus:border-zinc-800 transition-colors"
+                        className="bg-black/40 border-white/5 h-11 text-zinc-300 text-sm pl-10 cursor-not-allowed focus:ring-0 focus:border-white/10 transition-colors"
                       />
                       <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600 group-hover:text-zinc-500 transition-colors" />
                     </div>
@@ -277,7 +278,7 @@ export default function ResellerProfile() {
                         value={profile.company_name || ""}
                         readOnly
                         placeholder="Independent"
-                        className="bg-zinc-900/30 border-zinc-800 h-11 text-zinc-300 text-sm pl-10 cursor-not-allowed focus:ring-0 focus:border-zinc-800 transition-colors"
+                        className="bg-black/40 border-white/5 h-11 text-zinc-300 text-sm pl-10 cursor-not-allowed focus:ring-0 focus:border-white/10 transition-colors"
                       />
                       <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600 group-hover:text-zinc-500 transition-colors" />
                     </div>
@@ -289,7 +290,7 @@ export default function ResellerProfile() {
                       <Input
                         value={new Date(profile.created_at).toLocaleDateString()}
                         readOnly
-                        className="bg-zinc-900/30 border-zinc-800 h-11 text-zinc-300 text-sm pl-10 cursor-not-allowed focus:ring-0 focus:border-zinc-800 transition-colors"
+                        className="bg-black/40 border-white/5 h-11 text-zinc-300 text-sm pl-10 cursor-not-allowed focus:ring-0 focus:border-white/10 transition-colors"
                       />
                       <History className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600 group-hover:text-zinc-500 transition-colors" />
                     </div>
@@ -299,8 +300,8 @@ export default function ResellerProfile() {
             </div>
 
             {/* Session Card for Mobile/Desktop layout flow */}
-            <div className="rounded-xl border border-zinc-800 bg-[#111111]/80 backdrop-blur-md overflow-hidden">
-              <div className="px-6 py-4 border-b border-zinc-800/80 bg-zinc-900/20 flex items-center gap-3">
+            <div className="rounded-xl border border-white/5 bg-black/40 backdrop-blur-md overflow-hidden">
+              <div className="px-6 py-4 border-b border-white/10 bg-black/40 flex items-center gap-3">
                 <div className="h-8 w-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
                   <Cpu className="h-4 w-4 text-blue-500" />
                 </div>
@@ -308,7 +309,7 @@ export default function ResellerProfile() {
               </div>
               <div className="p-6 sm:p-8">
                 <div className="flex flex-col sm:flex-row gap-4 items-stretch">
-                  <div className="flex-1 p-4 rounded-xl bg-black/40 border border-zinc-800/50 flex items-center justify-between group hover:border-blue-500/30 transition-colors">
+                  <div className="flex-1 p-4 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between group hover:border-blue-500/30 transition-colors">
                     <div className="flex items-center gap-3">
                       <div className="relative">
                         <Laptop className="h-5 w-5 text-zinc-400" />
@@ -322,7 +323,7 @@ export default function ResellerProfile() {
                     <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-Emerald-500/20 text-[9px] font-black uppercase tracking-widest">Active</Badge>
                   </div>
 
-                  <div className="flex-1 p-4 rounded-xl bg-black/40 border border-zinc-800/50 flex flex-col justify-center group hover:border-zinc-700 transition-colors">
+                  <div className="flex-1 p-4 rounded-xl bg-black/40 border border-white/5 flex flex-col justify-center group hover:border-white/10 transition-colors">
                     <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest mb-1">Last Authentication</span>
                     <span className="text-xs font-mono font-bold text-white">
                       {profile.last_login ? new Date(profile.last_login).toLocaleString() : "First Session"}
@@ -335,8 +336,8 @@ export default function ResellerProfile() {
 
           {/* ==================== RIGHT: SECURITY ==================== */}
           <div className="space-y-6">
-            <div className="rounded-xl border border-zinc-800 bg-[#111111]/80 backdrop-blur-md overflow-hidden">
-              <div className="px-6 py-4 border-b border-zinc-800/80 bg-zinc-900/20 flex items-center gap-3">
+            <div className="rounded-xl border border-white/5 bg-black/40 backdrop-blur-md overflow-hidden">
+              <div className="px-6 py-4 border-b border-white/10 bg-black/40 flex items-center gap-3">
                 <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
                   <Key className="h-4 w-4 text-emerald-500" />
                 </div>
@@ -353,7 +354,7 @@ export default function ResellerProfile() {
                         placeholder="••••••••••••"
                         value={oldPassword}
                         onChange={(e) => setOldPassword(e.target.value)}
-                        className="bg-black/40 border-zinc-800 h-11 text-white text-sm focus:border-emerald-500/50 transition-all font-medium placeholder:text-zinc-700"
+                        className="bg-black/40 border-white/5 h-11 text-white text-sm focus:border-emerald-500/50 transition-all font-medium placeholder:text-zinc-700"
                       />
                     </div>
                   )}
@@ -367,7 +368,7 @@ export default function ResellerProfile() {
                       placeholder="New secure password"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="bg-black/40 border-zinc-800 h-11 text-white text-sm focus:border-emerald-500/50 transition-all font-medium placeholder:text-zinc-700"
+                      className="bg-black/40 border-white/5 h-11 text-white text-sm focus:border-emerald-500/50 transition-all font-medium placeholder:text-zinc-700"
                     />
                   </div>
                   <div className="space-y-2">
@@ -377,7 +378,7 @@ export default function ResellerProfile() {
                       placeholder="Confirm new password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="bg-black/40 border-zinc-800 h-11 text-white text-sm focus:border-emerald-500/50 transition-all font-medium placeholder:text-zinc-700"
+                      className="bg-black/40 border-white/5 h-11 text-white text-sm focus:border-emerald-500/50 transition-all font-medium placeholder:text-zinc-700"
                     />
                   </div>
 
@@ -403,6 +404,6 @@ export default function ResellerProfile() {
         </div>
 
       </div>
-    </DashboardLayout>
+    </DashboardLayout >
   );
 }

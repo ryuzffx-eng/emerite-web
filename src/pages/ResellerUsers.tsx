@@ -259,7 +259,7 @@ export default function ResellerUsers() {
                 }}
                 className="w-full text-left transition-all active:scale-[0.98] group"
             >
-                <div className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-[#0a0a0a] p-5 shadow-2xl transition-all duration-500 hover:border-emerald-500/40 hover:shadow-emerald-500/5 group">
+                <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-black/40 backdrop-blur-md p-5 shadow-2xl transition-all duration-500 hover:border-emerald-500/40 hover:shadow-emerald-500/5 group">
                     {/* Interior Glow */}
                     <div className="absolute -right-16 -top-16 h-32 w-32 rounded-full bg-emerald-500/5 blur-3xl group-hover:bg-emerald-500/10 transition-colors" />
 
@@ -296,7 +296,7 @@ export default function ResellerUsers() {
                         </div>
 
                         {user.license_key && (
-                            <div className="relative group/key bg-black/40 border border-zinc-800/80 rounded-xl p-3 flex items-center justify-between transition-all hover:bg-black/60 hover:border-zinc-700">
+                            <div className="relative group/key bg-black/40 border border-white/5 rounded-xl p-3 flex items-center justify-between transition-all hover:bg-black/60 hover:border-white/10">
                                 <div className="flex flex-col min-w-0 pr-4">
                                     <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1.5">License Key</span>
                                     <code className="text-[11px] font-mono text-zinc-400 truncate tracking-tight">{user.license_key}</code>
@@ -384,7 +384,7 @@ export default function ResellerUsers() {
                                 {copiedItems.has(`${user.id}-license`) ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                             </Button>
                         </>
-                    ) : <span className="text-[10px] font-black text-zinc-700 tracking-widest bg-zinc-900/50 px-3 py-2 rounded-lg border border-zinc-800/50">UNASSIGNED</span>}
+                    ) : <span className="text-[10px] font-black text-zinc-700 tracking-widest bg-black/40 px-3 py-2 rounded-lg border border-white/5">UNASSIGNED</span>}
                 </div>
             ),
         },
@@ -433,7 +433,7 @@ export default function ResellerUsers() {
     return (
         <DashboardLayout title="User Management" subtitle="Comprehensive user base and account access control">
             <div className="space-y-8 transition-all duration-500">
-                <div className="flex flex-col gap-6 p-6 sm:p-8 rounded-xl bg-[#111111]/80 border border-zinc-800/80 backdrop-blur-md shadow-2xl shadow-black/20">
+                <div className="flex flex-col gap-6 p-6 sm:p-8 rounded-xl bg-black/40 border border-white/5 backdrop-blur-md shadow-2xl shadow-black/20">
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                         <div className="flex items-center gap-5">
                             <div className="h-14 w-14 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-lg shadow-emerald-500/5 transition-transform hover:rotate-12">
@@ -463,7 +463,7 @@ export default function ResellerUsers() {
                     ].map((stat, i) => (
                         <div
                             key={i}
-                            className="bg-[#111111]/80 border border-zinc-800/80 p-5 sm:p-6 rounded-xl backdrop-blur-md hover:border-emerald-500/20 transition-all duration-300 shadow-xl shadow-black/20 group"
+                            className="bg-black/40 border border-white/5 p-5 sm:p-6 rounded-xl backdrop-blur-md hover:border-emerald-500/20 transition-all duration-300 shadow-xl shadow-black/20 group"
                         >
                             <div className="flex items-center justify-between mb-4">
                                 <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-[0.2em]">{stat.label}</p>
@@ -492,7 +492,7 @@ export default function ResellerUsers() {
                             placeholder="Search users..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-11 bg-zinc-900/50 border-zinc-800 h-10 md:h-12 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-xl transition-all"
+                            className="pl-11 bg-black/40 border-white/5 h-10 md:h-12 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-xl transition-all hover:bg-black/60 focus:bg-black/80"
                         />
                         {searchQuery && (
                             <button
@@ -504,7 +504,7 @@ export default function ResellerUsers() {
                         )}
                     </div>
 
-                    <div className="flex items-center gap-1.5 bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-800 overflow-x-auto md:overflow-visible shadow-lg shadow-black/20">
+                    <div className="flex items-center gap-1.5 bg-black/40 p-1.5 rounded-xl border border-white/5 overflow-x-auto md:overflow-visible shadow-lg shadow-black/20 backdrop-blur-md">
                         {/* Filter */}
                         <Select value={activeTab} onValueChange={(value: any) => setActiveTab(value)}>
                             <SelectTrigger className="h-9 md:h-10 border-0 bg-transparent hover:bg-zinc-800/50 px-2 w-auto gap-1 [&>svg]:h-4 [&>svg]:w-4 flex-shrink-0 text-zinc-500 transition-all">
@@ -539,7 +539,7 @@ export default function ResellerUsers() {
                                 {isLoading ? (
                                     <LoadingSkeletons count={3} variant="card" />
                                 ) : filteredUsers.length === 0 ? (
-                                    <div className="p-12 text-center rounded-xl border border-zinc-800 bg-[#111111]/80 backdrop-blur-md">
+                                    <div className="p-12 text-center rounded-xl border border-white/5 bg-black/40 backdrop-blur-md">
                                         <Users className="h-10 w-10 text-zinc-700 mx-auto mb-4" />
                                         <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">No matching users found</p>
                                     </div>
@@ -550,7 +550,7 @@ export default function ResellerUsers() {
                                 )}
                             </div>
                         ) : (
-                            <div className="rounded-xl border border-zinc-800/80 overflow-hidden bg-[#111111]/80 backdrop-blur-md shadow-2xl">
+                            <div className="rounded-xl border border-white/5 overflow-hidden bg-black/40 backdrop-blur-md shadow-2xl">
                                 <DataTable
                                     columns={columns}
                                     data={filteredUsers}
@@ -566,7 +566,7 @@ export default function ResellerUsers() {
                 {/* User Details Dialog */}
                 <ErrorBoundary>
                     <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-                        <DialogContent className="w-[95vw] sm:w-full rounded-xl border-zinc-800 sm:max-w-3xl max-h-[94vh] sm:max-h-[90vh] overflow-hidden bg-zinc-950/98 backdrop-blur-3xl p-0 shadow-2xl">
+                        <DialogContent className="w-[95vw] sm:w-full rounded-xl border-white/10 sm:max-w-3xl max-h-[94vh] sm:max-h-[90vh] overflow-hidden bg-black/90 backdrop-blur-3xl p-0 shadow-2xl">
                             <div className="flex flex-col h-full max-h-[94vh] sm:max-h-[90vh]">
                                 {/* Tactical Header */}
                                 <div className="relative p-5 sm:p-10 bg-gradient-to-br from-zinc-900/80 to-black overflow-hidden border-b border-zinc-800/50">
@@ -580,7 +580,7 @@ export default function ResellerUsers() {
                                                 <UserCircle className="h-8 w-8 sm:h-12 sm:w-12 text-emerald-500" />
                                             </div>
                                             <div className={cn(
-                                                "absolute -bottom-2 -right-2 h-8 w-8 rounded-xl flex items-center justify-center border-2 border-zinc-950 shadow-xl",
+                                                "absolute -bottom-2 -right-2 h-8 w-8 rounded-xl flex items-center justify-center border-2 border-black shadow-xl",
                                                 selectedUser?.is_banned ? "bg-red-500 text-white" : "bg-emerald-500 text-black"
                                             )}>
                                                 {selectedUser?.is_banned ? <Ban className="h-4 w-4" /> : <ShieldCheck className="h-4 w-4 stroke-[3px]" />}
@@ -615,7 +615,7 @@ export default function ResellerUsers() {
                                             Core Credentials
                                         </h4>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div className="group relative bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-5 transition-all hover:bg-zinc-900 hover:border-zinc-700">
+                                            <div className="group relative bg-black/40 border border-white/5 rounded-xl p-5 transition-all hover:bg-black/60 hover:border-white/10">
                                                 <div className="flex items-center justify-between mb-2">
                                                     <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Username</span>
                                                     <UserCircle className="h-3.5 w-3.5 text-zinc-700" />
@@ -638,7 +638,7 @@ export default function ResellerUsers() {
                                                 </div>
                                             </div>
 
-                                            <div className="group relative bg-black/40 border border-zinc-800/50 rounded-xl p-5 transition-all hover:bg-zinc-900/60 hover:border-emerald-500/30">
+                                            <div className="group relative bg-black/40 border border-white/5 rounded-xl p-5 transition-all hover:bg-black/60 hover:border-emerald-500/30">
                                                 <div className="flex items-center justify-between mb-2">
                                                     <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">License Key</span>
                                                     <Zap className="h-3.5 w-3.5 text-emerald-500/40" />
@@ -687,7 +687,7 @@ export default function ResellerUsers() {
                                         {(selectedUser?.subscriptions && selectedUser.subscriptions.length > 0) ? (
                                             <div className="grid grid-cols-1 gap-2">
                                                 {selectedUser.subscriptions.map((sub, i) => (
-                                                    <div key={i} className="group relative flex items-center justify-between p-3.5 sm:p-5 bg-zinc-900/30 border border-zinc-800/50 rounded-xl hover:border-zinc-700/50 transition-all hover:bg-zinc-900/50">
+                                                    <div key={i} className="group relative flex items-center justify-between p-3.5 sm:p-5 bg-black/40 border border-white/5 rounded-xl hover:border-white/10 transition-all hover:bg-black/60 backdrop-blur-md">
                                                         <div className="min-w-0 flex items-center gap-3 sm:gap-4">
                                                             <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl bg-black/40 border border-zinc-800 flex items-center justify-center shrink-0">
                                                                 <Zap className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-500/50 group-hover:text-emerald-500 transition-colors" />
@@ -709,7 +709,7 @@ export default function ResellerUsers() {
                                                 ))}
                                             </div>
                                         ) : (
-                                            <div className="p-10 rounded-xl border border-dashed border-zinc-800 bg-zinc-900/20 text-center">
+                                            <div className="p-10 rounded-xl border border-dashed border-white/5 bg-black/40 text-center">
                                                 <Globe className="h-10 w-10 text-zinc-800 mx-auto mb-4" />
                                                 <p className="text-xs font-bold text-zinc-600">No active subscriptions found</p>
                                             </div>
@@ -733,7 +733,7 @@ export default function ResellerUsers() {
                 {/* Assign Subscription Dialog - RE-ENGINEERED */}
                 <ErrorBoundary>
                     <Dialog open={assignDialogOpen} onOpenChange={(open) => { setAssignDialogOpen(open); if (!open) { setSelectedPlanId(null); setAssignDuration(""); setIsProcessingAssignment(false); } }}>
-                        <DialogContent className="w-[98vw] sm:w-full border-zinc-800 sm:max-w-2xl rounded-xl backdrop-blur-3xl bg-zinc-950/98 p-0 overflow-hidden shadow-2xl">
+                        <DialogContent className="w-[98vw] sm:w-full border-white/10 sm:max-w-2xl rounded-xl backdrop-blur-3xl bg-black/90 p-0 overflow-hidden shadow-2xl">
                             <div className="flex flex-col h-full max-h-[94vh] sm:max-h-[85vh]">
                                 {/* Header - Tactical Style */}
                                 <div className="p-4 sm:p-10 bg-gradient-to-br from-zinc-900/80 to-black overflow-hidden border-b border-zinc-800/50 relative shrink-0">
@@ -769,16 +769,16 @@ export default function ResellerUsers() {
                                                         key={p.id}
                                                         onClick={() => setSelectedPlanId(p.plan_id)}
                                                         className={cn(
-                                                            "relative p-3 sm:p-5 text-left rounded-lg sm:rounded-xl border transition-all duration-300 group overflow-hidden bg-zinc-900/30",
+                                                            "relative p-3 sm:p-5 text-left rounded-lg sm:rounded-xl border transition-all duration-300 group overflow-hidden bg-black/40",
                                                             selectedPlanId === p.plan_id
                                                                 ? "border-emerald-500/50 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.1)] ring-1 ring-emerald-500/20"
-                                                                : "border-zinc-800/80 hover:border-zinc-700 hover:bg-zinc-900/50"
+                                                                : "border-white/5 hover:border-white/10 hover:bg-black/60"
                                                         )}
                                                     >
                                                         <div className="flex items-center sm:items-start gap-4 h-full relative z-10">
                                                             <div className={cn(
                                                                 "h-8 w-8 sm:h-11 sm:w-11 rounded-lg sm:rounded-xl flex items-center justify-center border transition-all duration-300 shrink-0 shadow-inner",
-                                                                selectedPlanId === p.plan_id ? "bg-emerald-500/20 border-emerald-500/30" : "bg-black/40 border-zinc-800 group-hover:border-zinc-700"
+                                                                selectedPlanId === p.plan_id ? "bg-emerald-500/20 border-emerald-500/30" : "bg-black/40 border-white/5 group-hover:border-white/10"
                                                             )}>
                                                                 <Globe className={cn("h-3.5 w-3.5 sm:h-5 sm:w-5 transition-colors duration-300", selectedPlanId === p.plan_id ? "text-emerald-500" : "text-zinc-600 group-hover:text-zinc-400")} />
                                                             </div>
@@ -802,7 +802,7 @@ export default function ResellerUsers() {
                                                     </button>
                                                 ))
                                             ) : (
-                                                <div className="col-span-full py-6 sm:py-12 text-center rounded-xl sm:rounded-3xl border border-dashed border-zinc-800 bg-zinc-900/20">
+                                                <div className="col-span-full py-6 sm:py-12 text-center rounded-xl sm:rounded-3xl border border-dashed border-white/5 bg-black/40">
                                                     <Check className="h-6 w-6 sm:h-10 sm:w-10 text-emerald-500/20 mx-auto mb-2 sm:mb-4" />
                                                     <p className="text-[8px] sm:text-[10px] font-bold text-zinc-600 uppercase tracking-widest">No available plans found</p>
                                                 </div>
@@ -817,7 +817,7 @@ export default function ResellerUsers() {
                                             TEMPORAL CONFIGURATION
                                         </h4>
 
-                                        <div className="relative group bg-zinc-900/40 rounded-lg sm:rounded-xl border border-zinc-800/50 p-3 sm:p-6 space-y-4 sm:space-y-6 transition-all focus-within:border-emerald-500/30">
+                                        <div className="relative group bg-black/40 rounded-lg sm:rounded-xl border border-white/5 p-3 sm:p-6 space-y-4 sm:space-y-6 transition-all focus-within:border-emerald-500/30">
                                             <div className="flex flex-col gap-2.5 sm:gap-4">
                                                 <div className="relative w-full">
                                                     <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center text-zinc-600 group-focus-within:text-emerald-500 transition-colors">
@@ -828,7 +828,7 @@ export default function ResellerUsers() {
                                                         placeholder="PERMANENT NODE"
                                                         value={assignDuration}
                                                         onChange={(e) => setAssignDuration(e.target.value)}
-                                                        className="h-10 sm:h-14 bg-zinc-950/50 border-zinc-800 focus:border-emerald-500/50 text-sm sm:text-xl font-bold text-white tracking-tight pl-10 sm:pl-16 rounded-lg sm:rounded-xl placeholder:text-zinc-800"
+                                                        className="h-10 sm:h-14 bg-black/40 border-white/5 focus:border-emerald-500/50 text-sm sm:text-xl font-bold text-white tracking-tight pl-10 sm:pl-16 rounded-lg sm:rounded-xl placeholder:text-zinc-800"
                                                     />
                                                 </div>
 
@@ -841,7 +841,7 @@ export default function ResellerUsers() {
                                                                 "h-9 sm:h-14 rounded-lg sm:rounded-xl border transition-all active:scale-95 font-bold text-[8px] sm:text-[10px] uppercase tracking-widest",
                                                                 assignDuration === String(d)
                                                                     ? "bg-emerald-500 text-black border-emerald-400 shadow-xl"
-                                                                    : "bg-zinc-800/50 hover:bg-zinc-800 border-zinc-700/50 text-zinc-400"
+                                                                    : "bg-black/40 hover:bg-black/60 border-white/5 text-zinc-400"
                                                             )}
                                                         >
                                                             {d}D
@@ -859,7 +859,7 @@ export default function ResellerUsers() {
                                 </div>
 
                                 {/* Finalize Action */}
-                                <div className="p-4 sm:p-10 bg-zinc-900/30 border-t border-zinc-800/80 relative space-y-2.5 sm:space-y-4 mt-auto shrink-0">
+                                <div className="p-4 sm:p-10 bg-black/40 border-t border-white/5 relative space-y-2.5 sm:space-y-4 mt-auto shrink-0">
                                     <div className="absolute top-[-1px] left-0 w-12 sm:w-24 h-[1px] bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,1)]" />
 
                                     <Button

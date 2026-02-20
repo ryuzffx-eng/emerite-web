@@ -335,6 +335,83 @@
   .animate-shimmer-slide {
     animation: shimmer-slide 3s infinite linear;
   }
+
+  /* Silk Background Waves */
+  .silk-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    background: #050505;
+  }
+
+  .silk-bg::before,
+  .silk-bg::after {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: radial-gradient(circle at center, rgba(62, 207, 142, 0.08) 0%, transparent 50%);
+    opacity: 0.5;
+    animation: silk-movement 20s infinite linear;
+    pointer-events: none;
+  }
+
+  .silk-bg::after {
+    animation-delay: -10s;
+    background: radial-gradient(circle at center, rgba(62, 207, 142, 0.05) 0%, transparent 40%);
+  }
+
+  .silk-beam {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200vw;
+    height: 100vh;
+    background: linear-gradient(45deg,
+        transparent 20%,
+        rgba(62, 207, 142, 0.03) 40%,
+        rgba(62, 207, 142, 0.05) 50%,
+        rgba(62, 207, 142, 0.03) 60%,
+        transparent 80%);
+    transform: translate(-50%, -50%) rotate(-45deg);
+    filter: blur(80px);
+    animation: beam-movement 15s infinite ease-in-out;
+  }
+
+  @keyframes silk-movement {
+    0% {
+      transform: rotate(0deg) translate(5%, 5%);
+    }
+
+    50% {
+      transform: rotate(180deg) translate(-5%, -5%);
+    }
+
+    100% {
+      transform: rotate(360deg) translate(5%, 5%);
+    }
+  }
+
+  @keyframes beam-movement {
+
+    0%,
+    100% {
+      transform: translate(-80%, -50%) rotate(-45deg);
+      opacity: 0.3;
+    }
+
+    50% {
+      transform: translate(-20%, -50%) rotate(-45deg);
+      opacity: 0.6;
+    }
+  }
+
+  .backdrop-blur-ultra {
+    backdrop-filter: blur(40px);
+  }
 }
 
 /* Scrollbar for dark mode */

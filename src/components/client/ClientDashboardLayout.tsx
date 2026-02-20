@@ -33,16 +33,23 @@ export const ClientDashboardLayout = ({
     };
 
     return (
-        <div className="min-h-screen bg-[#060606] text-white selection:bg-emerald-500/30 selection:text-emerald-200 font-sans">
-            {/* Ambient Background */}
-            <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4" />
-                <div className="absolute bottom-0 left-80 w-[400px] h-[400px] bg-emerald-500/5 rounded-full blur-[100px] translate-y-1/4 -translate-x-1/4" />
+        <div className="min-h-screen bg-[#020202] text-white selection:bg-emerald-500/30 selection:text-emerald-200 font-sans relative overflow-x-hidden">
+            {/* Cinematic Background Effects - Global */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+                {/* Primary Light Source (Top Left) */}
+                <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-emerald-500/10 blur-[150px] rounded-full mix-blend-screen animate-pulse" />
+
+                {/* Secondary Ambient Glow (Bottom Right) */}
+                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[60%] bg-emerald-900/20 blur-[180px] rounded-full mix-blend-screen" />
+
+                {/* Cinematic Rays/Beams */}
+                <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(16,185,129,0.03)_30%,transparent_60%)] opacity-70" />
+                <div className="absolute top-0 left-[-20%] w-[150%] h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-500/5 via-transparent to-transparent rotate-12 opacity-40" />
             </div>
 
             <ClientSidebar />
 
-            <main className="pl-80 min-h-screen">
+            <main className="pl-80 min-h-screen relative z-10">
                 <div className="max-w-7xl mx-auto px-10 py-10">
                     {/* Header Controls */}
                     <div className="flex items-start justify-between mb-12">
@@ -93,9 +100,9 @@ export const ClientDashboardLayout = ({
                         <motion.div
                             initial={{ x: 20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
-                            className="bg-[#0a0a0a] border border-zinc-800/60 rounded-xl p-3.5 flex items-center gap-4 shadow-sm backdrop-blur-md group hover:border-zinc-700/80 transition-all"
+                            className="bg-black/40 border border-white/5 rounded-xl p-3.5 flex items-center gap-4 shadow-[0_0_20px_rgba(0,0,0,0.2)] backdrop-blur-md group hover:border-emerald-500/20 transition-all cursor-default"
                         >
-                            <div className="w-9 h-9 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 group-hover:text-emerald-500 transition-colors">
+                            <div className="w-9 h-9 rounded-lg bg-zinc-900/50 border border-zinc-800/50 flex items-center justify-center text-zinc-500 group-hover:text-emerald-500 transition-colors">
                                 <Clock className="w-4 h-4" />
                             </div>
                             <div className="flex flex-col">

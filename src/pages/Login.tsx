@@ -299,22 +299,17 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-[#020202] text-white font-sans flex items-center justify-center p-4 relative overflow-hidden selection:bg-emerald-500/30 selection:text-emerald-200">
 
-      {/* Dynamic Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_100%)] opacity-20" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-900/10 via-[#050505] to-[#050505]" />
+      {/* Cinematic Background Effects - Global */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {/* Primary Light Source (Top Left) */}
+        <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-emerald-500/10 blur-[150px] rounded-full mix-blend-screen animate-pulse" />
 
-        {/* Animated Orbs */}
-        <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-emerald-500/10 rounded-full blur-[120px]"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.15, 0.05] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-emerald-800/10 rounded-full blur-[100px]"
-        />
+        {/* Secondary Ambient Glow (Bottom Right) */}
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[60%] bg-emerald-900/20 blur-[180px] rounded-full mix-blend-screen" />
+
+        {/* Cinematic Rays/Beams */}
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(16,185,129,0.03)_30%,transparent_60%)] opacity-70" />
+        <div className="absolute top-0 left-[-20%] w-[150%] h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-500/5 via-transparent to-transparent rotate-12 opacity-40" />
       </div>
 
       {/* Floating Header */}
@@ -323,7 +318,7 @@ export default function Login() {
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="flex items-center gap-2 px-4 md:px-6 py-2 md:py-2.5 rounded-full bg-white/[0.03] border border-white/[0.06] backdrop-blur-md shadow-2xl hover:bg-white/[0.05] transition-colors cursor-pointer group"
+          className="flex items-center gap-2 px-4 md:px-6 py-2 md:py-2.5 rounded-full bg-black/40 border border-white/5 backdrop-blur-md shadow-2xl hover:bg-white/5 transition-colors cursor-pointer group"
           onClick={() => navigate("/")}
         >
           <img src={emeriteLogo} alt="Logo" className="w-5 h-5 md:w-6 md:h-6 object-contain opacity-90 group-hover:opacity-100 transition-opacity" />
@@ -337,7 +332,7 @@ export default function Login() {
         initial={{ opacity: 0, scale: 0.98, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "circOut" }}
-        className="relative z-10 w-full max-w-[400px] lg:max-w-[900px] h-auto lg:h-[600px] bg-[#080808]/90 backdrop-blur-3xl rounded-3xl border border-white/[0.08] shadow-[0_30px_80px_rgba(0,0,0,0.6)] flex flex-col lg:flex-row overflow-hidden group/card"
+        className="relative z-10 w-full max-w-[400px] lg:max-w-[900px] h-auto lg:h-[600px] bg-black/40 backdrop-blur-xl rounded-3xl border border-white/5 shadow-[0_30px_80px_rgba(0,0,0,0.6)] flex flex-col lg:flex-row overflow-hidden group/card"
       >
         {/* Glow Effect on Border */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-50" />

@@ -286,7 +286,7 @@ export default function ResellerLicenses() {
         onClick={() => openLicenseInfo(license)}
         className="w-full text-left transition-all active:scale-[0.98] group"
       >
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-[#0a0a0a] p-5 shadow-2xl transition-all duration-500 hover:border-emerald-500/40 hover:shadow-emerald-500/5 group">
+        <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-black/40 backdrop-blur-md p-5 shadow-2xl transition-all duration-500 hover:border-emerald-500/40 hover:shadow-emerald-500/5 group">
           {/* Status Pulse background */}
           {!isUsed ? (
             <div className="absolute top-0 right-0 w-16 h-16 bg-zinc-500/5 blur-2xl rounded-full translate-x-1/2 -translate-y-1/2" />
@@ -333,7 +333,7 @@ export default function ResellerLicenses() {
               </div>
             </div>
 
-            <div className="relative group/key bg-black/40 border border-zinc-800/80 rounded-xl p-3.5 flex items-center justify-between transition-all hover:bg-black/60 hover:border-zinc-700">
+            <div className="relative group/key bg-black/40 border border-white/5 rounded-xl p-3.5 flex items-center justify-between transition-all hover:bg-black/60 hover:border-white/10">
               <div className="flex flex-col min-w-0 pr-4">
                 <span className="text-[8px] font-bold text-zinc-600 uppercase tracking-widest mb-1.5">License Key</span>
                 <code className="text-[11px] font-mono text-zinc-400 truncate tracking-tight">{license.license_key}</code>
@@ -394,7 +394,7 @@ export default function ResellerLicenses() {
         return (
           <div className="flex items-center gap-2 group/key">
             <div className="flex-1 min-w-0">
-              <code className="font-mono text-sm bg-black/40 px-4 py-2.5 rounded-lg block break-all text-zinc-300 border border-zinc-800/50 group-hover/key:border-zinc-700 transition-colors">
+              <code className="font-mono text-sm bg-black/40 px-4 py-2.5 rounded-lg block break-all text-zinc-300 border border-white/5 group-hover/key:border-white/10 transition-colors">
                 {license.license_key}
               </code>
             </div>
@@ -537,7 +537,7 @@ export default function ResellerLicenses() {
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-700 pb-12">
 
         {/* ==================== SUMMARY HEADER & CONTROLS ==================== */}
-        <div className="flex flex-col gap-6 p-6 sm:p-8 rounded-xl bg-[#111111]/80 border border-zinc-800/80 backdrop-blur-md shadow-2xl shadow-black/20">
+        <div className="flex flex-col gap-6 p-6 sm:p-8 rounded-xl bg-black/40 border border-white/5 backdrop-blur-md shadow-2xl shadow-black/20">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="flex items-center gap-5">
               <div className="h-14 w-14 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-lg shadow-emerald-500/5 transition-transform hover:rotate-12">
@@ -566,7 +566,7 @@ export default function ResellerLicenses() {
             { label: "Active Licenses", val: activeLicenses, icon: Zap, color: "text-purple-500" },
             { label: "Unused Licenses", val: unusedLicenses, icon: Key, color: "text-zinc-500" },
           ].map((stat, i) => (
-            <div key={i} className="bg-[#111111]/60 border border-zinc-800/60 p-5 rounded-xl flex items-center justify-between group hover:border-zinc-700 transition-all shadow-xl shadow-black/20">
+            <div key={i} className="bg-black/40 border border-white/5 p-5 rounded-xl flex items-center justify-between group hover:border-white/10 transition-all shadow-xl shadow-black/20 backdrop-blur-md">
               <div>
                 <p className="text-[9px] font-semibold text-zinc-600 uppercase tracking-wider mb-1">{stat.label}</p>
                 <p className="text-2xl font-bold text-white tracking-tight">{stat.val}</p>
@@ -586,7 +586,7 @@ export default function ResellerLicenses() {
               placeholder="Search licenses..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-11 bg-zinc-900/50 border-zinc-800 h-10 md:h-12 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-xl transition-all"
+              className="pl-11 bg-black/40 border-white/5 h-10 md:h-12 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-xl transition-all hover:bg-black/60 focus:bg-black/80"
             />
             {searchQuery && (
               <button
@@ -598,7 +598,7 @@ export default function ResellerLicenses() {
             )}
           </div>
 
-          <div className="flex items-center gap-1.5 bg-zinc-900/50 p-1.5 rounded-xl border border-zinc-800 overflow-x-auto md:overflow-visible shadow-lg shadow-black/20">
+          <div className="flex items-center gap-1.5 bg-black/40 p-1.5 rounded-xl border border-white/5 overflow-x-auto md:overflow-visible shadow-lg shadow-black/20 backdrop-blur-md">
             {/* Create Button */}
             <Button
               variant="ghost"
@@ -643,7 +643,7 @@ export default function ResellerLicenses() {
 
         {/* ==================== DATA LIST ==================== */}
         {/* ==================== DATA LIST ==================== */}
-        <div className="rounded-xl border border-zinc-800/80 overflow-hidden bg-[#111111]/80 backdrop-blur-md shadow-2xl">
+        <div className="rounded-xl border border-white/5 overflow-hidden bg-black/40 backdrop-blur-md shadow-2xl">
           <div className="relative z-10">
             {isMobile ? (
               <div className="p-4 grid grid-cols-1 gap-4">
@@ -672,7 +672,7 @@ export default function ResellerLicenses() {
 
         {/* Create New Licenses Dialog */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="sm:max-w-[500px] border-zinc-800 bg-zinc-950/95 backdrop-blur-2xl">
+          <DialogContent className="sm:max-w-[500px] border-white/10 bg-black/90 backdrop-blur-2xl">
             <DialogHeader>
               <DialogTitle className="text-xl text-white">Create Licenses</DialogTitle>
               <DialogDescription className="text-zinc-400">Generate new licenses for your products.</DialogDescription>
@@ -682,7 +682,7 @@ export default function ResellerLicenses() {
               <div className="grid gap-2">
                 <Label className="text-zinc-300 font-semibold">Product</Label>
                 <Select value={appId} onValueChange={setAppId}>
-                  <SelectTrigger className="bg-black/40 h-11 border-zinc-800 rounded-xl text-white focus:ring-emerald-500/20 transition-all font-semibold">
+                  <SelectTrigger className="bg-black/40 h-11 border-white/5 rounded-xl text-white focus:ring-emerald-500/20 transition-all font-semibold">
                     <SelectValue placeholder="Select Module" />
                   </SelectTrigger>
                   <SelectContent className="bg-zinc-950 border-zinc-800 rounded-xl">
@@ -701,7 +701,7 @@ export default function ResellerLicenses() {
                   value={selectedPlanId?.toString() || "none"}
                   onValueChange={(v) => setSelectedPlanId(v === "none" ? null : Number(v))}
                 >
-                  <SelectTrigger className="bg-black/40 h-11 border-zinc-800 rounded-xl text-white focus:ring-emerald-500/20 transition-all font-semibold">
+                  <SelectTrigger className="bg-black/40 h-11 border-white/5 rounded-xl text-white focus:ring-emerald-500/20 transition-all font-semibold">
                     <SelectValue placeholder="NONE (STANDARD)" />
                   </SelectTrigger>
                   <SelectContent className="bg-zinc-950 border-zinc-800 rounded-xl">
@@ -728,7 +728,7 @@ export default function ResellerLicenses() {
                     max={100}
                     value={count}
                     onChange={(e) => setCount(Number(e.target.value))}
-                    className="bg-black/40 h-11 border-zinc-800 rounded-xl text-white focus:border-emerald-500 transition-all font-semibold"
+                    className="bg-black/40 h-11 border-white/5 rounded-xl text-white focus:border-white/10 transition-all font-semibold"
                   />
                 </div>
                 <div className="grid gap-2">
@@ -738,7 +738,7 @@ export default function ResellerLicenses() {
                     min={1}
                     value={durationDays}
                     onChange={(e) => setDurationDays(Number(e.target.value))}
-                    className="bg-black/40 h-11 border-zinc-800 rounded-xl text-white focus:border-emerald-500 transition-all font-semibold"
+                    className="bg-black/40 h-11 border-white/5 rounded-xl text-white focus:border-white/10 transition-all font-semibold"
                   />
                 </div>
               </div>
@@ -765,7 +765,7 @@ export default function ResellerLicenses() {
 
         {/* License Details Dialog - Updated Style */}
         <Dialog open={infoOpen} onOpenChange={setInfoOpen}>
-          <DialogContent className="w-[95vw] sm:w-full rounded-2xl border-zinc-800 sm:max-w-xl max-h-[94vh] sm:max-h-[90vh] overflow-hidden bg-zinc-950/98 backdrop-blur-3xl p-0 shadow-2xl">
+          <DialogContent className="w-[95vw] sm:w-full rounded-2xl border-white/10 sm:max-w-xl max-h-[94vh] sm:max-h-[90vh] overflow-hidden bg-black/90 backdrop-blur-3xl p-0 shadow-2xl">
             <div className="flex flex-col h-full max-h-[94vh] sm:max-h-[90vh]">
               {/* Tactical Header */}
               <div className="relative p-5 sm:p-8 bg-gradient-to-br from-zinc-900/80 to-black overflow-hidden border-b border-zinc-800/50">
@@ -789,7 +789,7 @@ export default function ResellerLicenses() {
                   {/* License Token Section */}
                   <div className="space-y-3">
                     <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest pl-1">License Key</h4>
-                    <div className="group relative bg-zinc-900/50 border border-zinc-800/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 flex items-center justify-between transition-all hover:bg-zinc-900 hover:border-zinc-700">
+                    <div className="group relative bg-black/40 border border-white/5 rounded-xl sm:rounded-2xl p-3 sm:p-4 flex items-center justify-between transition-all hover:bg-black/60 hover:border-white/10">
                       <code className="text-sm font-mono text-white truncate mr-4">
                         {selectedLicense.license_key}
                       </code>

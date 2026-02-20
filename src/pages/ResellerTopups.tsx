@@ -74,7 +74,7 @@ export default function ResellerTopups() {
             <div className="space-y-8 animate-in fade-in duration-700">
                 {/* Header Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800 backdrop-blur-md shadow-xl">
+                    <div className="p-6 rounded-2xl bg-black/40 border border-white/5 backdrop-blur-md shadow-xl">
                         <div className="flex items-center justify-between mb-4">
                             <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Pending Requests</p>
                             <Clock className="h-4 w-4 text-emerald-500 opacity-40" />
@@ -85,7 +85,7 @@ export default function ResellerTopups() {
                         </div>
                     </div>
 
-                    <div className="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800 backdrop-blur-md shadow-xl">
+                    <div className="p-6 rounded-2xl bg-black/40 border border-white/5 backdrop-blur-md shadow-xl">
                         <div className="flex items-center justify-between mb-4">
                             <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Total Amount</p>
                             <Wallet className="h-4 w-4 text-emerald-500 opacity-40" />
@@ -119,7 +119,7 @@ export default function ResellerTopups() {
                     </div>
                 </div>
 
-                <div className="border border-zinc-800/80 rounded-2xl overflow-hidden bg-[#0c0c0c]/80 backdrop-blur-xl shadow-2xl">
+                <div className="border border-white/5 rounded-2xl overflow-hidden bg-black/40 backdrop-blur-xl shadow-2xl">
                     <DataTable
                         keyExtractor={(r) => String(r.id)}
                         columns={[
@@ -189,7 +189,7 @@ export default function ResellerTopups() {
                                             size="sm"
                                             onClick={() => handleAction(r.id, "reject")}
                                             disabled={processingId === r.id}
-                                            className="h-9 px-4 rounded-xl bg-zinc-900/50 hover:bg-red-500/10 text-zinc-500 hover:text-red-500 font-black text-[9px] uppercase tracking-widest border border-zinc-800 hover:border-red-500/30 transition-all active:scale-95"
+                                            className="h-9 px-4 rounded-xl bg-black/40 hover:bg-black/60 text-zinc-500 hover:text-red-500 font-black text-[9px] uppercase tracking-widest border border-white/5 hover:border-red-500/30 transition-all active:scale-95"
                                         >
                                             <X className="h-3.5 w-3.5 mr-2" />
                                             Reject
