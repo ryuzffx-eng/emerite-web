@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { User, MessageSquare, Scale, Send, Phone } from "lucide-react";
 import { StoreLayout } from "@/components/store/StoreLayout";
 import { useEffect, useState } from "react";
-import { getPublicTeam } from "@/lib/api";
+import { getPublicTeam, apiRequest } from "@/lib/api";
 
 type DiscordStatus = "online" | "idle" | "dnd" | "offline";
 
@@ -28,8 +28,8 @@ function useDiscordStatus(discordId: string | null) {
         // Initial Fetch via Backend Proxy
         const fetchStatus = async () => {
             try {
-                const response = await fetch(`/api/store/team/status/${cleanId}`);
-                const data = await response.json();
+                // Use apiRequest to ensure it hits the correct backend URL
+                const data = await apiRequest(`/store/team/status/${cleanId}`);
 
                 if (data.status) {
                     setStatus(data.status);

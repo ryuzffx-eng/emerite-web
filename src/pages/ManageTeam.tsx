@@ -48,7 +48,8 @@ import {
     getTeamMembers,
     createTeamMember,
     updateTeamMember,
-    deleteTeamMember
+    deleteTeamMember,
+    apiRequest
 } from "@/lib/api";
 
 export default function ManageTeam() {
@@ -184,8 +185,7 @@ export default function ManageTeam() {
     const fetchDiscordDetails = async () => {
         if (!formData.discord_id) return;
         try {
-            const res = await fetch(`/api/store/team/status/${formData.discord_id}`);
-            const data = await res.json();
+            const data = await apiRequest(`/store/team/status/${formData.discord_id}`);
             if (data.discord_user && data.discord_user.id) {
                 setFormData(prev => ({
                     ...prev,

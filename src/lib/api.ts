@@ -1,6 +1,4 @@
-// Prefer environment variable for direct connection
-// In Vercel, set VITE_API_URL to your HTTPS backend URL (e.g., https://api.yourdomain.com)
-const BASE_URL = import.meta.env.VITE_API_URL || "http://ryzen.heavencloud.in:2407";
+const BASE_URL = import.meta.env.VITE_API_URL || "https://api.emerite.store";
 
 // Safe localStorage access
 const getStoredItem = (key: string) => {
@@ -66,33 +64,7 @@ export const getAuth = () => ({ token: getAuthToken(), userType, user: userData 
 
 export const isAuthenticated = () => !!getAuthToken();
 
-// Detect if we're in production
-const isProduction = () => {
-  try {
-    // Check Vite's built-in prod flag first
-    if (typeof import.meta !== 'undefined' && import.meta.env?.PROD) return true;
 
-    // Fallback to hostname check
-    if (typeof window !== 'undefined' && window.location && window.location.hostname) {
-      const host = window.location.hostname;
-      // If we are accessing via IP or localhost, treat as NOT production to use proxy
-      const isLocal = host === 'localhost' ||
-        host === '127.0.0.1' ||
-        host.startsWith('192.168.') ||
-        host.startsWith('10.') ||
-        host.startsWith('172.') ||
-        host.endsWith('.local');
-
-      // Also treat your specific dev IP as local
-      if (host === '10.118.122.53') return false;
-
-      return !isLocal;
-    }
-    return false;
-  } catch (e) {
-    return false;
-  }
-};
 
 // API request helper
 export const apiRequest = async (
@@ -100,57 +72,26 @@ export const apiRequest = async (
   options: RequestInit = {}
 ): Promise<any> => {
   const token = getAuthToken();
-  const isProd = isProduction();
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 
-  let url: string;
+  // Direct HTTPS connection to the API
+  const url = `${BASE_URL.replace(/\/$/, '')}/api${cleanEndpoint}`;
+
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
 
-  // Determine the URL to call
-  // 1. If VITE_API_URL is set (e.g. to an HTTPS backend), use it directly.
-  // 2. If running locally, use Vite proxy (/api) to avoid CORS.
-  // 3. If in Production but no VITE_API_URL is set, try to use the Vercel proxy fallback.
-
-  if (BASE_URL.startsWith('http')) {
-    // Optimization: In Development, use Vite Proxy (/api) to avoid CORS preflight (OPTIONS) requests.
-    // This makes dev significantly faster (1 round-trip vs 2).
-    const useViteProxy = !isProd && !import.meta.env.VITE_API_URL;
-
-    if (useViteProxy) {
-      url = `/api${endpoint}`;
-    } else if (isProd && BASE_URL.startsWith('http://')) {
-      // Vercel (HTTPS) cannot call HTTP directly. Use Vercel Serverless Proxy.
-      url = `/api/proxy?endpoint=${encodeURIComponent(endpoint)}`;
-      console.log(`[API] Using Vercel proxy for HTTP backend: ${url}`);
-    } else {
-      // Direct connection (HTTPS backend OR Localhost OR Explicit Override)
-      // Ensure we append /api prefix since the backend routes are mounted there
-      const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-      url = `${BASE_URL.replace(/\/$/, '')}/api${cleanEndpoint}`;
-    }
-  } else {
-    // Fallback to Vite proxy
-    url = `/api${endpoint}`;
-  }
-
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
     headers["x-emerite-token"] = token;
-    headers["x-faerion-token"] = token; // Add both variants for compatibility
+    headers["x-faerion-token"] = token;
   }
 
-  // Merge any additional headers
   if (options.headers) {
     Object.assign(headers, options.headers);
   }
 
-  console.log(`[API] ${options.method || 'GET'} ${endpoint} (${isProd ? 'PROD Proxy' : 'DEV'})`, {
-    hasToken: !!token,
-    url: url,
-    isProd,
-    hostname: typeof window !== 'undefined' ? window.location.hostname : 'unknown'
-  });
+  console.log(`[API] ${options.method || 'GET'} ${url}`);
 
   let response;
   try {
@@ -160,7 +101,6 @@ export const apiRequest = async (
     });
   } catch (fetchError) {
     console.error(`[API ERROR] Network error for ${endpoint}:`, fetchError);
-    console.error(`[API ERROR] Request details:`, { url, method: options.method, isProd });
     const message = fetchError instanceof Error ? fetchError.message : 'Network error';
     throw new Error(`Server connection failed: ${message}`);
   }
@@ -640,27 +580,17 @@ export const getServerTime = () => apiRequest("/time");
 
 // Test if API server is reachable (no auth required)
 export const testServerConnection = async () => {
-  const isProd = isProduction();
-
-  console.log(`[TEST] Attempting connection (${isProd ? 'via Supabase Proxy' : 'Direct'})...`);
+  console.log(`[TEST] Attempting direct connection...`);
 
   // Try multiple endpoints as fallback
   const endpoints = ['/status', '/health', '/'];
 
   for (const endpoint of endpoints) {
     try {
-      let testUrl;
-      const useViteProxy = !isProd && !import.meta.env.VITE_API_URL;
-
-      if (useViteProxy) {
-        testUrl = `/api${endpoint}`;
-      } else {
-        testUrl = isProd && BASE_URL.startsWith('http://')
-          ? `/api/proxy?endpoint=${encodeURIComponent(endpoint)}`
-          : (endpoint === '/'
-            ? BASE_URL
-            : `${BASE_URL.replace(/\/$/, '')}/api${endpoint}`);
-      }
+      const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+      const testUrl = endpoint === '/'
+        ? BASE_URL
+        : `${BASE_URL.replace(/\/$/, '')}/api${cleanEndpoint}`;
 
       console.log(`[TEST] Testing endpoint: ${endpoint} URL: ${testUrl}`);
 
@@ -679,7 +609,6 @@ export const testServerConnection = async () => {
           const data = await response.json();
           return { success: true, data };
         } catch (e) {
-          // Even if JSON parsing fails, we got a response = server is reachable
           return { success: true, data: null };
         }
       }
@@ -897,4 +826,3 @@ export const pauseResellerSubscription = (resellerId: string | number, subscript
 
 export const resumeResellerSubscription = (resellerId: string | number, subscriptionId: number) =>
   apiRequest(`/admin/resellers/${resellerId}/subscriptions/${subscriptionId}/resume`, { method: "POST" });
-
