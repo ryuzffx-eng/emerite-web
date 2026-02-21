@@ -66,6 +66,35 @@ export const isAuthenticated = () => !!getAuthToken();
 
 
 
+// API Caching and Request Deduplication
+const apiCache = new Map<string, { data: any; timestamp: number }>();
+const pendingRequests = new Map<string, Promise<any>>();
+const CACHE_TTL = 30000; // 30 seconds cache
+
+/**
+ * Normalizes an endpoint for use as a cache key
+ */
+const getCacheKey = (method: string, url: string, body?: string) => {
+  return `${method}:${url}:${body || ""}`;
+};
+
+/**
+ * Clears cache entries that match a certain pattern or all entries
+ */
+export const clearApiCache = (pattern?: string) => {
+  if (!pattern) {
+    apiCache.clear();
+    console.debug("[API] Cache cleared globally");
+    return;
+  }
+
+  for (const key of apiCache.keys()) {
+    if (key.includes(pattern)) {
+      apiCache.delete(key);
+    }
+  }
+};
+
 // API request helper
 export const apiRequest = async (
   endpoint: string,
@@ -73,9 +102,36 @@ export const apiRequest = async (
 ): Promise<any> => {
   const token = getAuthToken();
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const method = options.method || 'GET';
 
   // Direct HTTPS connection to the API
   const url = `${BASE_URL.replace(/\/$/, '')}/api${cleanEndpoint}`;
+
+  // Create cache key for deduplication and caching
+  const cacheKey = getCacheKey(method, url, options.body as string);
+
+  // 1. Check for Pending Requests (Deduplication)
+  if (method === 'GET' && pendingRequests.has(cacheKey)) {
+    console.debug(`[API] Deduplicating request: ${url}`);
+    return pendingRequests.get(cacheKey);
+  }
+
+  // 2. Check Cache (GET only)
+  if (method === 'GET') {
+    const cached = apiCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      console.debug(`[API] Returning cached data for: ${url}`);
+      return cached.data;
+    }
+  }
+
+  // 3. Clear Cache on Mutations
+  if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
+    // Basic invalidation: clear related cache or everything
+    // For now, let's be safe and clear any GET requests related to this resource path
+    const resourcePath = cleanEndpoint.split('?')[0];
+    clearApiCache(resourcePath);
+  }
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -91,70 +147,89 @@ export const apiRequest = async (
     Object.assign(headers, options.headers);
   }
 
-  console.log(`[API] ${options.method || 'GET'} ${url}`);
+  console.log(`[API] ${method} ${url}`);
 
-  let response;
-  try {
-    response = await fetch(url, {
-      ...options,
-      headers,
-    });
-  } catch (fetchError) {
-    console.error(`[API ERROR] Network error for ${endpoint}:`, fetchError);
-    const message = fetchError instanceof Error ? fetchError.message : 'Network error';
-    throw new Error(`Server connection failed: ${message}`);
-  }
-
-  let data;
-  const contentType = response.headers.get('content-type');
-
-  try {
-    if (contentType && contentType.includes('application/json')) {
-      data = await response.json();
-    } else {
-      const text = await response.text();
-      console.warn(`[API WARNING] Non-JSON response for ${endpoint}:`, text);
-      data = { raw: text };
+  // Create the actual fetch promise
+  const fetchPromise = (async () => {
+    let response;
+    try {
+      response = await fetch(url, {
+        ...options,
+        headers,
+      });
+    } catch (fetchError) {
+      pendingRequests.delete(cacheKey);
+      console.error(`[API ERROR] Network error for ${endpoint}:`, fetchError);
+      const message = fetchError instanceof Error ? fetchError.message : 'Network error';
+      throw new Error(`Server connection failed: ${message}`);
     }
-  } catch (e) {
-    console.error(`[API ERROR] Failed to parse response for ${endpoint}:`, e);
-    throw new Error(`Invalid response format from server (expected JSON)`);
-  }
 
-  console.log(`[API RESPONSE] ${endpoint} - Status: ${response.status}`, data);
+    let data;
+    const contentType = response.headers.get('content-type');
 
-  if (!response.ok) {
-    const errorMessage = data.detail || data.error || data.message || data.raw || `HTTP ${response.status}`;
-    console.error(`[API ERROR] ${endpoint}: ${errorMessage}`, data);
+    try {
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        console.warn(`[API WARNING] Non-JSON response for ${endpoint}:`, text);
+        data = { raw: text };
+      }
+    } catch (e) {
+      pendingRequests.delete(cacheKey);
+      console.error(`[API ERROR] Failed to parse response for ${endpoint}:`, e);
+      throw new Error(`Invalid response format from server (expected JSON)`);
+    }
 
-    // Handle unauthorized or expired token centrally 
-    if (response.status === 401 || (typeof errorMessage === 'string' && errorMessage.toLowerCase().includes('token expired'))) {
-      const isLoginRequest = endpoint.includes('/login') || endpoint.includes('/discord') || endpoint.includes('/google');
+    console.log(`[API RESPONSE] ${endpoint} - Status: ${response.status}`, data);
 
-      if (!isLoginRequest) {
-        try {
-          console.warn(`[API] Unauthorized access to ${endpoint}, redirecting to login...`);
-          // Clear stored auth and redirect to login
-          localStorage.removeItem('emerite_token');
-          localStorage.removeItem('emerite_user_type');
-          // If SPA router is available, navigate; otherwise fallback to location
-          if (window && window.location && window.location.pathname !== '/login' && window.location.pathname !== '/') {
-            window.location.href = '/';
+    if (!response.ok) {
+      pendingRequests.delete(cacheKey);
+      const errorMessage = data.detail || data.error || data.message || data.raw || `HTTP ${response.status}`;
+      console.error(`[API ERROR] ${endpoint}: ${errorMessage}`, data);
+
+      // Handle unauthorized or expired token centrally 
+      if (response.status === 401 || (typeof errorMessage === 'string' && errorMessage.toLowerCase().includes('token expired'))) {
+        const isLoginRequest = endpoint.includes('/login') || endpoint.includes('/discord') || endpoint.includes('/google');
+
+        if (!isLoginRequest) {
+          try {
+            console.warn(`[API] Unauthorized access to ${endpoint}, redirecting to login...`);
+            // Clear stored auth and redirect to login
+            localStorage.removeItem('emerite_token');
+            localStorage.removeItem('emerite_user_type');
+            // If SPA router is available, navigate; otherwise fallback to location
+            if (window && window.location && window.location.pathname !== '/login' && window.location.pathname !== '/') {
+              window.location.href = '/';
+            }
+          } catch (e) {
+            console.warn('[API] Failed to auto-redirect after unauthorized error', e);
           }
-        } catch (e) {
-          console.warn('[API] Failed to auto-redirect after unauthorized error', e);
+          throw new Error(response.status === 401 ? 'Session invalid or user deleted. Please log in again.' : 'Session expired. Please log in again.');
         }
-        throw new Error(response.status === 401 ? 'Session invalid or user deleted. Please log in again.' : 'Session expired. Please log in again.');
+
+        throw new Error(errorMessage);
       }
 
-      // For login requests, just throw the backend error
       throw new Error(errorMessage);
     }
 
-    throw new Error(errorMessage);
+    // 4. Update Cache on Success (GET only)
+    if (method === 'GET') {
+      apiCache.set(cacheKey, { data, timestamp: Date.now() });
+    }
+
+    // Done with pending request
+    pendingRequests.delete(cacheKey);
+    return data;
+  })();
+
+  // Store if it's a GET request for deduplication
+  if (method === 'GET') {
+    pendingRequests.set(cacheKey, fetchPromise);
   }
 
-  return data;
+  return fetchPromise;
 };
 
 // ============ Authentication ============
